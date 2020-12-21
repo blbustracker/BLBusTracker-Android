@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="@drawable/infowindow_roundcorners"
+        app:cardCornerRadius="20dp"
+        app:cardElevation="20dp">
+
+
+    <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/infowindow_roundcorners"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="10dp">
+
+        <!--marker.showInfowindow() when marker is single clicked-->
+
+        <TextView
+                android:id="@+id/title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:paddingBottom="8dp"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:textColor="@color/Black"
+                tools:text="ovo test text" />
+
+        <Button
+                android:id="@+id/more_marker_options"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@drawable/circle_shape_background"
+                android:padding="8dp"
+                android:text="@string/more_options"
+                android:textAppearance="@style/TextAppearance.AppCompat.Button"
+                android:textColor="@color/white" />
+
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

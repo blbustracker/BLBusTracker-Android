@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">BL BusTracker</string>
+    <string name="settings">Опције</string>
+    <string name="options">Опције</string>
+    <string name="alarm">Аларм</string>
+    <string name="ok_button">OK</string>
+    <string name="bus_routes">Аутобуске линије</string>
+    <string name="announcements">Обавјештења</string>
+    <string name="map_view">Преглед мапе</string>
+    <string name="start_destination_text">Унесите полазиште</string>
+    <string name="end_destination_text">Унесите одредиште</string>
+    <string name="messages_header" translatable="false">Језик</string>
+    <string name="select_map_type">Одаберите изглед мапе</string>
+    <string name="map_type_satellite">Сателит</string>
+    <string name="set_as_start_destination" translatable="false">Постави полазиште</string>
+    <string name="set_as_end_destination" translatable="false">Постави одредиште</string>
+    <string name="open_google_navigation" translatable="false">Покрени Гугл навигацију</string>
+    <string name="loading_message">Учитавање…</string>
+    <string name="choose_your_route">Изаберите линију за приказ</string>
+    <string name="enter_bus_route">Унесите линију</string>
+    <string name="sunday">Недjеља/Празник</string>
+    <string name="workday">Радни дан</string>
+    <string name="unknown_busstop">Непозната станица</string>
+    <string name="select_map_style">Стил мапе</string>
+    <string name="saturday">Субота</string>
+    <string name="announcement_content">Садржај:</string>
+    <string name="route_schedule">Ред вожње</string>
+    <string name="more_options">више опција</string>
+    <string name="contact">Контакт</string>
+    <string name="search_your_route">Пронађи линију</string>
+    <string name="no_route_schedule">Нема реда вожње</string>
+    <string name="error_connecting">Грешка при конекцији</string>
+    <string name="no_busstop_found">Станица није пронађена</string>
+    <string name="no_direct_route_msg">Нема директне линије</string>
+    <string name="select_language">Одаберите језик</string>
+    <string name="no_internet">Поруку није могуће послати. Молимо провјерите интернет конекцију и покушајте поново</string>
+    <string name="fill_required_fields">Молимо попуните сва поља</string>
+    <string name="are_you_sure">Да ли сте сигурни ?</string>
+    <string name="problem_reported">Пријављен проблем!</string>
+    <string name="clear_content">Очисти поља</string>
+    <string name="send_report">Пошаљи проблем</string>
+    <string name="report_problem">Пријави Проблем</string>
+    <string name="report_content">Садржај проблема</string>
+    <string name="report_title">Наслов</string>
+    <string name="about_paragraph_1" >" Апликација за кориснике јавног превоза у урбаној зони града Бања Лука."</string>
+    <string name="about_paragraph_2" >Развијена од стране Електротехничког факултета, Универзитета у Бањој Луци и компаније Аутопревоз, у склопу \"Future City Innovation Challenge\" иницијативе.</string>
+    <string name="version">Верзија: 1.0</string>
+</resources>

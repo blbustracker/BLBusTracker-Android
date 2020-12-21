@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/bus_background">
+
+        <shape android:shape="oval">
+            <solid android:color="@color/white" />
+
+            <size
+                    android:width="@dimen/bus_marker_size"
+                    android:height="@dimen/bus_marker_size" />
+        </shape>
+    </item>
+
+    <item android:drawable="@drawable/ic_bus_black"
+            android:width="@dimen/innerbus_marker_size"
+            android:height="@dimen/innerbus_marker_size"
+            android:gravity="center"
+            >
+    </item>
+</layer-list>

@@ -1,0 +1,62 @@
+
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout="@layout/toolbar"
+        >
+
+    <PreferenceCategory app:title="@string/messages_header">
+
+        <!--promjeni default Value u kodu u zavisnosti od odabranog jezika-->
+
+        <ListPreference
+                app:entries="@array/language_entries"
+                app:entryValues="@array/language_values"
+                app:key="selected_language"
+                app:title="@string/select_language"
+                app:useSimpleSummaryProvider="true" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="Map settings">
+
+        <ListPreference
+                app:defaultValue="1"
+                app:entries="@array/map_type_entries"
+                app:entryValues="@array/map_type_values"
+                app:key="selected_map_type"
+                app:title="@string/select_map_type"
+                app:useSimpleSummaryProvider="true" />
+
+        <ListPreference
+                app:defaultValue="normal"
+                app:entries="@array/map_style_entries"
+                app:entryValues="@array/map_style_values"
+                app:key="selected_map_style"
+                app:title="@string/select_map_style"
+                app:useSimpleSummaryProvider="true" />
+    </PreferenceCategory>
+
+
+    <!--    TODO: make string resources-->
+    <PreferenceCategory app:title="Reports">
+
+        <CheckBoxPreference
+
+                android:key="collect_report"
+                android:defaultValue="true"
+                app:singleLineTitle="false"
+                android:summaryOn="You will be asked to send crash report to the server"
+                android:summaryOff="You will NOT send any data"
+                android:title="Collect crash reports (not implemented)"
+                />
+
+        <CheckBoxPreference
+                android:key="report_automatically"
+                android:dependency="collect_report"
+                android:defaultValue="true"
+                app:singleLineTitle="false"
+                android:title="Send report Automatically? (not implemented)"
+                />
+    </PreferenceCategory>
+
+</PreferenceScreen>

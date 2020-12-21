@@ -1,0 +1,10 @@
+/build
+/src/main/java/org/unibl/etf/blbustracker/TODO.txt
+/src/main/java/org/unibl/etf/blbustracker/TestClass.java
+app/src/main/java/com/passengerapp/TODO.txt
+app/src/main/java/com/passengerapp/TestClass
+app/src/main/java/com/passengerapp/TestClass.java'
+app/src/main/java/com/passengerapp/uinavigationtabs/announcements_fragment/WelcometoMVVM.txt
+/src/main/java/org/unibl/etf/blbustracker/navigationtabs/announcements/WelcometoMVVM.txt
+!/src/main/java/org/unibl/etf/blbustracker/navigationtabs/announcements/WelcometoMVVM.txt
+*.txt

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/mobile_navigation"
+        app:startDestination="@+id/nav_map_view">
+
+    <fragment
+            android:id="@+id/nav_map_view"
+            android:name="org.unibl.etf.blbustracker.navigationtabs.mapview.MapFragment"
+            android:label="@string/map_view"
+            tools:layout="@layout/fragment_mapview"/>
+
+    <fragment
+            android:id="@+id/nav_announcements"
+            android:name="org.unibl.etf.blbustracker.navigationtabs.announcements.AnnouncementsFragment"
+            android:label="@string/announcements"
+            tools:layout="@layout/fragment_announcements" />
+
+    <fragment
+            android:id="@+id/nav_report_problem"
+            android:name="org.unibl.etf.blbustracker.navigationtabs.reportproblem.ReportProblemFragment"
+            tools:layout="@layout/fragment_report_problem"
+        />
+
+    <fragment
+            android:id="@+id/nav_about"
+            android:name="org.unibl.etf.blbustracker.navigationtabs.about.AboutFragment"
+            tools:layout="@layout/fragment_about"
+            />
+
+<!--    <fragment-->
+<!--            android:id="@+id/nav_alarm"-->
+<!--            android:name="com.passengerapp.uinavigationtabs.alarm_fragment.AlarmFragment"-->
+<!--            android:label="@string/alarm"-->
+<!--            tools:layout="@layout/fragment_alarm"-->
+<!--        />-->
+
+    <fragment
+            android:id="@+id/nav_settings"
+            android:name="org.unibl.etf.blbustracker.navigationtabs.settings.SettingsFragment"
+            android:label="@string/settings"
+            />
+
+<!--    <fragment-->
+<!--            android:id="@+id/nav_contact"-->
+<!--            android:name="com.passengerapp.uinavigationtabs.contact_fragment.ContactFragment"-->
+<!--            android:label="fragment_contact"-->
+<!--            tools:layout="@layout/fragment_contact" />-->
+
+    <fragment
+            android:id="@+id/nav_route_schedule"
+            android:name="org.unibl.etf.blbustracker.navigationtabs.routeschedule.RouteScheduleFragment"
+            android:label="@string/route_schedule"
+            tools:layout="@layout/fragment_route_schedule"
+            />
+
+
+
+</navigation>

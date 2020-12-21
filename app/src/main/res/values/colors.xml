@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#6200EE</color>
+
+    <!--    boja status bara na vrhu #3469c2-->
+    <color name="colorPrimaryDark">#0098f2</color>
+
+    <!--    boja floating action button-a -->
+    <color name="colorAccent">#66aed8</color>
+
+    <color name="Black">#000000</color>
+    <color name="white">#ffffff</color>
+    <color name="google_blue">#0098f2</color>
+    <color name="google_blue_darker">#3469c2</color>
+    <color name="gray">#969696</color>
+
+    <color name="busline_lighter_blue">#f1f8ff</color>
+    <color name="busline_darker_blue">#dce4ff</color>
+
+</resources>

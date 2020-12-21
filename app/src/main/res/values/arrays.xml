@@ -1,0 +1,47 @@
+<resources>
+
+<!--    Biranje jezika-->
+    <string-array name="language_entries">
+        <item>English</item>
+        <item>Srpski</item>
+        <item>Српски</item>
+    </string-array>
+    <string-array name="language_values">
+        <item>en</item>
+        <item>bs</item>
+        <item>sr</item>
+    </string-array>
+
+<!--    Buranje tipa mape-->
+    <string-array name="map_type_entries">
+        <item>Normal</item>
+        <item>Satellite</item>
+        <item>Hybrid</item>
+        <item>Terrain</item>
+    </string-array>
+    <string-array name="map_type_values">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+    </string-array>
+
+<!--    Biranje stila mape-->
+    <string-array name="map_style_entries">
+        <item>Normal</item>
+        <item>Night</item>
+        <item>Grayscale</item>
+        <item>Retro</item>
+        <item>Dark</item>
+        <item>Aubergine</item>
+    </string-array>
+    <string-array name="map_style_values">
+        <item>normal</item>
+        <item>mapstyle_night</item>
+        <item>mapstyle_grayscale</item>
+        <item>mapstyle_retro</item>
+        <item>mapstyle_dark</item>
+        <item>mapstyle_aubergine</item>
+    </string-array>
+
+</resources>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clickable="true"
+        android:focusable="true"
+        android:animateLayoutChanges="true"
+        android:focusableInTouchMode="true"
+        android:orientation="vertical"
+        tools:context=".navigationtabs.routes.RoutesBottomFragment"
+    >
+
+    <androidx.appcompat.widget.SearchView
+            android:id="@+id/route_search_editText"
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:imeOptions="normal"
+            android:background="@color/busline_darker_blue"
+            app:queryHint="@string/search_your_route"
+            app:iconifiedByDefault="false"
+            app:searchIcon="@null"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+    </androidx.appcompat.widget.SearchView>
+
+    <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/street_recycler_view"
+            class="androidx.appcompat.app.AlertController$RecycleListView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:listitem="@layout/item_route" />
+
+
+</LinearLayout>
