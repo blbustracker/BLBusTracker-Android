@@ -26,7 +26,7 @@ public abstract class Constants
     public static final String MY_DATE_FORMAT = "dd-MM-yyyy";                //date format for showing
     //public static final String MY_DATE_FORMAT = "dd-MM-yyyy  HH:mm";       //date format for showing with time
 
-    public static final String BASE_URL = "https://www.blbustracker.com/api";
+    public static final String BASE_URL = "https://blbustracker.etf.unibl.org/api";
 
     public static final String LAST_UPDATE = "/lastUpdate";
     //////////////////////////////////////////////////////////////////////////////////////////
@@ -52,9 +52,5 @@ public abstract class Constants
     public static final String REPORT_FULL_URL = BASE_URL + REPORT_PATH;
     //////////////////////////////////////////////////////////////////////////////////////////
     public static final String BUS_LOCATIONS_PATH = "/location";
-
-    public static final String JSON_NUM_OF_BUSSTOPS = "number";
-    public static final String JSON_ARRAY_OF_BUSSTOPS = "stops";
-
 
 }
