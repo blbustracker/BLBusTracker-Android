@@ -465,7 +465,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback
         {
             BusStop busStopA = (BusStop) startDestinationMarker.getTag();
             BusStop busStopB = (BusStop) endDestinationMarker.getTag();
-            mapUtils.drawRoutesThroughBusStops(busStopA.getDesc(), busStopB.getDesc());
+            mapUtils.drawRoutesThroughBusStops(busStopA, busStopB);
         }
     }
 

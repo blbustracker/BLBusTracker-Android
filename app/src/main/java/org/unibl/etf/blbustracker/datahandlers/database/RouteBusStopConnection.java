@@ -33,6 +33,7 @@ public class RouteBusStopConnection
      *
      * @return all routes containing BusStop A and B, null if there is none
      */
+    @Deprecated
     public List<Route> findDirectRoute(String stringA, String stringB)
     {
         if (stringA == null || stringB == null)
@@ -58,6 +59,32 @@ public class RouteBusStopConnection
             }
 
         return interceptRoutes.isEmpty() ? null : interceptRoutes;
+    }
+
+    public List<Route> findDirectRoute(BusStop busStopA, BusStop busStopB)
+    {
+        if(busStopA==null || busStopB==null)
+            return null;
+
+        List<Route> routesWithBusStopA = middleDao.getRoutesByBusStopId(busStopA.getBusStopId());
+        List<Route> interceptRoutes = null;
+
+        if(routesWithBusStopA!=null)
+        {
+            interceptRoutes = new ArrayList<>();
+
+            for (Route routeA : routesWithBusStopA)
+            {
+                List<BusStop> busStopsOnRouteA = middleDao.getBusStopByRouteId(routeA.getRouteId());
+                if (busStopsOnRouteA!=null && busStopsOnRouteA.contains(busStopB))
+                {
+                    interceptRoutes.add(routeA);
+                }
+            }
+        }else
+            return null;
+
+        return interceptRoutes.isEmpty()? null : interceptRoutes;
     }
 
     /**
