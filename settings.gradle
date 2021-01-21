@@ -1,2 +1,2 @@
-rootProject.name='PassengerApp'
+rootProject.name='BL BusTracker'
 include ':app'
