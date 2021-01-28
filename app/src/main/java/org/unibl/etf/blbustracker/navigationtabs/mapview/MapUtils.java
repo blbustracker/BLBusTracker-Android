@@ -139,7 +139,6 @@ public class MapUtils
     private Marker placeBusStopMarkerOnMap(BusStop busStop)
     {
         Marker marker = map.addMarker(new MarkerOptions().position(busStop.getLatLng()).icon(busIcon));
-        marker.setTitle(busStop.getDesc());
         marker.setTag(busStop);
         return marker;
     }
@@ -499,30 +498,6 @@ public class MapUtils
     }
 
     //used for drawing routes that contains busStopA and busStopB
-    @Deprecated
-    public void drawRoutesThroughBusStops(String busStopA, String busStopB)
-    {
-        poolExecutorService.execute(() ->
-        {
-            List<Route> routeList = routeBusStopConnection.findDirectRoute(busStopA, busStopB);
-            if (routeList != null)
-            {
-                List<Integer> routeIds = routeList.stream().mapToInt(Route::getRouteId).boxed().collect(Collectors.toList());
-                mainHandler.post(() ->
-                {
-                    showSpecificRoutesOnly(routeIds);
-                });
-            } else
-            {
-                mainHandler.post(() ->
-                {
-                    showSpecificRoutesOnly(null);
-                    Toast.makeText(context, R.string.no_direct_route_msg, Toast.LENGTH_SHORT).show();
-                });
-            }
-        });
-    }
-
     public void drawRoutesThroughBusStops(BusStop busStopA, BusStop busStopB)
     {
         poolExecutorService.execute(() ->

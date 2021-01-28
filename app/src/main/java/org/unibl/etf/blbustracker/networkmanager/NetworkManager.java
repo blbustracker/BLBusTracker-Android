@@ -24,13 +24,11 @@ public class NetworkManager
     private static NetworkManager singletonInstance = null;
     private RequestQueue requestQueue;
 
-    private Context context;
-
     //private constructor
     private NetworkManager(Context context)
     {
-        this.context = context.getApplicationContext();
-        requestQueue = Volley.newRequestQueue(this.context);
+        Context context1 = context.getApplicationContext();
+        requestQueue = Volley.newRequestQueue(context1);
     }
 
     // singleton pattern
@@ -64,6 +62,14 @@ public class NetworkManager
     {
         String fullURl = Constants.BASE_URL + urlPath;
 //        Log.d(getClass().getSimpleName(), "GETJsonArray: " + fullURl);
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, fullURl, null, success, error);
+        requestQueue.add(jsonArrayRequest);
+    }
+
+    public void GETJsonArrayTEST(String urlPath, Response.Listener<JSONArray> success, Response.ErrorListener error)
+    {
+        String fullURl = "https://www.blbustracker.com/api" + urlPath;
+        //        Log.d(getClass().getSimpleName(), "GETJsonArray: " + fullURl);
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, fullURl, null, success, error);
         requestQueue.add(jsonArrayRequest);
     }

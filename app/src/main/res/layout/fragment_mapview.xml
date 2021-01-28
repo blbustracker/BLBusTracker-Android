@@ -22,6 +22,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/google_blue"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
                 android:clipChildren="false"
                 android:orientation="vertical">
 
@@ -30,17 +32,11 @@
                     android:id="@+id/start_destination_edittext"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="0dp"
-                    android:layout_marginEnd="8dp"
-                    android:layout_toStartOf="@id/swap_inputs"
+                    android:hint="@string/start_destination_text"
                     android:backgroundTint="@color/white"
                     android:clipChildren="false"
                     android:gravity="center_horizontal"
-                    android:hint="@string/start_destination_text"
                     android:imeOptions="actionDone"
-                    android:paddingStart="5dp"
-                    android:paddingEnd="40dp"
                     android:singleLine="true"
                     android:textColor="@color/white"
                     android:textColorHint="@color/white"
@@ -49,25 +45,17 @@
                     app:autoSizeMinTextSize="16sp"
                     app:autoSizeStepGranularity="2sp"
                     app:autoSizeTextType="uniform"
-
                     />
-
 
             <AutoCompleteTextView
                     android:id="@+id/end_destination_edittext"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/start_destination_edittext"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="0dp"
-                    android:layout_marginEnd="8dp"
-                    android:layout_toStartOf="@id/swap_inputs"
                     android:backgroundTint="@color/white"
                     android:gravity="center_horizontal"
                     android:hint="@string/end_destination_text"
                     android:imeOptions="actionDone"
-                    android:paddingStart="5dp"
-                    android:paddingEnd="40dp"
                     android:singleLine="true"
                     android:textColor="@color/white"
                     android:textColorHint="@color/white"
@@ -75,20 +63,7 @@
                     app:autoSizeMaxTextSize="32sp"
                     app:autoSizeMinTextSize="16sp"
                     app:autoSizeStepGranularity="2sp"
-                    app:autoSizeTextType="uniform" />
-
-            <ImageButton
-                    android:id="@+id/swap_inputs"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_alignParentEnd="true"
-                    android:layout_centerVertical="true"
-                    android:layout_marginEnd="5dp"
-                    android:background="@drawable/filled_circle_background"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:scaleType="fitCenter"
-                    app:srcCompat="@drawable/ic_swap_text"
+                    app:autoSizeTextType="uniform"
                     />
 
         </RelativeLayout>

@@ -79,6 +79,14 @@
     <string name="about_paragraph_2" >Developed by the Faculty of Electrical Engineering, University of Banja Luka and Autoprevoz company, under the "Future City Innovation Challenge" initiative.</string>
     <string name="version">Version 1.0</string>
     <string name="undp_header" translatable="false">© 2020 UNDP.</string>
-    <string name="playserveces_error">You can\'t make map requests</string>
+    <string name="playserveces_error" translatable="false">You can\'t make map requests</string>
+    <string name="cannot_connect_to_internet">The server could not be found. Please try again after some time</string>
+    <string name="server_not_found">The server could not be found. Please try again after some time</string>
+    <string name="parsing_error" translatable="false">Parsing error! Please try again after some time!!</string>
+    <string name="arrivals">Arrivals:</string>
+    <string name="show_all_routes">Show all routes</string>
+    <string name="show_all_button">Show all routes and busses on map</string>
+    <string name="navigation_menu_tooltip">Show/Hide navigation menu</string>
+    <string name="route">Route</string>
 
 </resources>

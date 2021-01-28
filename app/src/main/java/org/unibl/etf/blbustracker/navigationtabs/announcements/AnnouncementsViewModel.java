@@ -60,9 +60,9 @@ public class AnnouncementsViewModel extends AndroidViewModel implements Response
         @Override
         public void onAvailable(@NonNull Network network)
         {
+            getAnnouncementsFromServer();
             super.onAvailable(network);
             Log.d(TAG, "onAvailable: intenet IS available");
-            getAnnouncementsFromServer();
         }
 
     };
@@ -90,6 +90,7 @@ public class AnnouncementsViewModel extends AndroidViewModel implements Response
      */
     private void getAnnouncementsFromDB()
     {
+        activatePoolExecutors();
         poolExecutorService.execute(() ->
         {
             List<Announcement> announcementList = null;
@@ -124,6 +125,7 @@ public class AnnouncementsViewModel extends AndroidViewModel implements Response
     //get announcements from server
     void getAnnouncementsFromServer()
     {
+        activatePoolExecutors();
         poolExecutorService.execute(() ->
         {
             //checking and waiting for internet connection
@@ -132,6 +134,7 @@ public class AnnouncementsViewModel extends AndroidViewModel implements Response
                 NetworkManager networkManager = NetworkManager.getInstance(context);
                 networkManager.GETJson(Constants.NEWS_LAST_UPDATE_PATH, null, (dateObject) ->
                 {
+                    activatePoolExecutors();
                     poolExecutorService.execute(() ->
                     {
                         lastUpdated = new LastUpdated(context);
@@ -139,12 +142,12 @@ public class AnnouncementsViewModel extends AndroidViewModel implements Response
                         //There was an update
                         {
                             lastUpdateDateString = dateObject.toString();
-                            networkManager.GETJson(Constants.NEWS_PATH, null, this // this se odnosi na metodu successResponse(...)
-                                    , error -> NetworkStatus.errorConnectingToInternet(error, context));
+                            networkManager.GETJson(Constants.NEWS_PATH, null, this // this is successResponse(...)
+                                    , error -> NetworkStatus.errorConnectingToInternet(error, context,false));
                         }
 
                     });
-                }, error -> NetworkStatus.errorConnectingToInternet(error, context));
+                }, error -> NetworkStatus.errorConnectingToInternet(error, context,true));
             }
         });
 

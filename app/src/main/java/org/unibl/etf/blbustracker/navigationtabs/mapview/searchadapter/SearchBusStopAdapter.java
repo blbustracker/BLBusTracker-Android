@@ -22,7 +22,7 @@ import java.util.List;
 //For filling AutocompleteTextView with bus stop names
 public class SearchBusStopAdapter extends ArrayAdapter<BusStop>
 {
-    Context context;
+    private Context context;
     private List<BusStop> busStopListFull;
 
     public SearchBusStopAdapter(@NonNull Context context, @NonNull List<BusStop> busStopList)

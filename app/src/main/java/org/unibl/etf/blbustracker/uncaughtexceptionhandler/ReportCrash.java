@@ -47,7 +47,7 @@ public class ReportCrash
                             networkManager.POST(Constants.REPORT_PATH,
                                     jsonObject,
                                     responseObject -> Toast.makeText(context, "Report sent!", Toast.LENGTH_LONG).show(),
-                                    error -> NetworkStatus.errorConnectingToInternet(error, context));
+                                    error -> NetworkStatus.errorConnectingToInternet(error, context,false));
 
                             context.deleteFile(STACK_TRACE_FILE_NAME);
                         } else

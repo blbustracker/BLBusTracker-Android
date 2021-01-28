@@ -12,6 +12,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
             android:text="@string/select_language"
+            android:textColor="@color/Black"
             android:padding="8dp"
             android:textSize="20dp"
             android:textStyle="bold" />
@@ -52,13 +53,16 @@
 
     <Button
             android:id="@+id/submit"
-            android:layout_width="135dp"
+            android:layout_width="150dp"
             android:layout_height="62dp"
             android:layout_gravity="center"
             android:layout_marginTop="20dp"
             android:text="@string/submit"
+            android:background="@drawable/circle_shape_background"
+            android:textColor="@color/white"
             android:textSize="20sp"
             android:textStyle="bold" />
+
 
 
 </LinearLayout>

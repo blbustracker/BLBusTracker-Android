@@ -7,10 +7,7 @@
          Google Maps Android API v2, but you must specify either coarse or fine
          location permissions for the 'MyLocation' functionality.
     -->
-
-    <uses-feature
-            android:glEsVersion="0x00020000"
-            android:required="true" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
 <!--            android:roundIcon="@mipmap/marker_bus_stop_foreground"-->
     <application
@@ -48,5 +45,9 @@
                 android:windowSoftInputMode="stateAlwaysHidden" />
 
     </application>
+
+    <uses-feature
+            android:glEsVersion="0x00020000"
+            android:required="true" />
 
 </manifest>

@@ -59,7 +59,7 @@ public class MapViewModel extends AndroidViewModel
     private MutableLiveData<Boolean> isInternetAvailable;
 
     // database objects
-    private DBFactory DBFactory;
+    private DBFactory dbFactory;
     private BusStopDAO busStopDAO;
     private RouteDao routeDao;
     private JoinRouteBusStopDAO joinRouteBusStopDAO;
@@ -129,6 +129,7 @@ public class MapViewModel extends AndroidViewModel
 
     public void getAndPlaceDBRoute()
     {
+        activatePoolExecutorService();
         poolExecutorService.submit(() ->
         {
             List<Route> routeList = getRoutesFromDB();
@@ -145,6 +146,7 @@ public class MapViewModel extends AndroidViewModel
 
     private void getAndPlaceDBBusStops()
     {
+        activatePoolExecutorService();
         poolExecutorService.submit(() ->
         {
             List<BusStop> busStopList = getBusStopsFromDB();
@@ -160,9 +162,9 @@ public class MapViewModel extends AndroidViewModel
 
     private List<BusStop> getBusStopsFromDB()
     {
-        DBFactory = DBFactory.getInstance(context);
+        dbFactory = dbFactory.getInstance(context);
         if (busStopDAO == null)
-            busStopDAO = DBFactory.getBusStopDAO();
+            busStopDAO = dbFactory.getBusStopDAO();
         List<BusStop> busStopList = null;
         try
         {
@@ -176,9 +178,9 @@ public class MapViewModel extends AndroidViewModel
 
     private List<Route> getRoutesFromDB()
     {
-        DBFactory = DBFactory.getInstance(context);
+        dbFactory = dbFactory.getInstance(context);
         if (routeDao == null)
-            routeDao = DBFactory.getRouteDAO();
+            routeDao = dbFactory.getRouteDAO();
 
         List<Route> routeList = null;
         try
@@ -251,31 +253,35 @@ public class MapViewModel extends AndroidViewModel
     private void checkAndGetFromServer(boolean isBusStop, String lastUpdatePath, String shraedPreferencesKEY)
     {
         networkManager.GETJson(lastUpdatePath, null, (lastUpdateJSON) ->
-                poolExecutorService.execute(() ->
                 {
-                    if (lastUpdated.isServerContentUpdated(lastUpdateJSON, shraedPreferencesKEY))
+                    activatePoolExecutorService();
+                    poolExecutorService.execute(() ->
                     {
-                        if (isBusStop)
+                        if (lastUpdated.isServerContentUpdated(lastUpdateJSON, shraedPreferencesKEY))
                         {
-                            busStopDateUpdated = lastUpdateJSON.toString();
-                            networkManager.GETJson(Constants.BUSSTOPS_PATH, null, this::getBusStopsFromServer
-                                    , error -> NetworkStatus.errorConnectingToInternet(error, context));
+                            if (isBusStop)
+                            {
+                                busStopDateUpdated = lastUpdateJSON.toString();
+                                networkManager.GETJson(Constants.BUSSTOPS_PATH, null, this::getBusStopsFromServer
+                                        , error -> NetworkStatus.errorConnectingToInternet(error, context,false));
 
-                        } else
-                        {
-                            routeDateUpdated = lastUpdateJSON.toString();
-                            networkManager.GETJson(Constants.ROUTES_PATH, null, this::getRoutesFromServer
-                                    , error -> NetworkStatus.errorConnectingToInternet(error, context));
+                            } else
+                            {
+                                routeDateUpdated = lastUpdateJSON.toString();
+                                networkManager.GETJson(Constants.ROUTES_PATH, null, this::getRoutesFromServer
+                                        , error -> NetworkStatus.errorConnectingToInternet(error, context,false));
+                            }
                         }
-                    }
-                }), error -> NetworkStatus.errorConnectingToInternet(error, context));
+                    });
+                }, error -> NetworkStatus.errorConnectingToInternet(error, context,true));
     }
 
     private void getBusStopsFromServer(JSONObject busStopServerJSON)
     {
         if (busStopServerJSON == null || busStopServerJSON.length() == 0)
             return;
-        ;
+
+        activatePoolExecutorService();
         poolExecutorService.execute(() ->
         {
             BusStopJSON busStopJSON = new BusStopJSON(busStopServerJSON);
@@ -302,6 +308,8 @@ public class MapViewModel extends AndroidViewModel
     {
         if (routeServerContent == null || routeServerContent.length() == 0)
             return;
+
+        activatePoolExecutorService();
         poolExecutorService.execute(() ->
         {
             RouteJSON routeJSON = new RouteJSON(routeServerContent);
@@ -318,6 +326,7 @@ public class MapViewModel extends AndroidViewModel
                     ex.printStackTrace();
                 }
                 mainHandler.post(() -> mutableRoutes.setValue(routeList));
+                activatePoolExecutorService();
                 poolExecutorService.execute(() -> updateRouteAndJoinDB(routeList));
             }
         });
@@ -327,9 +336,9 @@ public class MapViewModel extends AndroidViewModel
 
     private void updateBusStopDB(List<BusStop> busStopList)
     {
-        DBFactory = DBFactory.getInstance(context);
+        dbFactory = DBFactory.getInstance(context);
         if (busStopDAO == null)
-            busStopDAO = DBFactory.getBusStopDAO();
+            busStopDAO = dbFactory.getBusStopDAO();
 
         busStopDAO.deleteAllBusStops();
         busStopDAO.insertAll(busStopList);
@@ -339,10 +348,10 @@ public class MapViewModel extends AndroidViewModel
 
     private void updateRouteAndJoinDB(List<Route> routeList)
     {
-        DBFactory = DBFactory.getInstance(context);
+        dbFactory = DBFactory.getInstance(context);
         if (routeDao == null)
-            routeDao = DBFactory.getRouteDAO();
-        joinRouteBusStopDAO = DBFactory.getJoinRouteBusStopDAO();
+            routeDao = dbFactory.getRouteDAO();
+        joinRouteBusStopDAO = dbFactory.getJoinRouteBusStopDAO();
 
         routeDao.deleteAllRoutes();
         joinRouteBusStopDAO.deleteJoinTable();

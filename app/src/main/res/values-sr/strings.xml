@@ -46,4 +46,11 @@
     <string name="about_paragraph_1" >" Апликација за кориснике јавног превоза у урбаној зони града Бања Лука."</string>
     <string name="about_paragraph_2" >Развијена од стране Електротехничког факултета, Универзитета у Бањој Луци и компаније Аутопревоз, у склопу \"Future City Innovation Challenge\" иницијативе.</string>
     <string name="version">Верзија: 1.0</string>
+    <string name="arrivals">Доласци:</string>
+    <string name="cannot_connect_to_internet">Сервер није пронађен. Молимо покушајте касније</string>
+    <string name="server_not_found">Сервер није пронађен. Молимо покушајте касније</string>
+    <string name="show_all_routes">Прикажи све линије</string>
+    <string name="show_all_button">Прикажи све линије и аутобусе на мапи</string>
+    <string name="navigation_menu_tooltip">Прикажи/Уклони навигациони мени</string>
+    <string name="route">Линија</string>
 </resources>

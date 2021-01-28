@@ -1,16 +1,18 @@
 package org.unibl.etf.blbustracker.navigationtabs.mapview;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
-import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,15 +32,18 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 import org.unibl.etf.blbustracker.Constants;
 import org.unibl.etf.blbustracker.R;
 import org.unibl.etf.blbustracker.datahandlers.database.Bus;
 import org.unibl.etf.blbustracker.datahandlers.database.busstop.BusStop;
 import org.unibl.etf.blbustracker.datahandlers.database.route.Route;
-import org.unibl.etf.blbustracker.navigationtabs.mapview.bus.BusController;
-import org.unibl.etf.blbustracker.navigationtabs.mapview.dialogs.markeroptions.MarkerCustomInfoWindow;
-import org.unibl.etf.blbustracker.navigationtabs.mapview.dialogs.markeroptions.MarkerDialog;
-import org.unibl.etf.blbustracker.navigationtabs.mapview.dialogs.markeroptions.MarkerDialogListener;
+import org.unibl.etf.blbustracker.navigationtabs.mapview.buscontroller.BusController;
+import org.unibl.etf.blbustracker.navigationtabs.mapview.arrivaltimedialog.ArrivalTimeFragment;
+import org.unibl.etf.blbustracker.navigationtabs.mapview.arrivaltimedialog.MoreOptionsInterface;
+import org.unibl.etf.blbustracker.navigationtabs.mapview.destinationmarkeroptions.MarkerCustomInfoWindow;
+import org.unibl.etf.blbustracker.navigationtabs.mapview.destinationmarkeroptions.MarkerDialog;
+import org.unibl.etf.blbustracker.navigationtabs.mapview.destinationmarkeroptions.MarkerDialogListener;
 import org.unibl.etf.blbustracker.navigationtabs.mapview.searchadapter.SearchBusStopAdapter;
 import org.unibl.etf.blbustracker.navigationtabs.routes.OnRouteClickedListener;
 import org.unibl.etf.blbustracker.navigationtabs.routes.RoutesBottomFragment;
@@ -55,12 +60,13 @@ import java.util.Map;
  */
 public class MapFragment extends Fragment implements OnMapReadyCallback
         , MarkerDialogListener
+        , MoreOptionsInterface
         , OnRouteClickedListener
         , GoogleMap.OnMapClickListener
         , GoogleMap.OnMarkerClickListener
         , GoogleMap.OnPolylineClickListener
         , TextView.OnEditorActionListener
-        , GoogleMap.OnInfoWindowClickListener
+        //        , GoogleMap.OnInfoWindowClickListener
         , View.OnFocusChangeListener
 {
     public static final int CAMERA_SPEED = 1000;
@@ -165,30 +171,27 @@ public class MapFragment extends Fragment implements OnMapReadyCallback
         busController.startBusTracking();
 
         //observe BusStop list changes
-        mapViewModel.getMutableBusStops().observe(getViewLifecycleOwner()
-                , busStops ->
-                {
-                    Log.d(getClass().getSimpleName(), "onBusStopChanged: BusStops are updated");
-                    mapUtils.onBusStopChanged(busStops);
-                    SearchBusStopAdapter searchBusStopAdapter = new SearchBusStopAdapter(context, busStops);
-                    startDestinationEditText.setAdapter(searchBusStopAdapter);
-                    endDestinationEditText.setAdapter(searchBusStopAdapter);
-                });
+        mapViewModel.getMutableBusStops().observe(getViewLifecycleOwner(), busStops ->
+        {
+            Log.d(getClass().getSimpleName(), "onBusStopChanged: BusStops are updated");
+            mapUtils.onBusStopChanged(busStops);
+            //                    SearchBusStopAdapter searchBusStopAdapter = new SearchBusStopAdapter(context, busStops);
+            startDestinationEditText.setAdapter(new SearchBusStopAdapter(context, busStops));
+            endDestinationEditText.setAdapter(new SearchBusStopAdapter(context, busStops));
+        });
 
         //observe Route list changes
-        mapViewModel.getMutableRoutes().observe(getViewLifecycleOwner()
-                , routeList ->
-                {
-                    Log.d(getClass().getSimpleName(), "onRouteChanged: routes are updated");
-                    mapUtils.onRouteChanged(routeList);
-                    busController.setRoutes(routeList);
-                    routesBottomDialog.setAllRoutes(routeList);
-                });
+        mapViewModel.getMutableRoutes().observe(getViewLifecycleOwner(), routeList ->
+        {
+            Log.d(getClass().getSimpleName(), "onRouteChanged: routes are updated");
+            mapUtils.onRouteChanged(routeList);
+            busController.setRoutes(routeList);
+            routesBottomDialog.setAllRoutes(routeList);
+        });
 
         initializeZoomButtons();
 
         map.setInfoWindowAdapter(new MarkerCustomInfoWindow(context));
-        map.setOnInfoWindowClickListener(this);
         map.setOnMarkerClickListener(this);
         map.setOnMapClickListener(this);
         map.setOnPolylineClickListener(this);
@@ -202,24 +205,28 @@ public class MapFragment extends Fragment implements OnMapReadyCallback
      * @param marker marker that was clicked
      * @return false - move camera so that marker is in the center, true - do not move camera
      */
+    ArrivalTimeFragment timeFragment;
+
     @Override
     public boolean onMarkerClick(Marker marker)
     {
-        isMarkerClicked = true;
-        marker.showInfoWindow();
-
         Object obj = marker.getTag();
-        if (obj instanceof BusStop)
+        isMarkerClicked = true; // used in onMapClicked(...)
+
+        if (obj instanceof Bus)
         {
-            BusStop busStop = (BusStop) obj;
-            if (startDestinationMarker == null && endDestinationMarker == null)
-            {
-                mapUtils.onBusStopClicked(busStop);
-            }
-        } else
-        {
+            marker.showInfoWindow();
+            //TODO: set which bus is clicked so only this bus marker doesnt move
             if (busController != null)
                 busController.setBusMarkerClicked(true);
+
+        } else if (obj instanceof BusStop)
+        {
+            marker.hideInfoWindow();
+            BusStop busStop = (BusStop) obj;
+            timeFragment = new ArrivalTimeFragment(busStop, this);
+            timeFragment.show(getActivity().getSupportFragmentManager(), "timeFragment");
+            return true;
         }
 
         return false;
@@ -229,6 +236,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback
     private void initializeRoutesButton()
     {
         FloatingActionButton routesFloatingButton = (FloatingActionButton) mapFragmentView.findViewById(R.id.fab_show_routes);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+            routesFloatingButton.setTooltipText(getString(R.string.show_all_routes));
 
         routesBottomDialog = new RoutesBottomFragment(this);
 
@@ -236,6 +245,22 @@ public class MapFragment extends Fragment implements OnMapReadyCallback
         {
             routesBottomDialog.show(getActivity().getSupportFragmentManager(), "nepotreban_tag");
         });
+    }
+
+    //___________________________________ Dialog Butoons ______________________________________________
+
+    @Override
+    public void onMoreOptionsClicked(BusStop busStop)
+    {
+        markerDialog = new MarkerDialog(this);
+        Bundle bundle = new Bundle();
+        int busStopId = busStop.getBusStopId();
+        bundle.putInt(MarkerDialog.DIALOG_BUSSTOP_ID, busStopId);
+        bundle.putString(MarkerDialog.DIALOG_BUSSTOP_NAME, busStop.getDesc());
+
+        // more options marker popup window
+        markerDialog.setArguments(bundle);
+        markerDialog.show(getActivity().getSupportFragmentManager(), "tag");
     }
 
     /* set as start destination button click listener displayed in custom MarkerDialog  */
@@ -308,35 +333,36 @@ public class MapFragment extends Fragment implements OnMapReadyCallback
      *
      * @param marker - marker that is clicked
      */
-    @Override
-    public void onInfoWindowClick(Marker marker)
-    {
-        try
-        {
-            Object obj = marker.getTag();
-            if (obj instanceof Bus) // hide "more options" if Bus icon is clicked
-                return;
-
-            BusStop busStop = (BusStop) obj;
-
-            Bundle bundle = new Bundle();
-            int busStopId = busStop.getBusStopId();
-            bundle.putInt(MarkerDialog.DIALOG_BUSSTOP_ID, busStopId);
-            bundle.putString(MarkerDialog.DIALOG_BUSSTOP_NAME, busStop.getDesc());
-
-            // marker popup window
-            markerDialog = MarkerDialog.getInstance(this);
-            markerDialog.setArguments(bundle);
-            markerDialog.show(getActivity().getSupportFragmentManager(), "tag");
-
-            marker.hideInfoWindow();
-
-        } catch (ClassCastException ex)
-        {
-            Toast.makeText(context, "Marker not valid", Toast.LENGTH_SHORT).show();
-            ex.printStackTrace();
-        }
-    }
+    //    @Override
+    //    @Deprecated
+    //    public void onInfoWindowClick(Marker marker)
+    //    {
+    //        try
+    //        {
+    //            Object obj = marker.getTag();
+    //            if (obj instanceof Bus) // hide "more options" if Bus icon is clicked
+    //                return;
+    //
+    //            BusStop busStop = (BusStop) obj;
+    //
+    //            Bundle bundle = new Bundle();
+    //            int busStopId = busStop.getBusStopId();
+    //            bundle.putInt(MarkerDialog.DIALOG_BUSSTOP_ID, busStopId);
+    //            bundle.putString(MarkerDialog.DIALOG_BUSSTOP_NAME, busStop.getDesc());
+    //
+    //            // marker popup window
+    //            markerDialog = MarkerDialog.getInstance(this);
+    //            markerDialog.setArguments(bundle);
+    //            markerDialog.show(getActivity().getSupportFragmentManager(), "tag");
+    //
+    //            marker.hideInfoWindow();
+    //
+    //        } catch (ClassCastException ex)
+    //        {
+    //            Toast.makeText(context, "Marker not valid", Toast.LENGTH_SHORT).show();
+    //            ex.printStackTrace();
+    //        }
+    //    }
 
     /**
      * hide keyboard if shown and if keyboard is not shown
@@ -354,6 +380,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback
         } else if (isMarkerClicked)
         {
             isMarkerClicked = false;
+            //TODO: show all routes/busses
         } else if (startDestinationEditText.hasFocus() || endDestinationEditText.hasFocus())
         {
             startDestinationEditText.clearFocus();
@@ -397,18 +424,24 @@ public class MapFragment extends Fragment implements OnMapReadyCallback
 
         initEditTextListeners(startDestinationEditText);
         initEditTextListeners(endDestinationEditText);
-
-        ImageButton swapButton = (ImageButton) mapFragmentView.findViewById(R.id.swap_inputs);
-        swapButton.setOnClickListener((v -> swapTextAndDesintationMarkers()));
     }
 
     //Set all listeners and text watcher to the AutoCompleteTextView
+    @SuppressLint("ClickableViewAccessibility")
     private void initEditTextListeners(AutoCompleteTextView destinationEditText)
     {
         destinationEditText.setOnEditorActionListener(this);
         destinationEditText.setOnFocusChangeListener(this);
 
-        destinationEditText.setOnClickListener(v -> destinationEditText.showDropDown());
+//        destinationEditText.setOnClickListener(v ->
+//        {
+//            //TODP: ovdje ne ulazi uopste
+//            if ("".equals(destinationEditText.getText().toString().trim()))
+//            {
+//                destinationEditText.getText().clear();
+//            }
+//            destinationEditText.showDropDown();
+//        });
 
         destinationEditText.setOnItemClickListener((parent, view, position, id)
                 -> onBusStopItemClick(parent, view, position, destinationEditText.getId()));
@@ -456,7 +489,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback
 
     private void checkMarkersForRoute()
     {
-
         if (startDestinationMarker != null && endDestinationMarker == null)
             mapUtils.onDestinationTextInput((BusStop) startDestinationMarker.getTag());
         else if (startDestinationMarker == null && endDestinationMarker != null)
@@ -562,7 +594,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback
                     .build();
             map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition), CAMERA_SPEED, null);
             destinationMarker.setVisible(true);
-            destinationMarker.showInfoWindow();
         } else
             Toast.makeText(context, context.getResources().getString(R.string.no_busstop_found), Toast.LENGTH_SHORT).show();
     }
@@ -580,58 +611,26 @@ public class MapFragment extends Fragment implements OnMapReadyCallback
         Log.d(getClass().getSimpleName(), "onFocusChange: focus has been changed");
         if (!hasFocus)
             KeyboardUtils.hideKeyboard(getView());
-        switch (view.getId())
-        {
-            case R.id.start_destination_edittext:
-                showDropDown(startDestinationEditText, hasFocus);
-                break;
 
-            case R.id.end_destination_edittext:
-                showDropDown(endDestinationEditText, hasFocus);
-                break;
-        }
+//        switch (view.getId())
+//        {
+//            case R.id.start_destination_edittext:
+//                showDropDown(startDestinationEditText, hasFocus);
+//                break;
+//
+//            case R.id.end_destination_edittext:
+//                showDropDown(endDestinationEditText, hasFocus);
+//                break;
+//        }
     }
 
-    /**
-     * swap start and end destination tekst
-     */
-    private void swapTextAndDesintationMarkers()
-    {
-        CharSequence startTemp = startDestinationEditText.getText();
-        CharSequence endTemp = endDestinationEditText.getText();
-        startDestinationEditText.setText(endTemp);
-        endDestinationEditText.setText(startTemp);
-
-        startDestinationEditText.clearFocus();
-        endDestinationEditText.clearFocus();
-
-        try
-        {
-            Marker tmpMarker = startDestinationMarker;
-            startDestinationMarker = endDestinationMarker;
-            endDestinationMarker = tmpMarker;
-
-            if (startDestinationMarker != null)
-            {
-                startDestinationMarker.setIcon(mapUtils.getStartDestinationIcon());
-            }
-
-            if (endDestinationMarker != null)
-            {
-                endDestinationMarker.setIcon(mapUtils.getEndDestinationIcon());
-            }
-
-        } catch (IllegalArgumentException ex)
-        {
-            ex.printStackTrace();
-            Log.d(getClass().getSimpleName(), "swapTextAndDesintationMarkers: setIcon exception");
-        }
-    }
 
     private void showDropDown(AutoCompleteTextView destinationEditText, boolean isVisable)
     {
         if (isVisable)
+        {
             destinationEditText.showDropDown();
+        }
         else
             destinationEditText.dismissDropDown();
     }
@@ -660,6 +659,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback
     private void showAllRoutesAndBusStopButton()
     {
         FloatingActionButton showAllButton = (FloatingActionButton) mapFragmentView.findViewById(R.id.show_all_routes_busstops);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+        {
+            showAllButton.setTooltipText(getString(R.string.show_all_button));
+        }
         showAllButton.setOnClickListener(v ->
         {
             resetStartEndDestinationMarkers();

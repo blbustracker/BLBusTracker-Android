@@ -20,6 +20,7 @@ import com.akexorcist.localizationactivity.ui.LocalizationActivity;
 import com.google.android.gms.security.ProviderInstaller;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
+
 import org.unibl.etf.blbustracker.phoneoptions.LocaleManager;
 import org.unibl.etf.blbustracker.uncaughtexceptionhandler.CustomUncaughtExceptionHandler;
 import org.unibl.etf.blbustracker.uncaughtexceptionhandler.ReportCrash;
@@ -111,6 +112,10 @@ public class MapActivity extends LocalizationActivity implements DrawerLayout.Dr
     private void initFloatingDrawerButton(DrawerLayout drawer)
     {
         drawerFloatingButton = findViewById(R.id.drawer_fab);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+            drawerFloatingButton.setTooltipText(getString(R.string.navigation_menu_tooltip));
+
         drawerFloatingButton.setOnClickListener(view ->
         {
             if (drawer.isDrawerOpen(GravityCompat.START))

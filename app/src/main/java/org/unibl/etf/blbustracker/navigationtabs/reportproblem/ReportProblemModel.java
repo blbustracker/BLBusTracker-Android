@@ -41,7 +41,7 @@ public class ReportProblemModel
             super.onAvailable(network);
             networkManager.POST(Constants.REPORT_PATH, jsonPOSTBody,
                     response -> successfulResponse(response),
-                    error -> NetworkStatus.errorConnectingToInternet(error,context));
+                    error -> NetworkStatus.errorConnectingToInternet(error,context,false));
         }
     };
 

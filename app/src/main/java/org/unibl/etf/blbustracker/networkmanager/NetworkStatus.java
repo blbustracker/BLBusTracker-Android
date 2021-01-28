@@ -8,6 +8,7 @@ import android.net.NetworkRequest;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
+import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 
@@ -19,22 +20,22 @@ import com.android.volley.ServerError;
 import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 
+import org.unibl.etf.blbustracker.R;
+
 
 public class NetworkStatus
 {
-    private final Context context;
 
     // declare it where you need internet onAvailable
     @RequiresApi(api = Build.VERSION_CODES.M)
     private ConnectivityManager.NetworkCallback networkCallback;
 
     //use listen() when internet check is needed, use stopListening when internet is no longer needed
-    private ConnectivityManager connectivityManager;
+    private final ConnectivityManager connectivityManager;
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     public NetworkStatus(Context context, ConnectivityManager.NetworkCallback networkCallback)
     {
-        this.context = context;
         this.networkCallback = networkCallback;
         connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
     }
@@ -78,7 +79,7 @@ public class NetworkStatus
     public static boolean isNetworkAvailable(Context context) //for android < 6.0, use callback for >= 6.0
     {
         ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M)
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) // if we ever make it
         {
             NetworkInfo activeNetwork = connectivityManager.getActiveNetworkInfo();
             return activeNetwork != null && activeNetwork.isConnectedOrConnecting();
@@ -94,7 +95,7 @@ public class NetworkStatus
     private static long oldCurrentTime;
 
     /* error message when volley fails to connect to internet */
-    public static void errorConnectingToInternet(VolleyError volleyError, Context context)
+    public static void errorConnectingToInternet(VolleyError volleyError, Context context, boolean showToast)
     {
         String message = null;
         long currentTime = System.currentTimeMillis();
@@ -103,25 +104,26 @@ public class NetworkStatus
             oldCurrentTime = currentTime;
             if (volleyError instanceof TimeoutError || volleyError instanceof NoConnectionError)
             {
-                message = "Cannot connect to Internet...Please check your connection!";
+                message = context.getString(R.string.cannot_connect_to_internet); //
             } else if (volleyError instanceof ServerError)
             {
-                message = "The server could not be found. Please try again after some time!!";
+                message = context.getString(R.string.server_not_found);
             } else if (volleyError instanceof AuthFailureError)
             {
-                message = "Cannot connect to Internet...Please check your connection!";
+                message = context.getString(R.string.cannot_connect_to_internet);
             } else if (volleyError instanceof ParseError)
             {
-                message = "Parsing error! Please try again after some time!!";
+                message = context.getString(R.string.parsing_error);
             } else if (volleyError instanceof NetworkError)
             {
-                message = "Cannot connect to Internet...Please check your connection!";
+                message = context.getString(R.string.cannot_connect_to_internet);
             }
             String finalMessage = message;
             new Handler(Looper.getMainLooper()).post(() ->
             {
                 System.out.println(finalMessage);
-//                Toast.makeText(context, finalMessage, Toast.LENGTH_SHORT).show();
+                if(showToast)
+                    Toast.makeText(context, finalMessage, Toast.LENGTH_SHORT).show();
             });
         }
     }

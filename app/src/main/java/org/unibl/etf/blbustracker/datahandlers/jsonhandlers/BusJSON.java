@@ -24,27 +24,25 @@ public class BusJSON
     //convert JSONArray to List<Bus>
     public List<Bus> getAllBuses(JSONArray busJsonArray)
     {
-        List<Bus> busList = null;
-        if (busJsonArray != null)
+        if (busJsonArray == null)
+            return null;
+
+        List<Bus> busList = new ArrayList<>();
+        for (int i = 0; i < busJsonArray.length(); i++)
         {
-            busList = new ArrayList<>();
-            for (int i = 0; i < busJsonArray.length(); i++)
+            try
             {
-                try
-                {
-                    JSONObject busJsonObject = busJsonArray.getJSONObject(i);
-                    String line = busJsonObject.getString(LINE);
+                JSONObject busJsonObject = busJsonArray.getJSONObject(i);
+                String line = busJsonObject.getString(LINE);
+                JSONObject locationJSON = busJsonObject.getJSONObject(LOCATION);
+                double lat = locationJSON.getDouble(LAT);
+                double lng = locationJSON.getDouble(LNG);
 
-                    JSONObject locationJSON = busJsonObject.getJSONObject(LOCATION);
-                    double lat = locationJSON.getDouble(LAT);
-                    double lng = locationJSON.getDouble(LNG);
+                busList.add(new Bus(line, lat, lng));
 
-                    busList.add(new Bus(line, lat, lng));
-
-                } catch (JSONException ex)
-                {
-                    ex.printStackTrace();
-                }
+            } catch (JSONException ex)
+            {
+                ex.printStackTrace();
             }
         }
         return busList;
