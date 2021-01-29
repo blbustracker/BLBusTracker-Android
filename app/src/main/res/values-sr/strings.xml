@@ -53,4 +53,5 @@
     <string name="show_all_button">Прикажи све линије и аутобусе на мапи</string>
     <string name="navigation_menu_tooltip">Прикажи/Уклони навигациони мени</string>
     <string name="route">Линија</string>
+    <string name="minutes">мин</string>
 </resources>

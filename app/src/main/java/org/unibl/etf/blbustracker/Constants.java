@@ -53,5 +53,5 @@ public abstract class Constants
     //////////////////////////////////////////////////////////////////////////////////////////
     public static final String BUS_LOCATIONS_PATH = "/location";
 
-    public static final String ARRIVAL_TIME = "/timing";
+    public static final String ARRIVAL_TIME = "/time";
 }

@@ -11,8 +11,8 @@
     <dimen name="fab_size">45dp</dimen>
 
 <!--    bus icon size-->
-    <dimen name="bus_marker_size">48dp</dimen>
-    <dimen name="innerbus_marker_size">40dp</dimen>
+    <dimen name="bus_marker_size">35dp</dimen>
+    <dimen name="innerbus_marker_size">32dp</dimen>
 
 
 

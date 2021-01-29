@@ -66,6 +66,7 @@ public class NetworkManager
         requestQueue.add(jsonArrayRequest);
     }
 
+    @Deprecated
     public void GETJsonArrayTEST(String urlPath, Response.Listener<JSONArray> success, Response.ErrorListener error)
     {
         String fullURl = "https://www.blbustracker.com/api" + urlPath;

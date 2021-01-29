@@ -16,7 +16,6 @@ import java.util.stream.Collectors;
 public class TableRowUtil
 {
     public static final int MAX_NUM_OF_TIMES = 2;
-    public static final String MIN = "min";
     public static final String TILDA = "~";
 
     public static TableRow createRow(Context context, @NonNull ArrivalTime arrivalTime)
@@ -32,7 +31,6 @@ public class TableRowUtil
         StringBuilder rowContent = new StringBuilder();
         rowContent.append(lblName);
 
-
         if (times != null)
         {
             List<Integer> sortedTimes = times.stream().distinct().sorted().limit(MAX_NUM_OF_TIMES).collect(Collectors.toList());
@@ -41,7 +39,7 @@ public class TableRowUtil
             {
                 long timeInMinutes = TimeUnit.SECONDS.toMinutes(time);
 
-                String timeEst = ((timeInMinutes == 0) ? "<1" : TILDA + timeInMinutes) + MIN;
+                String timeEst = ((timeInMinutes == 0) ? "<1" : TILDA + timeInMinutes) + context.getString(R.string.minutes);
                 rowContent.append(timeEst).append(", ");
             }
 

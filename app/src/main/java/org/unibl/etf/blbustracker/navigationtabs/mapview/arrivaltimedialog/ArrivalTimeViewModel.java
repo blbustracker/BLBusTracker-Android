@@ -65,7 +65,7 @@ public class ArrivalTimeViewModel extends AndroidViewModel
                 {
                     networkManager = NetworkManager.getInstance(context);
                     String query = Constants.ARRIVAL_TIME + TIMEQUERY + stationId;
-                    networkManager.GETJsonArrayTEST(query, this::onSuccessfulResponse
+                    networkManager.GETJsonArray(query, this::onSuccessfulResponse
                             , error -> NetworkStatus.errorConnectingToInternet(error, context, false));
 
                     Thread.sleep(TIME_REFRESH_PERIOD);
@@ -74,6 +74,7 @@ public class ArrivalTimeViewModel extends AndroidViewModel
                 {
                     ex.printStackTrace();
                 }
+                Log.d(getClass().getSimpleName(), "startListening: killing the LOOP");
             }
         });
     }

@@ -88,5 +88,6 @@
     <string name="show_all_button">Show all routes and busses on map</string>
     <string name="navigation_menu_tooltip">Show/Hide navigation menu</string>
     <string name="route">Route</string>
+    <string name="minutes">min</string>
 
 </resources>
