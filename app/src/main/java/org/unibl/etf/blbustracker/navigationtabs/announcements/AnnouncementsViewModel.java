@@ -34,10 +34,9 @@ import java.util.concurrent.Executors;
  * Used for getting announcemnts from database and/or Server,
  * and notifying AnnouncemntsFragment when there is data change
  */
-public class AnnouncementsViewModel extends AndroidViewModel implements ResponseCallback
+public class AnnouncementsViewModel extends AndroidViewModel
 {
     private final String TAG = "AnnouncementsViewModel";
-    private final Context context;
     private final int N_THREADS = 5;
 
     private boolean isFragmentAlive = true;
@@ -55,30 +54,35 @@ public class AnnouncementsViewModel extends AndroidViewModel implements Response
     private LastUpdated lastUpdated;
     private String lastUpdateDateString;
 
-    private ConnectivityManager.NetworkCallback networkCallback = new ConnectivityManager.NetworkCallback()
-    {
-        @Override
-        public void onAvailable(@NonNull Network network)
-        {
-            getAnnouncementsFromServer();
-            super.onAvailable(network);
-            Log.d(TAG, "onAvailable: intenet IS available");
-        }
-
-    };
+    private ConnectivityManager.NetworkCallback networkCallback;
 
     public AnnouncementsViewModel(@NonNull Application application)
     {
         super(application);
-        context = application.getApplicationContext();
+        networkCallback = initNetworkCallback(application);
         announcementsMutable = new MutableLiveData<>();
         isUpdating = new MutableLiveData<>(true);
         poolExecutorService = Executors.newFixedThreadPool(N_THREADS);
-        getAnnouncementsFromDB();
-        startListening();
+        getAnnouncementsFromDB(application);
+        startListening(application);
     }
 
-    public void startListening()
+    private ConnectivityManager.NetworkCallback initNetworkCallback(Context context)
+    {
+        return new ConnectivityManager.NetworkCallback()
+        {
+            @Override
+            public void onAvailable(@NonNull Network network)
+            {
+                getAnnouncementsFromServer(context);
+                super.onAvailable(network);
+                Log.d(TAG, "onAvailable: intenet IS available");
+            }
+
+        };
+    }
+
+    public void startListening(Context context)
     {
         if (networkStatus == null)
             networkStatus = new NetworkStatus(context, networkCallback);
@@ -88,7 +92,7 @@ public class AnnouncementsViewModel extends AndroidViewModel implements Response
     /**
      * get annoucenemnts from data base if there is any and notify "server thread"
      */
-    private void getAnnouncementsFromDB()
+    private void getAnnouncementsFromDB(Context context)
     {
         activatePoolExecutors();
         poolExecutorService.execute(() ->
@@ -123,7 +127,7 @@ public class AnnouncementsViewModel extends AndroidViewModel implements Response
     }
 
     //get announcements from server
-    void getAnnouncementsFromServer()
+    void getAnnouncementsFromServer(Context context)
     {
         activatePoolExecutors();
         poolExecutorService.execute(() ->
@@ -142,12 +146,12 @@ public class AnnouncementsViewModel extends AndroidViewModel implements Response
                         //There was an update
                         {
                             lastUpdateDateString = dateObject.toString();
-                            networkManager.GETJson(Constants.NEWS_PATH, null, this // this is successResponse(...)
-                                    , error -> NetworkStatus.errorConnectingToInternet(error, context,false));
+                            networkManager.GETJson(Constants.NEWS_PATH, null, object -> successResponse(object, context) // this is successResponse(...)
+                                    , error -> NetworkStatus.errorConnectingToInternet(error, context, false));
                         }
 
                     });
-                }, error -> NetworkStatus.errorConnectingToInternet(error, context,true));
+                }, error -> NetworkStatus.errorConnectingToInternet(error, context, true));
             }
         });
 
@@ -158,8 +162,7 @@ public class AnnouncementsViewModel extends AndroidViewModel implements Response
      *
      * @param object announcements are in JSON format
      */
-    @Override
-    public void successResponse(JSONObject object)
+    public void successResponse(JSONObject object, Context context)
     {
         if (object == null || object.length() == 0)
             return;
@@ -188,7 +191,7 @@ public class AnnouncementsViewModel extends AndroidViewModel implements Response
                         if (isUpdating != null && isUpdating.getValue())
                             isUpdating.setValue(false);
                     });
-                    poolExecutorService.execute(() -> updateAnnouncementsDB(announcementsList));
+                    poolExecutorService.execute(() -> updateAnnouncementsDB(announcementsList, context));
                 } catch (Exception ex)
                 {
                     ex.printStackTrace();
@@ -201,7 +204,7 @@ public class AnnouncementsViewModel extends AndroidViewModel implements Response
     /**
      * Update data baes with new content from server
      */
-    private void updateAnnouncementsDB(List<Announcement> announcementList)
+    private void updateAnnouncementsDB(List<Announcement> announcementList, Context context)
     {
         DBFactory announcementDB = DBFactory.getInstance(context);
         AnnouncementDao announcementDao = announcementDB.getAnnouncementDao();

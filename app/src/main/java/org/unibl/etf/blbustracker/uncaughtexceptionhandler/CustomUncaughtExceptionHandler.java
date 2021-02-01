@@ -10,7 +10,7 @@ public class CustomUncaughtExceptionHandler implements Thread.UncaughtExceptionH
 {
     public static final String STACK_TRACE_FILE_NAME = "crash.stacktrace";
     private Thread.UncaughtExceptionHandler defaultUEH;
-    private Context context = null;
+    private Context context;
 
     public CustomUncaughtExceptionHandler(Context context)
     {
@@ -26,7 +26,7 @@ public class CustomUncaughtExceptionHandler implements Thread.UncaughtExceptionH
         report += "----------- Stack trace -----------\n\n";
         for (int i = 0; i < arr.length; i++)
         {
-            report += "    " + arr[i].toString() + "\n";
+            report += "    " + arr[i].toString().trim() + "\n";
         }
         report += "-----------------------------------\n\n";
 
@@ -39,7 +39,7 @@ public class CustomUncaughtExceptionHandler implements Thread.UncaughtExceptionH
             arr = cause.getStackTrace();
             for (int i = 0; i < arr.length; i++)
             {
-                report += "    " + arr[i].toString() + "\n";
+                report += "    " + arr[i].toString().trim() + "\n";
             }
             report += "-----------------------------------\n\n";
         }

@@ -13,17 +13,15 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
 import org.unibl.etf.blbustracker.R;
 import org.unibl.etf.blbustracker.datahandlers.database.busstop.BusStop;
-import org.unibl.etf.blbustracker.navigationtabs.mapview.MapViewModel;
+import org.unibl.etf.blbustracker.utils.TableRowUtil;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Arrays;
 
 public class ArrivalTimeFragment extends BottomSheetDialogFragment
 {
@@ -35,15 +33,6 @@ public class ArrivalTimeFragment extends BottomSheetDialogFragment
     private Button moreOptionsBtn;
     private MoreOptionsInterface moreOptionsInterface;
     private TableLayout tableLayout;
-
-    public ArrivalTimeFragment()
-    {
-    }
-
-    public ArrivalTimeFragment(BusStop busStop)
-    {
-        this.busStop = busStop;
-    }
 
     public ArrivalTimeFragment(BusStop busStop, MoreOptionsInterface moreOptionsInterface)
     {
@@ -76,12 +65,20 @@ public class ArrivalTimeFragment extends BottomSheetDialogFragment
         {
             tableLayout.removeAllViews();
             TableLayout.LayoutParams layout = new TableLayout.LayoutParams(TableLayout.LayoutParams.FILL_PARENT, TableLayout.LayoutParams.WRAP_CONTENT);
+
             if (arrivalTimes != null)
+            {
                 for (ArrivalTime arrivalTime : arrivalTimes)
                 {
                     TableRow tableRow = TableRowUtil.createRow(getContext(), arrivalTime);
                     tableLayout.addView(tableRow, layout);
                 }
+            } else
+            {
+                TableRow tableRow = TableRowUtil.createRow(getContext(), getString(R.string.no_busstop_time));
+                tableLayout.addView(tableRow, layout);
+            }
+
         });
     }
 
@@ -116,7 +113,7 @@ public class ArrivalTimeFragment extends BottomSheetDialogFragment
     {
         busStopName = null;
         moreOptionsInterface = null;
-        if(arrivalTimeViewModel!=null)
+        if (arrivalTimeViewModel != null)
             arrivalTimeViewModel.stopListening();
         super.onDestroy();
     }

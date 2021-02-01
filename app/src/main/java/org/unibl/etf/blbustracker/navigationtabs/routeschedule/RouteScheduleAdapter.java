@@ -24,13 +24,13 @@ import java.util.List;
 //Adapter from filtering search results in Route Schedule
 public class RouteScheduleAdapter extends ArrayAdapter<Route>
 {
-    Context context;
     private List<Route> routeListFull;
+
+    private final String TIME_SPLIT_REGEX = "( :|,|\\.)";
 
     public RouteScheduleAdapter(@NonNull Context context, @NonNull List<Route> routeList)
     {
         super(context, 0, routeList);
-        this.context = context;
         routeListFull = new ArrayList<>(routeList); // deep copy
     }
 
@@ -46,9 +46,9 @@ public class RouteScheduleAdapter extends ArrayAdapter<Route>
                     .inflate(R.layout.item_route, parent, false);
         }
         if (position % 2 == 0)
-            convertView.setBackgroundColor(ContextCompat.getColor(context, R.color.busline_lighter_blue));
+            convertView.setBackgroundColor(ContextCompat.getColor(convertView.getContext(), R.color.busline_lighter_blue));
         else
-            convertView.setBackgroundColor(ContextCompat.getColor(context, R.color.busline_darker_blue));
+            convertView.setBackgroundColor(ContextCompat.getColor(convertView.getContext(), R.color.busline_darker_blue));
 
         TextView routeName = convertView.findViewById(R.id.route_name);
         TextView routeLabel = convertView.findViewById(R.id.route_lable);
@@ -60,7 +60,7 @@ public class RouteScheduleAdapter extends ArrayAdapter<Route>
         {
             routeLabel.setText(route.getLabel());
             routeName.setText(route.getName());
-            busImage.setImageDrawable(DrawableUtil.getColoredBusDrawable(route,context));
+            busImage.setImageDrawable(DrawableUtil.getColoredBusDrawable(route,convertView.getContext()));
         }
 
         return convertView;
@@ -79,19 +79,6 @@ public class RouteScheduleAdapter extends ArrayAdapter<Route>
             else
             {
                 String filterPatern = inputSequence.toString().toLowerCase().trim();
-
-                //                Log.d(getClass().getSimpleName(), "performFiltering: START checkin languge");
-                //                System.out.println("input: " + filterPatern);
-                //                if (LatinUtils.isInputLatin(filterPatern))
-                //                    System.out.println("LAT: " + LatinUtils.stripAccent(filterPatern));
-                //                else if (CyrillicUtils.isCyrillic(filterPatern))
-                //                    System.out.println("CYR: " + CyrillicUtils.convertCyrToLat(filterPatern));
-                //                else
-                //                    System.out.println("NIJE NI JEDNO NI DRUGO");
-                //                //
-                //                Log.d(getClass().getSimpleName(), "performFiltering: END checkin languge");
-
-
                 for (Route route : routeListFull)
                     if (LatinCyrillicUtil.isMatched(filterPatern, route.getName().toLowerCase())
                             || LatinCyrillicUtil.isMatched(filterPatern, route.getLabel().toLowerCase()))

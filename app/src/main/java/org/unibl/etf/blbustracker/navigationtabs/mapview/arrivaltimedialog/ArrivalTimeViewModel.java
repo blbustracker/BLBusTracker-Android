@@ -74,8 +74,8 @@ public class ArrivalTimeViewModel extends AndroidViewModel
                 {
                     ex.printStackTrace();
                 }
-                Log.d(getClass().getSimpleName(), "startListening: killing the LOOP");
             }
+            Log.d(getClass().getSimpleName(), "startListening: killing the LOOP");
         });
     }
 

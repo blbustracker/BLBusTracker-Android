@@ -45,15 +45,17 @@
             android:layout_height="match_parent"
             android:clipToPadding="false"
             android:paddingTop="5dp"
-            android:paddingBottom="80dp"
-        >
-        <TextView
-                android:id="@+id/route_schedule_times"
+            android:paddingBottom="80dp">
+
+        <TableLayout
+                android:id="@+id/tablelayout"
+                android:padding="15dp"
+                android:layout_gravity="center_horizontal"
+                android:stretchColumns="*"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/Black"
-                android:padding="8dp"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+                android:layout_height="wrap_content">
+
+        </TableLayout>
 
     </ScrollView>
 

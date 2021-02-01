@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">BL BusTracker</string>
-    <string name="settings">Опције</string>
+    <string name="settings">Подешавања</string>
     <string name="options">Опције</string>
     <string name="alarm">Аларм</string>
     <string name="ok_button">OK</string>
@@ -40,7 +40,7 @@
     <string name="problem_reported">Пријављен проблем!</string>
     <string name="clear_content">Очисти поља</string>
     <string name="send_report">Пошаљи проблем</string>
-    <string name="report_problem">Пријави Проблем</string>
+    <string name="report_problem">Пријава проблема</string>
     <string name="report_content">Садржај проблема</string>
     <string name="report_title">Наслов</string>
     <string name="about_paragraph_1" >" Апликација за кориснике јавног превоза у урбаној зони града Бања Лука."</string>
@@ -54,4 +54,11 @@
     <string name="navigation_menu_tooltip">Прикажи/Уклони навигациони мени</string>
     <string name="route">Линија</string>
     <string name="minutes">мин</string>
+    <string name="no_busstop_time">Тренутно нема времена за ово стајалиште</string>
+    <string name="reports">Извјештај</string>
+    <string name="send_crash_report">Пошаљи извјештај о престанку рада апликације</string>
+    <string name="collect_crash_reports">Подаци о престанку рада апликације</string>
+    <string name="report_sent">Извјештај послан. Хвала!</string>
+    <string name="no_internet_try_again">Тренутно нема интернета. Молимо покушајте поново</string>
+    <string name="about">О апликацији</string>
 </resources>

@@ -22,13 +22,11 @@ import java.util.List;
 //For filling AutocompleteTextView with bus stop names
 public class SearchBusStopAdapter extends ArrayAdapter<BusStop>
 {
-    private Context context;
     private List<BusStop> busStopListFull;
 
     public SearchBusStopAdapter(@NonNull Context context, @NonNull List<BusStop> busStopList)
     {
         super(context, 0, busStopList);
-        this.context = context;
         busStopListFull = new ArrayList<>(busStopList); // full copy
     }
 
@@ -44,9 +42,9 @@ public class SearchBusStopAdapter extends ArrayAdapter<BusStop>
                     .inflate(R.layout.item_busstop_search, parent, false);
         }
         if (position % 2 == 0)
-            convertView.setBackgroundColor(ContextCompat.getColor(context, R.color.busline_lighter_blue));
+            convertView.setBackgroundColor(ContextCompat.getColor(convertView.getContext(), R.color.busline_lighter_blue));
         else
-            convertView.setBackgroundColor(ContextCompat.getColor(context, R.color.busline_darker_blue));
+            convertView.setBackgroundColor(ContextCompat.getColor(convertView.getContext(), R.color.busline_darker_blue));
 
         TextView textBusStop = convertView.findViewById(R.id.item_busstop_text);
 

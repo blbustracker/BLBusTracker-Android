@@ -27,8 +27,7 @@ public class NetworkManager
     //private constructor
     private NetworkManager(Context context)
     {
-        Context context1 = context.getApplicationContext();
-        requestQueue = Volley.newRequestQueue(context1);
+        requestQueue = Volley.newRequestQueue(context);
     }
 
     // singleton pattern
@@ -62,15 +61,6 @@ public class NetworkManager
     {
         String fullURl = Constants.BASE_URL + urlPath;
 //        Log.d(getClass().getSimpleName(), "GETJsonArray: " + fullURl);
-        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, fullURl, null, success, error);
-        requestQueue.add(jsonArrayRequest);
-    }
-
-    @Deprecated
-    public void GETJsonArrayTEST(String urlPath, Response.Listener<JSONArray> success, Response.ErrorListener error)
-    {
-        String fullURl = "https://www.blbustracker.com/api" + urlPath;
-        //        Log.d(getClass().getSimpleName(), "GETJsonArray: " + fullURl);
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, fullURl, null, success, error);
         requestQueue.add(jsonArrayRequest);
     }

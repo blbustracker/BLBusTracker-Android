@@ -5,7 +5,7 @@ public abstract class Constants
     public static final double STARTING_LAT = 44.7691468567798;  // Banja Luka center lat
     public static final double STARTING_LNG = 17.18835644423962; // Banja Luka center lng
 
-    public static final float POLYLINE_WIDTH_23 = 5.5f;         //googles default is 10.0f
+    public static final float POLYLINE_WIDTH = 10.0f + 2.0f;         //googles default is 10.0f
     public static final float POLYLINE_WIDTH_24 = 8.5f;
 
     public static final int CAMERA_PADDING = 20;
@@ -14,11 +14,7 @@ public abstract class Constants
 
     public static final float DEFAULT_ZOOM = 16.0f;             // default zoom value
 
-    public static final double ONE_KM_IN_DEGREE = 0.0091;       //approximation for our region
-
     public static final int LAYOUT_ANIMATION_DURATION = 500;    // duration of expand/collapse search layout
-
-    public static final int RETRY_CONNECTION_TIME = 3000;       //duration of checking internet connection
 
     public static final int BUS_REFRESH_INTERVAL = 1000;        //update bus position every 1s
 

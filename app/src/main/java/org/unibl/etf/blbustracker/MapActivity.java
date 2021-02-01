@@ -21,6 +21,7 @@ import com.google.android.gms.security.ProviderInstaller;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 
+import org.unibl.etf.blbustracker.navigationtabs.settings.SettingsFragment;
 import org.unibl.etf.blbustracker.phoneoptions.LocaleManager;
 import org.unibl.etf.blbustracker.uncaughtexceptionhandler.CustomUncaughtExceptionHandler;
 import org.unibl.etf.blbustracker.uncaughtexceptionhandler.ReportCrash;
@@ -53,8 +54,9 @@ public class MapActivity extends LocalizationActivity implements DrawerLayout.Dr
         super.onCreate(savedInstanceState);
         //        checkProviderInstaller(); // for fixing volley on android <=4.4
 
-        ReportCrash.sendReportToServer(this);   // check if there was a crash in privious run
-        Thread.setDefaultUncaughtExceptionHandler(new CustomUncaughtExceptionHandler(this));    // start watching for crashes
+
+        //TODO: check for settings here
+        initCrashWatcher();
 
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         setContentView(R.layout.activity_main);
@@ -79,6 +81,17 @@ public class MapActivity extends LocalizationActivity implements DrawerLayout.Dr
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController); // use implemented listener
 
+    }
+
+    private void initCrashWatcher()
+    {
+        ReportCrash reportCrash = new ReportCrash();
+        reportCrash.sendReportToServer(this);   // check if there was a crash in privious run
+
+        SharedPreferences sharedPreferences = Utils.getSharedPreferences(this);
+        boolean isCollectReportChecked = sharedPreferences.getBoolean(SettingsFragment.COLLECT_REPORT, true);
+        if (isCollectReportChecked)
+            Thread.setDefaultUncaughtExceptionHandler(new CustomUncaughtExceptionHandler(this));    // start watching for crashes
     }
 
     private void initToolbar()

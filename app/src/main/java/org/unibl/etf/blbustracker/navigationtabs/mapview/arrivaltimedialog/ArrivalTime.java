@@ -24,6 +24,12 @@ public class ArrivalTime
         arrivaleTimes = new ArrayList<>();
         arrivaleTimes.add(time);
     }
+    public ArrivalTime(String routeName, String routeLabel, List<Integer> arrivaleTimes)
+    {
+        this.routeName = routeName;
+        this.routeLabel = routeLabel;
+        this.arrivaleTimes = arrivaleTimes;
+    }
 
     public void addTime(int time)
     {

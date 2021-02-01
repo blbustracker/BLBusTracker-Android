@@ -13,7 +13,6 @@ import org.json.JSONObject;
  */
 public class LastUpdated
 {
-    private Context context;
     private SharedPreferences sharedPreferences;
 
     private static final String LAST_UPDATE_JSONString = "lastUpdate";
@@ -25,7 +24,6 @@ public class LastUpdated
 
     public LastUpdated(Context context)
     {
-        this.context = context.getApplicationContext();
         sharedPreferences = Utils.getSharedPreferences(context);
     }
 

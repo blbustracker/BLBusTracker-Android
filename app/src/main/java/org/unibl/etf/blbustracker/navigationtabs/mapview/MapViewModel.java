@@ -43,7 +43,6 @@ public class MapViewModel extends AndroidViewModel
 {
     private static final String TAG = "MapViewModel";
     private final int N_THREADS = 10;
-    private Context context;
     private boolean isFragmentAlive = true;
 
     ConnectivityManager.NetworkCallback networkCallback;
@@ -82,18 +81,17 @@ public class MapViewModel extends AndroidViewModel
     public MapViewModel(@NonNull Application application)
     {
         super(application);
-        context = application.getApplicationContext();
         mutableBusStops = new MutableLiveData<>();
         mutableRoutes = new MutableLiveData<>();
         isInternetAvailable = new MutableLiveData<>();
 
-        networkManager = NetworkManager.getInstance(context);
+        networkManager = NetworkManager.getInstance(application);
         poolExecutorService = Executors.newFixedThreadPool(N_THREADS);
         mainHandler = new Handler(Looper.getMainLooper());
 
-        networkCallback = initNetworkCallback();
-        networkStatus = new NetworkStatus(context, networkCallback);
-        lastUpdated = new LastUpdated(context);
+        networkCallback = initNetworkCallback(application);
+        networkStatus = new NetworkStatus(application, networkCallback);
+        lastUpdated = new LastUpdated(application);
     }
 
     public LiveData<List<BusStop>> getMutableBusStops()
@@ -112,27 +110,27 @@ public class MapViewModel extends AndroidViewModel
     }
 
 
-    public void getFromDBandServer()
+    public void getFromDBandServer(Context context)
     {
         activatePoolExecutorService();
-        getFromDB();
-        getFromServer();
+        getFromDB(context);
+        getFromServer(context);
     }
 
     //WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW GETTING DATA FROM DATABASE WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
 
-    public void getFromDB()
+    public void getFromDB(Context context)
     {
-        getAndPlaceDBBusStops();
-        getAndPlaceDBRoute();
+        getAndPlaceDBBusStops(context);
+        getAndPlaceDBRoute(context);
     }
 
-    public void getAndPlaceDBRoute()
+    public void getAndPlaceDBRoute(Context context)
     {
         activatePoolExecutorService();
         poolExecutorService.submit(() ->
         {
-            List<Route> routeList = getRoutesFromDB();
+            List<Route> routeList = getRoutesFromDB(context);
             if (routeList != null && !routeList.isEmpty())
                 mainHandler.post(() -> mutableRoutes.setValue(routeList));
 
@@ -144,12 +142,12 @@ public class MapViewModel extends AndroidViewModel
         });
     }
 
-    private void getAndPlaceDBBusStops()
+    private void getAndPlaceDBBusStops(Context context)
     {
         activatePoolExecutorService();
         poolExecutorService.submit(() ->
         {
-            List<BusStop> busStopList = getBusStopsFromDB();
+            List<BusStop> busStopList = getBusStopsFromDB(context);
             if (busStopList != null && !busStopList.isEmpty())
                 mainHandler.post(() -> mutableBusStops.setValue(busStopList));
             synchronized (lockBusStop)
@@ -160,7 +158,7 @@ public class MapViewModel extends AndroidViewModel
         });
     }
 
-    private List<BusStop> getBusStopsFromDB()
+    private List<BusStop> getBusStopsFromDB(Context context)
     {
         dbFactory = dbFactory.getInstance(context);
         if (busStopDAO == null)
@@ -176,7 +174,7 @@ public class MapViewModel extends AndroidViewModel
         return busStopList;
     }
 
-    private List<Route> getRoutesFromDB()
+    private List<Route> getRoutesFromDB(Context context)
     {
         dbFactory = dbFactory.getInstance(context);
         if (routeDao == null)
@@ -196,11 +194,11 @@ public class MapViewModel extends AndroidViewModel
     //WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW GETTING DATA FROM SERVER WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
 
 
-    public void getFromServer()
+    public void getFromServer(Context context)
     {
         if (networkCallback == null)
         {
-            networkCallback = initNetworkCallback();
+            networkCallback = initNetworkCallback(context);
             networkStatus = new NetworkStatus(context, networkCallback);
         }
         if (networkStatus == null)
@@ -212,7 +210,7 @@ public class MapViewModel extends AndroidViewModel
 
     }
 
-    private ConnectivityManager.NetworkCallback initNetworkCallback()
+    private ConnectivityManager.NetworkCallback initNetworkCallback(Context context)
     {
         return new ConnectivityManager.NetworkCallback()
         {
@@ -222,7 +220,7 @@ public class MapViewModel extends AndroidViewModel
                 super.onAvailable(network);
                 Log.d(TAG, "onAvailable: intenet IS available");
                 activatePoolExecutorService();
-                getDataFromServer();
+                getDataFromServer(context);
                 mainHandler.post(() -> isInternetAvailable.setValue(true));
             }
 
@@ -236,47 +234,47 @@ public class MapViewModel extends AndroidViewModel
     }
 
     //is called in OnAvailable (Networkstatus)
-    private void getDataFromServer()
+    private void getDataFromServer(Context context)
     {
         this.activatePoolExecutorService();
         poolExecutorService.execute(() ->
         {
             if (isFragmentAlive)
             {
-                checkAndGetFromServer(true, Constants.BUSSTOP_LAST_UPDATE_PATH, LastUpdated.BUSSTOP_LAST_UPDATE_KEY);
-                checkAndGetFromServer(false, Constants.ROUTES_LAST_UPDATE_PATH, LastUpdated.ROUTES_LAST_UPDATE_KEY);
+                checkAndGetFromServer(true, Constants.BUSSTOP_LAST_UPDATE_PATH, LastUpdated.BUSSTOP_LAST_UPDATE_KEY, context);
+                checkAndGetFromServer(false, Constants.ROUTES_LAST_UPDATE_PATH, LastUpdated.ROUTES_LAST_UPDATE_KEY, context);
             }
 
         });
     }
 
-    private void checkAndGetFromServer(boolean isBusStop, String lastUpdatePath, String shraedPreferencesKEY)
+    private void checkAndGetFromServer(boolean isBusStop, String lastUpdatePath, String shraedPreferencesKEY, Context context)
     {
         networkManager.GETJson(lastUpdatePath, null, (lastUpdateJSON) ->
+        {
+            activatePoolExecutorService();
+            poolExecutorService.execute(() ->
+            {
+                if (lastUpdated.isServerContentUpdated(lastUpdateJSON, shraedPreferencesKEY))
                 {
-                    activatePoolExecutorService();
-                    poolExecutorService.execute(() ->
+                    if (isBusStop)
                     {
-                        if (lastUpdated.isServerContentUpdated(lastUpdateJSON, shraedPreferencesKEY))
-                        {
-                            if (isBusStop)
-                            {
-                                busStopDateUpdated = lastUpdateJSON.toString();
-                                networkManager.GETJson(Constants.BUSSTOPS_PATH, null, this::getBusStopsFromServer
-                                        , error -> NetworkStatus.errorConnectingToInternet(error, context,false));
+                        busStopDateUpdated = lastUpdateJSON.toString();
+                        networkManager.GETJson(Constants.BUSSTOPS_PATH, null, obj -> getBusStopsFromServer(obj, context)
+                                , error -> NetworkStatus.errorConnectingToInternet(error, context, false));
 
-                            } else
-                            {
-                                routeDateUpdated = lastUpdateJSON.toString();
-                                networkManager.GETJson(Constants.ROUTES_PATH, null, this::getRoutesFromServer
-                                        , error -> NetworkStatus.errorConnectingToInternet(error, context,false));
-                            }
-                        }
-                    });
-                }, error -> NetworkStatus.errorConnectingToInternet(error, context,true));
+                    } else
+                    {
+                        routeDateUpdated = lastUpdateJSON.toString();
+                        networkManager.GETJson(Constants.ROUTES_PATH, null, object -> getRoutesFromServer(object, context)
+                                , error -> NetworkStatus.errorConnectingToInternet(error, context, false));
+                    }
+                }
+            });
+        }, error -> NetworkStatus.errorConnectingToInternet(error, context, true));
     }
 
-    private void getBusStopsFromServer(JSONObject busStopServerJSON)
+    private void getBusStopsFromServer(JSONObject busStopServerJSON, Context context)
     {
         if (busStopServerJSON == null || busStopServerJSON.length() == 0)
             return;
@@ -299,12 +297,12 @@ public class MapViewModel extends AndroidViewModel
                     ex.printStackTrace();
                 }
                 mainHandler.post(() -> mutableBusStops.setValue(busStopList));
-                poolExecutorService.execute(() -> updateBusStopDB(busStopList));
+                poolExecutorService.execute(() -> updateBusStopDB(busStopList, context));
             }
         });
     }
 
-    private void getRoutesFromServer(JSONObject routeServerContent)
+    private void getRoutesFromServer(JSONObject routeServerContent, Context context)
     {
         if (routeServerContent == null || routeServerContent.length() == 0)
             return;
@@ -327,14 +325,14 @@ public class MapViewModel extends AndroidViewModel
                 }
                 mainHandler.post(() -> mutableRoutes.setValue(routeList));
                 activatePoolExecutorService();
-                poolExecutorService.execute(() -> updateRouteAndJoinDB(routeList));
+                poolExecutorService.execute(() -> updateRouteAndJoinDB(routeList, context));
             }
         });
     }
 
     //WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW DATABASE UPDATE WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW
 
-    private void updateBusStopDB(List<BusStop> busStopList)
+    private void updateBusStopDB(List<BusStop> busStopList, Context context)
     {
         dbFactory = DBFactory.getInstance(context);
         if (busStopDAO == null)
@@ -346,7 +344,7 @@ public class MapViewModel extends AndroidViewModel
 
     }
 
-    private void updateRouteAndJoinDB(List<Route> routeList)
+    private void updateRouteAndJoinDB(List<Route> routeList, Context context)
     {
         dbFactory = DBFactory.getInstance(context);
         if (routeDao == null)

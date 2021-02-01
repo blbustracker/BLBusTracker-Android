@@ -15,6 +15,7 @@ import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+
 import org.unibl.etf.blbustracker.Constants;
 import org.unibl.etf.blbustracker.R;
 import org.unibl.etf.blbustracker.datahandlers.database.Bus;
@@ -42,7 +43,6 @@ public class BusController
     public static final float busZIndex = 1.1f; // default zIndex is 1.0, to bring busMarker to front
 
     private final GoogleMap map;
-    private Context context;
 
     private boolean isActive;
     private Boolean isBusMarkerClicked;
@@ -65,7 +65,6 @@ public class BusController
     public BusController(GoogleMap map, Context context)
     {
         this.map = map;
-        this.context = context;
         isActive = true;
         isBusMarkerClicked = false;
         busMarkers = new ArrayList<>();
@@ -78,7 +77,7 @@ public class BusController
         busIconsHashMap = new HashMap<>();
     }
 
-    public void startBusTracking()
+    public void startBusTracking(Context context)
     {
         isActive = true;
         activatePoolExecutors();
@@ -91,12 +90,12 @@ public class BusController
                 {
                     if (!isBusMarkerClicked)    // if bus is clicked, stop all movement on map
                     {
-//                        Log.d(getClass().getSimpleName(), "startBusTracking: " + Utils.getCurrentDateAndTime());
+                        //                        Log.d(getClass().getSimpleName(), "startBusTracking: " + Utils.getCurrentDateAndTime());
                         networkManager.GETJsonArray(busLocationUrlQuery
-                                , this::successResponse
+                                , object -> successResponse(object, context)
                                 , error ->
                                 {
-                                    NetworkStatus.errorConnectingToInternet(error, context,false);
+                                    NetworkStatus.errorConnectingToInternet(error, context, false);
                                     System.out.println("buscontroller network error");
                                 });
                     }
@@ -113,9 +112,9 @@ public class BusController
     /**
      * parse content from server and place(set) buses on map
      */
-    public void successResponse(JSONArray object)
+    public void successResponse(JSONArray object, Context context)
     {
-//        Log.d(getClass().getSimpleName(), "successResponse: " + Utils.getCurrentDateAndTime());
+        //        Log.d(getClass().getSimpleName(), "successResponse: " + Utils.getCurrentDateAndTime());
         if (object == null || object.length() == 0)
         {
             clearMarker();
@@ -130,7 +129,7 @@ public class BusController
             mainHandler.post(() ->
             {
                 clearMarker();
-                setMarkers(busList);
+                setMarkers(busList, context);
             });
         });
     }
@@ -138,7 +137,7 @@ public class BusController
     /**
      * placing busses on map
      */
-    private void setMarkers(List<Bus> busList)
+    private void setMarkers(List<Bus> busList, Context context)
     {
         for (Bus bus : busList)
         {
@@ -153,7 +152,7 @@ public class BusController
                 busColoredIcon = busIconsHashMap.get(bus);
             else
             {
-                busColoredIcon = getBusColoredIcon(bus);
+                busColoredIcon = getBusColoredIcon(bus, context);
                 busIconsHashMap.put(bus, busColoredIcon);
             }
             busMarkerOption.icon(busColoredIcon); // set colored icon here;
@@ -164,7 +163,7 @@ public class BusController
         }
     }
 
-    private BitmapDescriptor getBusColoredIcon(Bus bus)
+    private BitmapDescriptor getBusColoredIcon(Bus bus, Context context)
     {
         String busLineName = bus.getLine();
         if (routeList != null && !routeList.isEmpty())

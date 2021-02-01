@@ -34,28 +34,31 @@
                 app:key="selected_map_style"
                 app:title="@string/select_map_style"
                 app:useSimpleSummaryProvider="true" />
+
+
     </PreferenceCategory>
 
-
-    <!--    TODO: make string resources-->
-    <PreferenceCategory app:title="Reports">
+    <PreferenceCategory app:title="@string/reports">
 
         <CheckBoxPreference
-
                 android:key="collect_report"
                 android:defaultValue="true"
                 app:singleLineTitle="false"
-                android:summaryOn="You will be asked to send crash report to the server"
-                android:summaryOff="You will NOT send any data"
-                android:title="Collect crash reports (not implemented)"
+
+                android:title="@string/collect_crash_reports"
+                android:summaryOn="@string/collect_crash_summary_on"
+                android:summaryOff="@string/collect_crash_summary_off"
                 />
 
         <CheckBoxPreference
-                android:key="report_automatically"
+                android:key="auto_send_report"
                 android:dependency="collect_report"
                 android:defaultValue="true"
                 app:singleLineTitle="false"
-                android:title="Send report Automatically? (not implemented)"
+
+                android:title="Send report automatically"
+                android:summaryOn="@string/wont_ask_to_send_report"
+                android:summaryOff="@string/ask_to_send_report"
                 />
     </PreferenceCategory>
 

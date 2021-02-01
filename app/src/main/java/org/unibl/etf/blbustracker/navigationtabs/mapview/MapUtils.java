@@ -51,7 +51,6 @@ public class MapUtils
     private final String MODE_WALK = "&mode=w";
 
     private View homeView;
-    private Context context;
     private Activity activity; //used for popUp window marker
 
     private final Object lock = new Object();
@@ -74,7 +73,6 @@ public class MapUtils
      */
     public MapUtils(Context context, GoogleMap map, Map<Integer, Marker> busStopMarkersHash, Map<Integer, Polyline> routePolylineHash)
     {
-        this.context = context;
         this.map = map;
 
         routeBusStopConnection = new RouteBusStopConnection(context);
@@ -159,7 +157,7 @@ public class MapUtils
             int colorId = ColorUtils.setAlphaComponent(Color.parseColor(colorCode), Constants.POLYLINE_ALPHA_COLOR); // adding alpha to server color
 
             PolylineOptions roadOverlay = new PolylineOptions()
-                    //                    .width(polylineWidth)
+                    .width(Constants.POLYLINE_WIDTH)
                     .color(colorId)
                     .addAll(wayPoints);
 
@@ -235,12 +233,12 @@ public class MapUtils
     /**
      * Apply all map settings, style, type,...
      */
-    void setAllMapArguments(int mapType, String mapStyle)
+    void setAllMapArguments(int mapType, String mapStyle,Context context)
     {
         // so that google default navigation icon do NOT show when marker is clicked
         map.getUiSettings().setMapToolbarEnabled(false);
 
-        setMapStyle(mapStyle);
+        setMapStyle(mapStyle,context);
         map.setMapType(mapType); // 1 - NORMAL , 2 - SATELLITE, 3 - TERRAIN, 4 - HYBRID
         map.setIndoorEnabled(false);
         //map.setTrafficEnabled(true); // map with traffic density information superimposed on top of it
@@ -252,7 +250,7 @@ public class MapUtils
     private final String RETRO_MAP_STYLE = "mapstyle_retro";
     private final String AUBERGINE_MAP_STYLE = "mapstyle_aubergine";
 
-    void setMapStyle(String mapStyle)
+    void setMapStyle(String mapStyle,Context context)
     {
         switch (mapStyle)
         {
@@ -376,7 +374,7 @@ public class MapUtils
      *
      * @param clickedBusStop clickedBusStop (marker) that was clicked
      */
-    public void onBusStopClicked(BusStop clickedBusStop)
+    public void onBusStopClicked(BusStop clickedBusStop, Context context)
     {
         poolExecutorService.execute(() ->
         {
@@ -406,7 +404,7 @@ public class MapUtils
      * only show bus stops on routes that contain destinationBusStop,
      * all routes that contain destinationBusStop should've been visable with onBusStopClicked method
      */
-    public void onSetAsDestinationClicked(BusStop destinationBusStop)
+    public void onSetAsDestinationClicked(BusStop destinationBusStop,Context context)
     {
         poolExecutorService.execute(() ->
         {
@@ -465,10 +463,10 @@ public class MapUtils
     }
 
     //when user inputs bus stop in search box
-    public void onDestinationTextInput(BusStop busStop)
+    public void onDestinationTextInput(BusStop busStop, Context context)
     {
-        onBusStopClicked(busStop);
-        onSetAsDestinationClicked(busStop);
+        onBusStopClicked(busStop,context);
+        onSetAsDestinationClicked(busStop,context);
     }
 
     /**
@@ -498,7 +496,7 @@ public class MapUtils
     }
 
     //used for drawing routes that contains busStopA and busStopB
-    public void drawRoutesThroughBusStops(BusStop busStopA, BusStop busStopB)
+    public void drawRoutesThroughBusStops(BusStop busStopA, BusStop busStopB, Context context)
     {
         poolExecutorService.execute(() ->
         {

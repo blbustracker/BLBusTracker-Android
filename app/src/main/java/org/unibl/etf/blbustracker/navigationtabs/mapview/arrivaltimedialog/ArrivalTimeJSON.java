@@ -13,15 +13,14 @@ public class ArrivalTimeJSON
     public static final String LINE_NAME = "line";
     public static final String LINE_LBL = "lineLabel";
 
-
     public List<ArrivalTime> getArrivalTimes(JSONArray jsonArray)
     {
-        if(jsonArray==null || jsonArray.length()==0)
+        if (jsonArray == null || jsonArray.length() == 0)
             return null;
 
         List<ArrivalTime> arrivalTimes = new ArrayList<>();
 
-        for(int i=0; i<jsonArray.length();i++)
+        for (int i = 0; i < jsonArray.length(); i++)
         {
             try
             {
@@ -30,17 +29,17 @@ public class ArrivalTimeJSON
                 String lineLbl = arrivalTimeJSON.getString(LINE_LBL);
                 int time = arrivalTimeJSON.getInt(ARRIVING);
 
-                ArrivalTime arrivalTime = new ArrivalTime(routeName,lineLbl,time);
+                ArrivalTime arrivalTime = new ArrivalTime(routeName, lineLbl, time);
 
                 int index = arrivalTimes.indexOf(arrivalTime);
-                if(index<0)
+                if (index < 0)
                     arrivalTimes.add(arrivalTime);
                 else
                 {
                     arrivalTimes.get(index).addTime(time);
                 }
 
-            }catch(JSONException ex)
+            } catch (JSONException ex)
             {
                 ex.printStackTrace();
             }

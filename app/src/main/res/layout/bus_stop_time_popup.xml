@@ -13,8 +13,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:background="@color/white"
-            android:layout_marginBottom="10dp"
-            >
+            android:layout_marginBottom="10dp">
 
         <LinearLayout
                 android:layout_width="match_parent"
@@ -38,8 +37,7 @@
         <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                >
+                android:orientation="vertical">
 
             <TextView
                     android:id="@+id/busstop_name"
@@ -61,7 +59,6 @@
                     android:paddingStart="15dp"
                     android:paddingEnd="15dp"
                     android:textStyle="bold"
-                    android:layout_marginBottom="5dp"
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                     android:textColor="@color/Black" />
 
@@ -76,7 +73,16 @@
                         android:padding="15dp"
                         android:layout_width="match_parent"
                         android:stretchColumns="*"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content">
+
+                    <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textStyle="bold"
+                            android:text="@string/loading_message"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                            android:textColor="@color/Black" />
+                </TableLayout>
 
             </ScrollView>
 

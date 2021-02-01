@@ -16,7 +16,7 @@
     <string name="provider_settings_yes" translatable="false">Yes</string>
     <string name="provider_settings_no" translatable="false">No</string>
     <string name="title_activity_maps" translatable="false">Map</string>
-    <string name="about" translatable="false">About</string>
+    <string name="about" translatable="true">About</string>
     <string name="start_destination_text">Enter Start Destination</string>
     <string name="end_destination_text">Enter End Destination</string>
     <string name="set_as_start_destination">Set As Start Destination</string>
@@ -80,8 +80,8 @@
     <string name="version">Version 1.0</string>
     <string name="undp_header" translatable="false">© 2020 UNDP.</string>
     <string name="playserveces_error" translatable="false">You can\'t make map requests</string>
-    <string name="cannot_connect_to_internet">The server could not be found. Please try again after some time</string>
-    <string name="server_not_found">The server could not be found. Please try again after some time</string>
+    <string name="cannot_connect_to_internet" translatable="false">The server could not be found. Please try again after some time</string>
+    <string name="server_not_found" translatable="false">The server could not be found. Please try again after some time</string>
     <string name="parsing_error" translatable="false">Parsing error! Please try again after some time!!</string>
     <string name="arrivals">Arrivals:</string>
     <string name="show_all_routes">Show all routes</string>
@@ -89,5 +89,15 @@
     <string name="navigation_menu_tooltip">Show/Hide navigation menu</string>
     <string name="route">Route</string>
     <string name="minutes">min</string>
+    <string name="no_busstop_time">Currently there are no times for this bus stop</string>
+    <string name="reports">Report</string>
+    <string name="send_crash_report">Send crash report</string>
+    <string name="collect_crash_reports">Collect crash reports</string>
+    <string name="ask_to_send_report">You will be asked to send crash report to the server</string>
+    <string name="wont_ask_to_send_report">You will NOT be asked to send crash report to the server</string>
+    <string name="collect_crash_summary_on">Application will collect data about application crashes</string>
+    <string name="collect_crash_summary_off">Application will not collect data about application crashes</string>
+    <string name="report_sent">Crash report sent. Thank you!</string>
+    <string name="no_internet_try_again">Current there is no internet connection. Please try again</string>
 
 </resources>

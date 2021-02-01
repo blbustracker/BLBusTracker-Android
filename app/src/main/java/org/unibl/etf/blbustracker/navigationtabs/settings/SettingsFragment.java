@@ -15,6 +15,7 @@ import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceManager;
 
 import com.akexorcist.localizationactivity.core.LocalizationActivityDelegate;
+
 import org.unibl.etf.blbustracker.R;
 import org.unibl.etf.blbustracker.phoneoptions.LocaleManager;
 
@@ -24,7 +25,6 @@ import org.unibl.etf.blbustracker.phoneoptions.LocaleManager;
 public class SettingsFragment extends PreferenceFragmentCompat implements SharedPreferences.OnSharedPreferenceChangeListener
 {
     private LocalizationActivityDelegate localizationDelegate;
-    private Context context;
     private Activity activity;
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
@@ -32,6 +32,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
     public static final String SELECTED_MAP_TYPE = "selected_map_type";
     public static final String SELECTED_MAP_STYLE = "selected_map_style";
     public static final String COLLECT_REPORT = "collect_report";
+    public static final String AUTO_SEND_REPORT = "auto_send_report";
 
     @Override
     public void onAttach(@NonNull Context context)
@@ -50,9 +51,9 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
     {
         setPreferencesFromResource(R.xml.fragment_settings, rootKey);
 
-        context = getContext();
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
         setMapStyleVisibility();
+        setAutoReportVisibility();
 
         localizationDelegate = new LocalizationActivityDelegate(activity);
 
@@ -64,18 +65,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
     {
         View view = super.onCreateView(inflater, container, savedInstanceState);
         ((AppCompatActivity) activity).getSupportActionBar().show();
-        return  view;
-    }
-
-    public String setMapStyleVisibility()
-    {
-        String mapType = sharedPreferences.getString(SELECTED_MAP_TYPE, "1");
-        if ("1".equals(mapType))
-            findPreference(SELECTED_MAP_STYLE).setEnabled(true);
-        else
-            findPreference(SELECTED_MAP_STYLE).setEnabled(false);
-
-        return mapType;
+        return view;
     }
 
     @Override
@@ -104,17 +94,46 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
 
             case COLLECT_REPORT:
 
-                boolean isChecked = sharedPreferences.getBoolean(COLLECT_REPORT,true);
-                editor.putBoolean(COLLECT_REPORT,isChecked);
+                boolean isCollectReportChecked = setAutoReportVisibility();
+                editor.putBoolean(COLLECT_REPORT, isCollectReportChecked);
+                break;
+
+            case AUTO_SEND_REPORT:
+
+                boolean isAutoSendChecked = sharedPreferences.getBoolean(AUTO_SEND_REPORT, true);
+                editor.putBoolean(AUTO_SEND_REPORT, isAutoSendChecked);
                 break;
         }
         editor.apply();
+    }
+
+    private String setMapStyleVisibility()
+    {
+        String mapType = sharedPreferences.getString(SELECTED_MAP_TYPE, "1");
+        if ("1".equals(mapType))
+            findPreference(SELECTED_MAP_STYLE).setEnabled(true);
+        else
+            findPreference(SELECTED_MAP_STYLE).setEnabled(false);
+
+        return mapType;
+    }
+
+    private boolean setAutoReportVisibility()
+    {
+        boolean isCollectReportChecked = sharedPreferences.getBoolean(COLLECT_REPORT, true);
+        if (isCollectReportChecked)
+            findPreference(AUTO_SEND_REPORT).setEnabled(true);
+        else
+            findPreference(AUTO_SEND_REPORT).setEnabled(false);
+
+        return isCollectReportChecked;
     }
 
     @Override
     public void onResume()
     {
         super.onResume();
+        getActivity().findViewById(R.id.toolbar).setVisibility(View.VISIBLE);
     }
 
     @Override

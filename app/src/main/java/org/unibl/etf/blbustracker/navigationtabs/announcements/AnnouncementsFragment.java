@@ -49,7 +49,7 @@ public class AnnouncementsFragment extends Fragment
                              ViewGroup container, Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.fragment_announcements, container, false);
-
+        
         String title = getString(R.string.announcements);
         ToolbarUtil.initToolbar(getActivity(), view, title);
 
@@ -73,8 +73,7 @@ public class AnnouncementsFragment extends Fragment
             if (announcementsViewModel != null)
             {
                 announcementsViewModel.activatePoolExecutors();
-                announcementsViewModel.startListening();
-                //                announcementsViewModel.getAnnouncementsFromServer();
+                announcementsViewModel.startListening(getContext());
                 swipeRefreshLayout.setRefreshing(false);
             }
         });
