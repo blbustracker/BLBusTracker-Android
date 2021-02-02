@@ -143,9 +143,4 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
         getActivity().findViewById(R.id.toolbar).setVisibility(View.GONE);
     }
 
-    @Override
-    public void onDestroy()
-    {
-        super.onDestroy();
-    }
 }

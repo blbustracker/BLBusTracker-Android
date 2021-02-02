@@ -3,23 +3,19 @@ package org.unibl.etf.blbustracker.navigationtabs.reportproblem;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.Network;
-import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.unibl.etf.blbustracker.Constants;
 import org.unibl.etf.blbustracker.R;
 import org.unibl.etf.blbustracker.networkmanager.NetworkManager;
 import org.unibl.etf.blbustracker.networkmanager.NetworkStatus;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 public class ReportProblemModel
 {
-    private static final String TAG = "ReportProblemModel";
-
     private static final String CATEGORY = "category";
     private static final String REPORT = "report";
     private static final String REPORT_TITLE = "title";
@@ -65,7 +61,6 @@ public class ReportProblemModel
             message = context.getString(R.string.problem_reported);
 
         Toast.makeText(context, message, Toast.LENGTH_LONG).show();
-        Log.d(TAG, "successfulResponse: Problem reported!");
     }
 
     void startListening()

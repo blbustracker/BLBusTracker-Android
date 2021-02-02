@@ -7,29 +7,27 @@ import android.net.Network;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import org.json.JSONObject;
 import org.unibl.etf.blbustracker.Constants;
 import org.unibl.etf.blbustracker.datahandlers.LastUpdated;
 import org.unibl.etf.blbustracker.datahandlers.database.DBFactory;
+import org.unibl.etf.blbustracker.datahandlers.database.busstop.BusStop;
 import org.unibl.etf.blbustracker.datahandlers.database.busstop.BusStopDAO;
 import org.unibl.etf.blbustracker.datahandlers.database.joinroutebusstop.JoinRouteBusStop;
 import org.unibl.etf.blbustracker.datahandlers.database.joinroutebusstop.JoinRouteBusStopDAO;
 import org.unibl.etf.blbustracker.datahandlers.database.route.Route;
 import org.unibl.etf.blbustracker.datahandlers.database.route.RouteDao;
-import org.unibl.etf.blbustracker.datahandlers.database.busstop.BusStop;
-import org.unibl.etf.blbustracker.datahandlers.jsonhandlers.RouteJSON;
 import org.unibl.etf.blbustracker.datahandlers.jsonhandlers.BusStopJSON;
+import org.unibl.etf.blbustracker.datahandlers.jsonhandlers.RouteJSON;
 import org.unibl.etf.blbustracker.datahandlers.jsonhandlers.pointfactory.PointFactory;
 import org.unibl.etf.blbustracker.networkmanager.NetworkManager;
 import org.unibl.etf.blbustracker.networkmanager.NetworkStatus;
-
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,7 +39,6 @@ import java.util.concurrent.Executors;
  */
 public class MapViewModel extends AndroidViewModel
 {
-    private static final String TAG = "MapViewModel";
     private final int N_THREADS = 10;
     private boolean isFragmentAlive = true;
 
@@ -160,7 +157,7 @@ public class MapViewModel extends AndroidViewModel
 
     private List<BusStop> getBusStopsFromDB(Context context)
     {
-        dbFactory = dbFactory.getInstance(context);
+        dbFactory = DBFactory.getInstance(context);
         if (busStopDAO == null)
             busStopDAO = dbFactory.getBusStopDAO();
         List<BusStop> busStopList = null;
@@ -176,7 +173,7 @@ public class MapViewModel extends AndroidViewModel
 
     private List<Route> getRoutesFromDB(Context context)
     {
-        dbFactory = dbFactory.getInstance(context);
+        dbFactory = DBFactory.getInstance(context);
         if (routeDao == null)
             routeDao = dbFactory.getRouteDAO();
 
@@ -218,7 +215,6 @@ public class MapViewModel extends AndroidViewModel
             public void onAvailable(@NonNull Network network)
             {
                 super.onAvailable(network);
-                Log.d(TAG, "onAvailable: intenet IS available");
                 activatePoolExecutorService();
                 getDataFromServer(context);
                 mainHandler.post(() -> isInternetAvailable.setValue(true));

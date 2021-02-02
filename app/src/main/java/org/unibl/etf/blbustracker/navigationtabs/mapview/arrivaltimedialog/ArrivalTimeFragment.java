@@ -21,8 +21,6 @@ import org.unibl.etf.blbustracker.R;
 import org.unibl.etf.blbustracker.datahandlers.database.busstop.BusStop;
 import org.unibl.etf.blbustracker.utils.TableRowUtil;
 
-import java.util.Arrays;
-
 public class ArrivalTimeFragment extends BottomSheetDialogFragment
 {
     private BusStop busStop;
@@ -64,7 +62,7 @@ public class ArrivalTimeFragment extends BottomSheetDialogFragment
         arrivalTimeViewModel.getArrivalTimesMLD().observe(getViewLifecycleOwner(), arrivalTimes ->
         {
             tableLayout.removeAllViews();
-            TableLayout.LayoutParams layout = new TableLayout.LayoutParams(TableLayout.LayoutParams.FILL_PARENT, TableLayout.LayoutParams.WRAP_CONTENT);
+            TableLayout.LayoutParams layout = new TableLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT, TableLayout.LayoutParams.WRAP_CONTENT);
 
             if (arrivalTimes != null)
             {

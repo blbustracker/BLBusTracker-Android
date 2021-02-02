@@ -7,13 +7,13 @@ import android.net.Network;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import org.json.JSONObject;
 import org.unibl.etf.blbustracker.Constants;
 import org.unibl.etf.blbustracker.datahandlers.LastUpdated;
 import org.unibl.etf.blbustracker.datahandlers.database.DBFactory;
@@ -22,9 +22,6 @@ import org.unibl.etf.blbustracker.datahandlers.database.announcement.Announcemen
 import org.unibl.etf.blbustracker.datahandlers.jsonhandlers.AnnouncementJSON;
 import org.unibl.etf.blbustracker.networkmanager.NetworkManager;
 import org.unibl.etf.blbustracker.networkmanager.NetworkStatus;
-import org.unibl.etf.blbustracker.networkmanager.ResponseCallback;
-
-import org.json.JSONObject;
 
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -36,7 +33,6 @@ import java.util.concurrent.Executors;
  */
 public class AnnouncementsViewModel extends AndroidViewModel
 {
-    private final String TAG = "AnnouncementsViewModel";
     private final int N_THREADS = 5;
 
     private boolean isFragmentAlive = true;
@@ -76,7 +72,6 @@ public class AnnouncementsViewModel extends AndroidViewModel
             {
                 getAnnouncementsFromServer(context);
                 super.onAvailable(network);
-                Log.d(TAG, "onAvailable: intenet IS available");
             }
 
         };

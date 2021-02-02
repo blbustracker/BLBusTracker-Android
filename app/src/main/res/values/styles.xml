@@ -9,12 +9,7 @@
 
     </style>
 
-    <style name="AppTheme.NoActionBar">
-        <item name="colorPrimary">@color/google_blue</item>
-        <item name="colorPrimaryDark">@color/google_blue</item>
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
-    </style>
+    <style name="AppTheme.NoActionBar"></style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
@@ -47,11 +42,7 @@
     </style>
 
     <!--for resizing Route Dialog Window when keyboard is shown-->
-    <style name="DialogStyle" parent="Theme.Design.Light.BottomSheetDialog">
-        <item name="android:windowIsFloating">false</item>
-        <item name="android:statusBarColor">@android:color/transparent</item>
-        <item name="android:windowSoftInputMode">adjustResize</item>
-    </style>
+    <style name="DialogStyle" parent="Theme.Design.Light.BottomSheetDialog"></style>
 
 
 <!--    toolbar backbutton color-->

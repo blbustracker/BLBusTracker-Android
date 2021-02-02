@@ -1,7 +1,6 @@
 package org.unibl.etf.blbustracker.networkmanager;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -9,18 +8,16 @@ import com.android.volley.Response;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import org.unibl.etf.blbustracker.Constants;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.unibl.etf.blbustracker.Constants;
 
 /**
  * Used for fetching data from the server, methode GETJson(...)
  */
 public class NetworkManager
 {
-    private final String TAG = "NetwrokManager";
-
     private static NetworkManager singletonInstance = null;
     private RequestQueue requestQueue;
 
@@ -60,7 +57,6 @@ public class NetworkManager
     public void GETJsonArray(String urlPath, Response.Listener<JSONArray> success, Response.ErrorListener error)
     {
         String fullURl = Constants.BASE_URL + urlPath;
-//        Log.d(getClass().getSimpleName(), "GETJsonArray: " + fullURl);
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, fullURl, null, success, error);
         requestQueue.add(jsonArrayRequest);
     }
@@ -80,7 +76,6 @@ public class NetworkManager
     private void request(int code, String urlPath, JSONObject body, ResponseCallback success, Response.ErrorListener error)
     {
         String fullURl = Constants.BASE_URL + urlPath;
-        Log.d(TAG, "request url: " + fullURl);
         JsonObjectRequest request = new JsonObjectRequest(
                 code,
                 fullURl,

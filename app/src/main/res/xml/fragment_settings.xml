@@ -6,8 +6,6 @@
 
     <PreferenceCategory app:title="@string/messages_header">
 
-        <!--promjeni default Value u kodu u zavisnosti od odabranog jezika-->
-
         <ListPreference
                 app:entries="@array/language_entries"
                 app:entryValues="@array/language_values"

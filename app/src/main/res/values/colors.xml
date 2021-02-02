@@ -2,10 +2,10 @@
 <resources>
     <color name="colorPrimary">#6200EE</color>
 
-    <!--    boja status bara na vrhu #3469c2-->
+    <!--    status bar color on top -->
     <color name="colorPrimaryDark">#0098f2</color>
 
-    <!--    boja floating action button-a -->
+    <!--    Floating action bar color-->
     <color name="colorAccent">#66aed8</color>
 
     <color name="Black">#000000</color>

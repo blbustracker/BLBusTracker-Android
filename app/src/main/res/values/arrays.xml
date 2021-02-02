@@ -1,6 +1,6 @@
 <resources>
 
-<!--    Biranje jezika-->
+<!--    Language-->
     <string-array name="language_entries">
         <item>English</item>
         <item>Srpski</item>
@@ -12,7 +12,7 @@
         <item>sr</item>
     </string-array>
 
-<!--    Buranje tipa mape-->
+<!--    Choosing map type -->
     <string-array name="map_type_entries">
         <item>Normal</item>
         <item>Satellite</item>
@@ -26,7 +26,7 @@
         <item>4</item>
     </string-array>
 
-<!--    Biranje stila mape-->
+<!--   Choosing map style -->
     <string-array name="map_style_entries">
         <item>Normal</item>
         <item>Night</item>
@@ -35,6 +35,9 @@
         <item>Dark</item>
         <item>Aubergine</item>
     </string-array>
+
+
+<!--    map styles for google api-->
     <string-array name="map_style_values">
         <item>normal</item>
         <item>mapstyle_night</item>

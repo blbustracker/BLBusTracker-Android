@@ -22,12 +22,6 @@
                 android:icon="@drawable/ic_about_black"
                 android:title="@string/route_schedule" />
 
-<!--        <item-->
-<!--                android:id="@+id/nav_alarm"-->
-<!--                android:icon="@drawable/ic_alarm_clock"-->
-<!--                android:title="@string/alarm"-->
-
-<!--                />-->
     </group>
 
     <group
@@ -47,11 +41,6 @@
                 android:id="@+id/nav_about"
                 android:icon="@drawable/ic_info_about"
                 android:title="@string/about" />
-
-<!--        <item-->
-<!--                android:id="@+id/nav_contact"-->
-<!--                android:icon="@drawable/ic_phone_black"-->
-<!--                android:title="@string/contact" />-->
 
     </group>
 

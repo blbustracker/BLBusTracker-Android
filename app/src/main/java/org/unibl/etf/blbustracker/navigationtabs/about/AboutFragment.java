@@ -1,20 +1,20 @@
 package org.unibl.etf.blbustracker.navigationtabs.about;
 
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.fragment.app.Fragment;
+
+import org.unibl.etf.blbustracker.BuildConfig;
 import org.unibl.etf.blbustracker.R;
 import org.unibl.etf.blbustracker.utils.ToolbarUtil;
 
 public class AboutFragment extends Fragment
 {
-    private static final String LINE_BREAK = "\n\n";
+    private static final String DOUBLE_LINE_BREAK = "\n\n";
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -35,10 +35,10 @@ public class AboutFragment extends Fragment
     {
         TextView textView = (TextView) view.findViewById(R.id.about_content);
         String content = "";
-        content += getString(R.string.app_name) + LINE_BREAK;
-        content += getString(R.string.about_paragraph_1) + LINE_BREAK;
-        content += getString(R.string.about_paragraph_2) + LINE_BREAK;
-        content += getString(R.string.version) + LINE_BREAK;
+        content += getString(R.string.app_name) + DOUBLE_LINE_BREAK;
+        content += getString(R.string.about_paragraph_1) + DOUBLE_LINE_BREAK;
+        content += getString(R.string.about_paragraph_2) + DOUBLE_LINE_BREAK;
+        content += getString(R.string.version) + " " + BuildConfig.VERSION_NAME + DOUBLE_LINE_BREAK;
         content += getString(R.string.undp_header);
 
         textView.setText(content);

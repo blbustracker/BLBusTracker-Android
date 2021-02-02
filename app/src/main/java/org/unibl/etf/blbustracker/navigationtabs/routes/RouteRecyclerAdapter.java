@@ -2,7 +2,6 @@ package org.unibl.etf.blbustracker.navigationtabs.routes;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -67,7 +66,6 @@ public class RouteRecyclerAdapter extends RecyclerView.Adapter<RouteRecyclerAdap
             KeyboardUtils.hideKeyboard(v);
             //calling implemented onRoutClicked (implemented in MapFragment class)
             routeClickedListener.onRouteInDialogClicked(getAdapterPosition());
-            Log.d("Test", "onClick: ");
         }
     }
 

@@ -17,6 +17,8 @@ public abstract class Constants
     public static final int LAYOUT_ANIMATION_DURATION = 500;    // duration of expand/collapse search layout
 
     public static final int BUS_REFRESH_INTERVAL = 1000;        //update bus position every 1s
+    public static final int BUS_CLICKED_INTERVAL = 4000;        //update bus position every 1s
+
 
     public static final String SERVER_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"; //date format on server
     public static final String MY_DATE_FORMAT = "dd-MM-yyyy";                //date format for showing

@@ -45,7 +45,7 @@
     <string name="report_title">Naslov</string>
     <string name="about_paragraph_1" >Aplikacija za korisnike javnog prevoza u urbanoj zoni grada Banja Luka.</string>
     <string name="about_paragraph_2">Razvijena od strane Elektrotehničkog fakulteta, Univerziteta u Banjoj Luci i kompanije Autoprevoz, u sklopu \"Future City Innovation Challenge\" inicijative.</string>
-    <string name="version">Verzija: 1.0</string>
+    <string name="version">Verzija</string>
     <string name="arrivals">Dolasci:</string>
     <string name="cannot_connect_to_internet" translatable="false">Server nije pronađen. Molimo pokušajte kasnije</string>
     <string name="server_not_found" translatable="false">Server nije pronađen. Molimo pokušajte kasnije</string>

@@ -29,24 +29,11 @@
             tools:layout="@layout/fragment_about"
             />
 
-<!--    <fragment-->
-<!--            android:id="@+id/nav_alarm"-->
-<!--            android:name="com.passengerapp.uinavigationtabs.alarm_fragment.AlarmFragment"-->
-<!--            android:label="@string/alarm"-->
-<!--            tools:layout="@layout/fragment_alarm"-->
-<!--        />-->
-
     <fragment
             android:id="@+id/nav_settings"
             android:name="org.unibl.etf.blbustracker.navigationtabs.settings.SettingsFragment"
             android:label="@string/settings"
             />
-
-<!--    <fragment-->
-<!--            android:id="@+id/nav_contact"-->
-<!--            android:name="com.passengerapp.uinavigationtabs.contact_fragment.ContactFragment"-->
-<!--            android:label="fragment_contact"-->
-<!--            tools:layout="@layout/fragment_contact" />-->
 
     <fragment
             android:id="@+id/nav_route_schedule"
@@ -54,7 +41,5 @@
             android:label="@string/route_schedule"
             tools:layout="@layout/fragment_route_schedule"
             />
-
-
 
 </navigation>

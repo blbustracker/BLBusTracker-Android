@@ -2,16 +2,11 @@ package org.unibl.etf.blbustracker.navigationtabs.mapview.arrivaltimedialog;
 
 import android.app.Application;
 import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.Network;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-
-import com.android.volley.Response;
 
 import org.json.JSONArray;
 import org.unibl.etf.blbustracker.Constants;
@@ -34,7 +29,6 @@ public class ArrivalTimeViewModel extends AndroidViewModel
     private NetworkManager networkManager;
 
     private boolean isFragmentAlive = true;
-    private Integer stationId;
 
     private ExecutorService poolExecutorService;
 
@@ -75,14 +69,12 @@ public class ArrivalTimeViewModel extends AndroidViewModel
                     ex.printStackTrace();
                 }
             }
-            Log.d(getClass().getSimpleName(), "startListening: killing the LOOP");
         });
     }
 
     private void onSuccessfulResponse(JSONArray response)
     {
 
-        System.out.println(response);
         ArrivalTimeJSON arrivalTimeJSON = new ArrivalTimeJSON();
         List<ArrivalTime> arrivalTimes = arrivalTimeJSON.getArrivalTimes(response);
         arrivalTimesMLD.setValue(arrivalTimes);
@@ -90,7 +82,6 @@ public class ArrivalTimeViewModel extends AndroidViewModel
 
     public void stopListening()
     {
-        stationId = null;
         poolExecutorService.shutdown();
         isFragmentAlive = false;
     }

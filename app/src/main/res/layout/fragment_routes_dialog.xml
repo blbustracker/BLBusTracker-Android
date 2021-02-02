@@ -28,7 +28,6 @@
 
     <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/street_recycler_view"
-            class="androidx.appcompat.app.AlertController$RecycleListView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             tools:listitem="@layout/item_route" />

@@ -1,12 +1,10 @@
 package org.unibl.etf.blbustracker.navigationtabs.routeschedule;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.text.LineBreaker;
+import android.os.Build;
 import android.text.Html;
 import android.text.Spanned;
-import android.view.Gravity;
-import android.view.View;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import org.unibl.etf.blbustracker.R;
@@ -16,6 +14,7 @@ import org.unibl.etf.blbustracker.utils.TableRowUtil;
 import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 public class RouteScheduleModel
@@ -73,8 +72,10 @@ public class RouteScheduleModel
         textView.append(NEWLINE);
         textView.append(NEWLINE);
 
-        textView.setGravity(Gravity.CENTER);
-        textView.setTextAlignment(View.TEXT_ALIGNMENT_TEXT_START);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            textView.setJustificationMode(LineBreaker.JUSTIFICATION_MODE_INTER_WORD);
+        }
+
         return textView;
     }
 
@@ -106,7 +107,8 @@ public class RouteScheduleModel
     private List<ScheduleTime> splitAndMapSchedule(String schedule) throws Exception
     {
         List<String> times = Arrays.asList(schedule.trim().split(SPACE_REGEX));
-        return times.stream().map(x ->
+        AtomicBoolean isException = new AtomicBoolean(false);
+        List<ScheduleTime> scheduleTimes = times.stream().map(x ->
         {
             ScheduleTime scheduleTime = null;
             try
@@ -114,10 +116,16 @@ public class RouteScheduleModel
                 scheduleTime = new ScheduleTime(x);
             } catch (Exception e)
             {
+                isException.set(true);
                 e.printStackTrace();
             }
             return scheduleTime;
         }).collect(Collectors.toList());
+
+        if(isException.get())
+            throw new Exception();
+
+        return scheduleTimes;
     }
 
     /**

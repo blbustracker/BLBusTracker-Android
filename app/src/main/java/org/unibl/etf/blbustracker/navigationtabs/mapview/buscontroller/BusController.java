@@ -6,7 +6,6 @@ import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 
 import androidx.core.content.ContextCompat;
 
@@ -16,6 +15,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import org.json.JSONArray;
 import org.unibl.etf.blbustracker.Constants;
 import org.unibl.etf.blbustracker.R;
 import org.unibl.etf.blbustracker.datahandlers.database.Bus;
@@ -24,9 +24,6 @@ import org.unibl.etf.blbustracker.datahandlers.jsonhandlers.BusJSON;
 import org.unibl.etf.blbustracker.networkmanager.NetworkManager;
 import org.unibl.etf.blbustracker.networkmanager.NetworkStatus;
 import org.unibl.etf.blbustracker.utils.DrawableUtil;
-
-import org.json.JSONArray;
-import org.unibl.etf.blbustracker.utils.Utils;
 
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -38,7 +35,7 @@ import java.util.concurrent.Executors;
 
 public class BusController
 {
-    private static final String TAG = "BusController";
+
     public static final int N_THREADS = 2;
     public static final float busZIndex = 1.1f; // default zIndex is 1.0, to bring busMarker to front
 
@@ -83,29 +80,27 @@ public class BusController
         activatePoolExecutors();
         twoThreads.execute(() ->
         {
-            Log.d(TAG, "startBusTracking: created");
             while (isActive)
             {
                 try
                 {
                     if (!isBusMarkerClicked)    // if bus is clicked, stop all movement on map
                     {
-                        //                        Log.d(getClass().getSimpleName(), "startBusTracking: " + Utils.getCurrentDateAndTime());
                         networkManager.GETJsonArray(busLocationUrlQuery
                                 , object -> successResponse(object, context)
-                                , error ->
-                                {
-                                    NetworkStatus.errorConnectingToInternet(error, context, false);
-                                    System.out.println("buscontroller network error");
-                                });
+                                , error -> NetworkStatus.errorConnectingToInternet(error, context, false));
+                    } else
+                    {
+                        Thread.sleep(Constants.BUS_CLICKED_INTERVAL);
+                        isBusMarkerClicked = false;
                     }
+
                     Thread.sleep(Constants.BUS_REFRESH_INTERVAL);
                 } catch (InterruptedException ex)
                 {
                     ex.printStackTrace();
                 }
             }
-            Log.d(TAG, "startBusTracking: destroyed");
         });
     }
 
@@ -114,10 +109,9 @@ public class BusController
      */
     public void successResponse(JSONArray object, Context context)
     {
-        //        Log.d(getClass().getSimpleName(), "successResponse: " + Utils.getCurrentDateAndTime());
         if (object == null || object.length() == 0)
         {
-            clearMarker();
+            clearBusMarkers();
             return;
         }
 
@@ -128,10 +122,18 @@ public class BusController
 
             mainHandler.post(() ->
             {
-                clearMarker();
+                clearBusMarkers();
                 setMarkers(busList, context);
             });
         });
+    }
+
+    private void clearBusMarkers()
+    {
+        for (Marker busMarker : busMarkers)
+        {
+            busMarker.remove();
+        }
     }
 
     /**
@@ -139,28 +141,30 @@ public class BusController
      */
     private void setMarkers(List<Bus> busList, Context context)
     {
-        for (Bus bus : busList)
-        {
-            MarkerOptions busMarkerOption = new MarkerOptions()
-                    .position(bus.getLocation())
-                    .title(bus.getLine())
-                    .zIndex(busZIndex);
-
-            BitmapDescriptor busColoredIcon;
-
-            if (busIconsHashMap.containsKey(bus))
-                busColoredIcon = busIconsHashMap.get(bus);
-            else
+        if (busList != null)
+            for (Bus bus : busList)
             {
-                busColoredIcon = getBusColoredIcon(bus, context);
-                busIconsHashMap.put(bus, busColoredIcon);
-            }
-            busMarkerOption.icon(busColoredIcon); // set colored icon here;
+                MarkerOptions busMarkerOption = new MarkerOptions()
+                        .position(bus.getLocation())
+                        .title(bus.getLine())
+                        .zIndex(busZIndex);
 
-            Marker busMarker = map.addMarker(busMarkerOption);
-            busMarker.setTag(bus);
-            busMarkers.add(busMarker);
-        }
+                BitmapDescriptor busColoredIcon;
+
+                if (busIconsHashMap.containsKey(bus))
+                    busColoredIcon = busIconsHashMap.get(bus);
+                else
+                {
+                    busColoredIcon = getBusColoredIcon(bus, context);
+                    busIconsHashMap.put(bus, busColoredIcon);
+                }
+                busMarkerOption.icon(busColoredIcon); // set colored icon here;
+
+
+                Marker busMarker = map.addMarker(busMarkerOption);  // Adding bus marker to Map
+                busMarker.setTag(bus);
+                busMarkers.add(busMarker);
+            }
     }
 
     private BitmapDescriptor getBusColoredIcon(Bus bus, Context context)
@@ -182,15 +186,6 @@ public class BusController
         return getMarkerIconFromDrawable(busDrawable);
     }
 
-    private void clearMarker()
-    {
-        //        Log.d(TAG, "clearMarker");
-        for (Marker busMarker : busMarkers)
-        {
-            busMarker.remove();
-        }
-    }
-
     //create busicon from drawable
     private BitmapDescriptor getMarkerIconFromDrawable(Drawable drawable)
     {
@@ -204,11 +199,10 @@ public class BusController
 
     public void setActive(boolean active)
     {
-        Log.d(TAG, "setActive " + active);
         isActive = active;
     }
 
-    public void setBusMarkerClicked(boolean busMarkerClicked)
+    public void setIsBusMarkerClicked(boolean busMarkerClicked)
     {
         isBusMarkerClicked = busMarkerClicked;
     }
@@ -228,11 +222,6 @@ public class BusController
     {
         if (twoThreads == null || twoThreads.isShutdown())
             twoThreads = Executors.newFixedThreadPool(N_THREADS);
-    }
-
-    public String getBusLocationUrlQuery()
-    {
-        return busLocationUrlQuery;
     }
 
     public void setBusLocationUrlQuery(String busLineName)

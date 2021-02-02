@@ -4,10 +4,6 @@ import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Looper;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -40,9 +36,9 @@ import org.unibl.etf.blbustracker.R;
 import org.unibl.etf.blbustracker.datahandlers.database.Bus;
 import org.unibl.etf.blbustracker.datahandlers.database.busstop.BusStop;
 import org.unibl.etf.blbustracker.datahandlers.database.route.Route;
-import org.unibl.etf.blbustracker.navigationtabs.mapview.buscontroller.BusController;
 import org.unibl.etf.blbustracker.navigationtabs.mapview.arrivaltimedialog.ArrivalTimeFragment;
 import org.unibl.etf.blbustracker.navigationtabs.mapview.arrivaltimedialog.MoreOptionsInterface;
+import org.unibl.etf.blbustracker.navigationtabs.mapview.buscontroller.BusController;
 import org.unibl.etf.blbustracker.navigationtabs.mapview.destinationmarkeroptions.MarkerCustomInfoWindow;
 import org.unibl.etf.blbustracker.navigationtabs.mapview.destinationmarkeroptions.MarkerDialog;
 import org.unibl.etf.blbustracker.navigationtabs.mapview.destinationmarkeroptions.MarkerDialogListener;
@@ -179,7 +175,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback
         //observe BusStop list changes
         mapViewModel.getMutableBusStops().observe(getViewLifecycleOwner(), busStops ->
         {
-            Log.d(getClass().getSimpleName(), "onBusStopChanged: BusStops are updated");
             mapUtils.onBusStopChanged(busStops);
             SearchBusStopAdapter searchBusStopAdapter = new SearchBusStopAdapter(context, busStops);
             startDestinationEditText.setAdapter(searchBusStopAdapter);
@@ -189,7 +184,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback
         //observe Route list changes
         mapViewModel.getMutableRoutes().observe(getViewLifecycleOwner(), routeList ->
         {
-            Log.d(getClass().getSimpleName(), "onRouteChanged: routes are updated");
             mapUtils.onRouteChanged(routeList);
             busController.setRoutes(routeList);
             routesBottomDialog.setAllRoutes(routeList);
@@ -217,17 +211,19 @@ public class MapFragment extends Fragment implements OnMapReadyCallback
     public boolean onMarkerClick(Marker marker)
     {
         Object obj = marker.getTag();
-        isMarkerClicked = true; // used in onMapClicked(...)
 
         if (obj instanceof Bus)
         {
             marker.showInfoWindow();
             //TODO: set which bus is clicked so only this bus marker doesnt move
             if (busController != null)
-                busController.setBusMarkerClicked(true);
+            {
+                busController.setIsBusMarkerClicked(true);
+            }
 
         } else if (obj instanceof BusStop)
         {
+            isMarkerClicked = true; // used in onMapClicked(...)
             marker.hideInfoWindow();
             BusStop busStop = (BusStop) obj;
             timeFragment = new ArrivalTimeFragment(busStop, this);
@@ -325,7 +321,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback
         if (busController != null)
         {
             busController.setBusLocationUrlQuery(route.getName());
-            busController.setBusMarkerClicked(false);
+            busController.setIsBusMarkerClicked(false);
         }
 
         mapUtils.onRouteInDialogClicked(route);
@@ -345,12 +341,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback
 
         if (busController != null && busController.isBusMarkerClicked())
         {
-            busController.setBusMarkerClicked(false);
+            busController.setIsBusMarkerClicked(false);
             isMarkerClicked = false;
         } else if (isMarkerClicked)
         {
             isMarkerClicked = false;
-            //TODO: show all routes/busses
+
         } else if (startDestinationEditText.hasFocus() || endDestinationEditText.hasFocus())
         {
             startDestinationEditText.clearFocus();
@@ -414,33 +410,30 @@ public class MapFragment extends Fragment implements OnMapReadyCallback
     {
         BusStop busStop;
 
-        switch (textView.getId())
+        if (textView.getId() == startDestinationEditText.getId())
         {
-            case R.id.start_destination_edittext:
-                busStop = getBusStopOnEditorAction(startDestinationEditText);
-                startDestinationMarker = setDestinationMarker(busStop,
-                        startDestinationEditText,
-                        startDestinationMarker,
-                        mapUtils.getStartDestinationIcon());
+            busStop = getBusStopOnEditorAction(startDestinationEditText);
+            startDestinationMarker = setDestinationMarker(busStop,
+                    startDestinationEditText,
+                    startDestinationMarker,
+                    mapUtils.getStartDestinationIcon());
 
-                if (startDestinationMarker != null)
-                    moveCameraToDestination(startDestinationMarker);
-                break;
+            if (startDestinationMarker != null)
+                moveCameraToDestination(startDestinationMarker);
 
-            case R.id.end_destination_edittext:
-                busStop = getBusStopOnEditorAction(endDestinationEditText);
-                endDestinationMarker = setDestinationMarker(busStop,
-                        endDestinationEditText,
-                        endDestinationMarker,
-                        mapUtils.getEndDestinationIcon());
+        } else if (textView.getId() == endDestinationEditText.getId())
+        {
+            busStop = getBusStopOnEditorAction(endDestinationEditText);
+            endDestinationMarker = setDestinationMarker(busStop,
+                    endDestinationEditText,
+                    endDestinationMarker,
+                    mapUtils.getEndDestinationIcon());
 
-                if (endDestinationMarker != null)
-                    moveCameraToDestination(endDestinationMarker);
-                break;
+            if (endDestinationMarker != null)
+                moveCameraToDestination(endDestinationMarker);
         }
 
         checkMarkersForRoute();
-
         textView.clearFocus();
         return true;
     }
@@ -566,21 +559,25 @@ public class MapFragment extends Fragment implements OnMapReadyCallback
     @Override
     public void onFocusChange(View view, boolean hasFocus)
     {
-        //        Log.d(getClass().getSimpleName(), "onFocusChange: focus has been changed");
         if (!hasFocus)
             KeyboardUtils.hideKeyboard(getView());
 
-        if(view.getId()==startDestinationEditText.getId())
+        if (view.getId() == startDestinationEditText.getId())
         {
-            if ("".contentEquals(startDestinationEditText.getText()))
-                ((SearchBusStopAdapter) startDestinationEditText.getAdapter()).getFilter().filter(startDestinationEditText.getText());
-            showDropDown(startDestinationEditText, hasFocus);
-        }else if(view.getId()==endDestinationEditText.getId())
+            showDropdownOnFocusChange(hasFocus, startDestinationEditText);
+
+        } else if (view.getId() == endDestinationEditText.getId())
         {
-            if ("".contentEquals(endDestinationEditText.getText()))
-                ((SearchBusStopAdapter) endDestinationEditText.getAdapter()).getFilter().filter(endDestinationEditText.getText());
-            showDropDown(endDestinationEditText, hasFocus);
+            showDropdownOnFocusChange(hasFocus, endDestinationEditText);
         }
+    }
+
+    private void showDropdownOnFocusChange(boolean hasFocus, AutoCompleteTextView startDestinationEditText)
+    {
+        SearchBusStopAdapter searchBusStopAdapter = ((SearchBusStopAdapter) startDestinationEditText.getAdapter());
+        if ("".contentEquals(startDestinationEditText.getText()) && searchBusStopAdapter != null)
+            searchBusStopAdapter.getFilter().filter(startDestinationEditText.getText());
+        showDropDown(startDestinationEditText, hasFocus);
     }
 
 
@@ -588,7 +585,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback
     {
         if (isFocused)
         {
-            handler.postDelayed(destinationEditText::showDropDown,SHORT_DELAY);
+            handler.postDelayed(destinationEditText::showDropDown, SHORT_DELAY);
         } else
             destinationEditText.dismissDropDown();
     }
@@ -631,7 +628,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback
             if (busController != null)
             {
                 busController.resetBusLocationUrlQuery();
-                busController.setBusMarkerClicked(false);
+                busController.setIsBusMarkerClicked(false);
             }
         });
     }

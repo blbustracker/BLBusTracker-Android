@@ -45,16 +45,16 @@
             android:layout_height="match_parent"
             android:clipToPadding="false"
             android:paddingTop="5dp"
-            android:paddingBottom="80dp">
+            android:paddingBottom="80dp"
+            >
 
         <TableLayout
                 android:id="@+id/tablelayout"
-                android:padding="15dp"
-                android:layout_gravity="center_horizontal"
-                android:stretchColumns="*"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-
+                android:layout_height="wrap_content"
+                android:padding="15dp"
+                android:stretchColumns="*"
+                >
         </TableLayout>
 
     </ScrollView>

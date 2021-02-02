@@ -17,15 +17,15 @@ import java.util.List;
  */
 public class RouteBusStopConnection
 {
-    private DBFactory DBFactory;
+    private DBFactory dbFactory;
     private BusStopDAO busStopDAO;
     private JoinRouteBusStopDAO middleDao;
 
     public RouteBusStopConnection(Context context)
     {
-        DBFactory = DBFactory.getInstance(context);
-        busStopDAO = DBFactory.getBusStopDAO();
-        middleDao = DBFactory.getJoinRouteBusStopDAO();
+        dbFactory = DBFactory.getInstance(context);
+        busStopDAO = dbFactory.getBusStopDAO();
+        middleDao = dbFactory.getJoinRouteBusStopDAO();
     }
 
     /**

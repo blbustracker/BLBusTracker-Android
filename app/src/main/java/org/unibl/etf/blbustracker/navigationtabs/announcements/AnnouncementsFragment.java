@@ -27,7 +27,6 @@ import java.util.List;
  */
 public class AnnouncementsFragment extends Fragment
 {
-    private static final String TAG = "AnnouncementsFragment";
 
     private AnnouncementsViewModel announcementsViewModel;
 

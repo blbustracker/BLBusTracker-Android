@@ -53,9 +53,6 @@ public class MapActivity extends LocalizationActivity implements DrawerLayout.Dr
 
         super.onCreate(savedInstanceState);
         //        checkProviderInstaller(); // for fixing volley on android <=4.4
-
-
-        //TODO: check for settings here
         initCrashWatcher();
 
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);

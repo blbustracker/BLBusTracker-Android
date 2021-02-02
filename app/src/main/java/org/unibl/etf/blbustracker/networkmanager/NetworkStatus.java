@@ -121,7 +121,6 @@ public class NetworkStatus
             String finalMessage = message;
             new Handler(Looper.getMainLooper()).post(() ->
             {
-                System.out.println(finalMessage);
                 if(showToast)
                     Toast.makeText(context, finalMessage, Toast.LENGTH_SHORT).show();
             });

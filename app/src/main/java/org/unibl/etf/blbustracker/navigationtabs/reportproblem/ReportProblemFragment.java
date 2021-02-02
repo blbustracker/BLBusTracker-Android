@@ -1,26 +1,24 @@
 package org.unibl.etf.blbustracker.navigationtabs.reportproblem;
 
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
+import androidx.fragment.app.Fragment;
+
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+
 import org.unibl.etf.blbustracker.R;
 import org.unibl.etf.blbustracker.networkmanager.NetworkStatus;
-import org.unibl.etf.blbustracker.utils.ToolbarUtil;
 import org.unibl.etf.blbustracker.utils.AlertUtil;
+import org.unibl.etf.blbustracker.utils.ToolbarUtil;
 
 public class ReportProblemFragment extends Fragment
 {
-    public static final String TAG = "ReportProblemFragment";
-
     private EditText reportTitle;
     private TextInputEditText reportContent;
 

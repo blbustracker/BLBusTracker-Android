@@ -15,7 +15,6 @@ import java.util.List;
  */
 public class RouteJSON extends JSONHandler
 {
-    private static final String TAG = "RouteJSON";
     private final String NUMBER = "number";
     private final String ROUTES_JSONARRAY = "routes";
 

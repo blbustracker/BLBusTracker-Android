@@ -93,24 +93,6 @@ public class MarkerDialog extends DialogFragment
 
     }
 
-    @Override
-    public void onStart()
-    {
-        super.onStart();
-    }
-
-    @Override
-    public void onResume()
-    {
-        super.onResume();
-    }
-
-    @Override
-    public void onDestroy()
-    {
-        super.onDestroy();
-    }
-
     public void destroyInstance()
     {
         markerDialogListener = null;
