@@ -9,7 +9,7 @@ import android.view.inputmethod.InputMethodSubtype;
 
 import androidx.annotation.NonNull;
 
-public class KeyboardUtils
+public abstract class KeyboardUtils
 {
 
     //get users keyboard input locale

@@ -12,7 +12,7 @@ import androidx.core.graphics.ColorUtils;
 import org.unibl.etf.blbustracker.R;
 import org.unibl.etf.blbustracker.datahandlers.database.route.Route;
 
-public class DrawableUtil
+public abstract class DrawableUtil
 {
     private static final int MAX_ALPHA = 255;
 

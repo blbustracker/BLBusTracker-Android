@@ -8,6 +8,7 @@ import android.widget.Toast;
 import org.unibl.etf.blbustracker.BuildConfig;
 import org.unibl.etf.blbustracker.Constants;
 import org.unibl.etf.blbustracker.R;
+import org.unibl.etf.blbustracker.navigationtabs.mapview.arrivaltimedialog.TimeUtil;
 import org.unibl.etf.blbustracker.navigationtabs.settings.SettingsFragment;
 import org.unibl.etf.blbustracker.networkmanager.NetworkManager;
 import org.unibl.etf.blbustracker.networkmanager.NetworkStatus;
@@ -104,7 +105,7 @@ public class ReportCrash
             int versionCode = BuildConfig.VERSION_CODE;
             String versionName = BuildConfig.VERSION_NAME;
             jsonObject.put(CATEGORY, CRASH);
-            String title = SUBJECT + Utils.getCurrentDateAndTime()
+            String title = SUBJECT + TimeUtil.getCurrentDateAndTime()
                     + " API: " + Build.VERSION.SDK_INT
                     + " versionCode: " + versionCode
                     + " versionName: " + versionName;

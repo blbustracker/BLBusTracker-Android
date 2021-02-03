@@ -10,16 +10,11 @@ import android.widget.Toast;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.maps.model.LatLng;
+
 import org.unibl.etf.blbustracker.R;
 import org.unibl.etf.blbustracker.phoneoptions.PermissionCode;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 public abstract class Utils
 {
@@ -45,13 +40,6 @@ public abstract class Utils
     {
         SharedPreferences sharedPreferences = getSharedPreferences(context);
         return sharedPreferences.getString(key, defaultValue);
-    }
-
-    public static String getCurrentDateAndTime()
-    {
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
-        LocalDateTime now = LocalDateTime.now();
-        return dtf.format(now);
     }
 
     /**
@@ -87,36 +75,6 @@ public abstract class Utils
         }
 
         return result;
-    }
-
-    /**
-     * Format date from Server to the format readable to users
-     *
-     * @param inputDate javascript date as a string
-     * @return return date in targetDateFormat
-     */
-    public static String formatInputDate(String inputDate, String inputDateFormat, String targetDateFormat)
-    {
-        String dateStr = null;
-        try
-        {
-            dateStr = inputDate;
-            DateFormat srcDf = new SimpleDateFormat(inputDateFormat, Locale.ENGLISH);
-            // parse the date string into Date object
-            Date date = srcDf.parse(dateStr);
-
-            DateFormat destDf = new SimpleDateFormat(targetDateFormat, Locale.ENGLISH);
-            // format the date into another format
-            dateStr = destDf.format(date);
-
-            return dateStr;
-
-        } catch (Exception ex)
-        {
-            ex.printStackTrace();
-        }
-
-        return inputDate;
     }
 
     /**

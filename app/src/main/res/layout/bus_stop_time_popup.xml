@@ -66,13 +66,12 @@
                     android:layout_width="match_parent"
                     android:layout_height="141dp"
                     android:fadeScrollbars="false"
+                    android:padding="15dp"
                     android:background="@color/white">
 
                 <TableLayout
                         android:id="@+id/tablelayout"
-                        android:padding="15dp"
                         android:layout_width="match_parent"
-                        android:stretchColumns="*"
                         android:layout_height="wrap_content">
 
                     <TextView

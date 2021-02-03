@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TableLayout;
-import android.widget.TableRow;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -19,13 +18,12 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
 import org.unibl.etf.blbustracker.R;
 import org.unibl.etf.blbustracker.datahandlers.database.busstop.BusStop;
-import org.unibl.etf.blbustracker.utils.TableRowUtil;
 
 public class ArrivalTimeFragment extends BottomSheetDialogFragment
 {
     private BusStop busStop;
     private ArrivalTimeViewModel arrivalTimeViewModel;
-
+    private ArrivalTimeModel arrivalTimeModel;
     //UI fields
     private TextView busStopName;
     private Button moreOptionsBtn;
@@ -57,25 +55,13 @@ public class ArrivalTimeFragment extends BottomSheetDialogFragment
 
     private void initArrivalTimeViewModel()
     {
+        arrivalTimeModel = new ArrivalTimeModel(busStop, getContext());
         arrivalTimeViewModel = new ViewModelProvider(this).get(ArrivalTimeViewModel.class);
         arrivalTimeViewModel.startListening(busStop, getContext());
         arrivalTimeViewModel.getArrivalTimesMLD().observe(getViewLifecycleOwner(), arrivalTimes ->
         {
             tableLayout.removeAllViews();
-            TableLayout.LayoutParams layout = new TableLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT, TableLayout.LayoutParams.WRAP_CONTENT);
-
-            if (arrivalTimes != null)
-            {
-                for (ArrivalTime arrivalTime : arrivalTimes)
-                {
-                    TableRow tableRow = TableRowUtil.createRow(getContext(), arrivalTime);
-                    tableLayout.addView(tableRow, layout);
-                }
-            } else
-            {
-                TableRow tableRow = TableRowUtil.createRow(getContext(), getString(R.string.no_busstop_time));
-                tableLayout.addView(tableRow, layout);
-            }
+            arrivalTimeModel.fillTableLayoutWithTimes(arrivalTimes, tableLayout);
 
         });
     }
@@ -85,7 +71,6 @@ public class ArrivalTimeFragment extends BottomSheetDialogFragment
     {
         super.onViewCreated(view, savedInstanceState);
         busStopName.setText(busStop.getDesc());
-
     }
 
     private void initButtons(View dialogView)
@@ -113,6 +98,9 @@ public class ArrivalTimeFragment extends BottomSheetDialogFragment
         moreOptionsInterface = null;
         if (arrivalTimeViewModel != null)
             arrivalTimeViewModel.stopListening();
+        if (arrivalTimeModel != null)
+            arrivalTimeModel.shutdownPoolExecutorService();
+        arrivalTimeModel = null;
         super.onDestroy();
     }
 

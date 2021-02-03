@@ -17,7 +17,7 @@ public class BusStopJSON extends JSONHandler
     private final String NUMBER = "number";
     private final String BUSSTOP_JSONARRAY = "stops";
 
-    private final String BUSSTOP_ID = "ID";
+    public static final String BUSSTOP_ID = "ID";
     private final String LAT = "lat";
     private final String LNG = "lng";
     private final String DESC = "description";

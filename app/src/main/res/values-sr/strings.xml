@@ -61,4 +61,5 @@
     <string name="report_sent">Извјештај послан. Хвала!</string>
     <string name="no_internet_try_again">Тренутно нема интернета. Молимо покушајте поново</string>
     <string name="about">О апликацији</string>
+    <string name="next_departure_in">сљедећи полазак у</string>
 </resources>

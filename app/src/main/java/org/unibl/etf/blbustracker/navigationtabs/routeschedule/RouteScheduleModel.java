@@ -12,14 +12,10 @@ import org.unibl.etf.blbustracker.datahandlers.database.route.Route;
 import org.unibl.etf.blbustracker.utils.TableRowUtil;
 
 import java.time.LocalTime;
-import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.stream.Collectors;
 
 public class RouteScheduleModel
 {
-    private static final String SPACE_REGEX = "\\s+";
     private static final String NEWLINE = "\n";
     private static final String BLACK_COLOR = "#000000";
     private static final String GRAY_COLOR = "#969696";
@@ -35,19 +31,19 @@ public class RouteScheduleModel
 
     public TextView getWorkDaySchedule(Context context) throws Exception
     {
-        List<ScheduleTime> scheduleTimes = splitAndMapSchedule(route.getWorkdaySchedule());
+        List<ScheduleTime> scheduleTimes = ParseScheduleUtil.splitAndMapSchedule(route.getWorkdaySchedule());
         return splitTextColorByTime(context.getString(R.string.workday), scheduleTimes, context);
     }
 
     public TextView getSaturdaySchedule(Context context) throws Exception
     {
-        List<ScheduleTime> scheduleTimes = splitAndMapSchedule(route.getSaturdaySchedule());
+        List<ScheduleTime> scheduleTimes = ParseScheduleUtil.splitAndMapSchedule(route.getSaturdaySchedule());
         return splitTextColorByTime(context.getString(R.string.saturday), scheduleTimes, context);
     }
 
     public TextView getSundaySchedule(Context context) throws Exception
     {
-        List<ScheduleTime> scheduleTimes = splitAndMapSchedule(route.getSundaySchedule());
+        List<ScheduleTime> scheduleTimes = ParseScheduleUtil.splitAndMapSchedule(route.getSundaySchedule());
         return splitTextColorByTime(context.getString(R.string.sunday), scheduleTimes, context);
     }
 
@@ -102,30 +98,6 @@ public class RouteScheduleModel
 
         textView.setText(stringBuilder.toString());
         return textView;
-    }
-
-    private List<ScheduleTime> splitAndMapSchedule(String schedule) throws Exception
-    {
-        List<String> times = Arrays.asList(schedule.trim().split(SPACE_REGEX));
-        AtomicBoolean isException = new AtomicBoolean(false);
-        List<ScheduleTime> scheduleTimes = times.stream().map(x ->
-        {
-            ScheduleTime scheduleTime = null;
-            try
-            {
-                scheduleTime = new ScheduleTime(x);
-            } catch (Exception e)
-            {
-                isException.set(true);
-                e.printStackTrace();
-            }
-            return scheduleTime;
-        }).collect(Collectors.toList());
-
-        if(isException.get())
-            throw new Exception();
-
-        return scheduleTimes;
     }
 
     /**

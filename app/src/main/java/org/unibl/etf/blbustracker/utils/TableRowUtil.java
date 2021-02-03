@@ -3,7 +3,6 @@ package org.unibl.etf.blbustracker.utils;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
-import android.text.InputType;
 import android.widget.TableRow;
 import android.widget.TextView;
 
@@ -16,9 +15,10 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-public class TableRowUtil
+public abstract class TableRowUtil
 {
     private static final int MAX_NUM_OF_TIMES = 2;
+
     private static final String TILDA = "~";
 
     public static TableRow createRow(Context context, @NonNull ArrivalTime arrivalTime)
@@ -60,7 +60,7 @@ public class TableRowUtil
         textView.setText(rowContent);
 
         TableRow tableRow = new TableRow(context);
-        tableRow.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
+        tableRow.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT));
         tableRow.addView(textView);
 
         return tableRow;

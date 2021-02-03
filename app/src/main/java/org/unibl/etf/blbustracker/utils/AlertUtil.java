@@ -12,7 +12,7 @@ import androidx.appcompat.app.AlertDialog;
 
 import org.unibl.etf.blbustracker.R;
 
-public class AlertUtil
+public abstract class AlertUtil
 {
     /**
      * show alarm/warning message with positive and negative button,

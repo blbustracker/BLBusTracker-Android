@@ -8,7 +8,7 @@ import androidx.appcompat.widget.Toolbar;
 
 import org.unibl.etf.blbustracker.R;
 
-public class ToolbarUtil
+public abstract class ToolbarUtil
 {
     public static void initToolbar(Activity activity, View view, String toolbarTitle)
     {

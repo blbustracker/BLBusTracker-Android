@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import org.unibl.etf.blbustracker.Constants;
 import org.unibl.etf.blbustracker.R;
-import org.unibl.etf.blbustracker.utils.Utils;
+import org.unibl.etf.blbustracker.navigationtabs.mapview.arrivaltimedialog.TimeUtil;
 import org.unibl.etf.blbustracker.datahandlers.database.announcement.Announcement;
 
 import java.util.ArrayList;
@@ -104,7 +104,7 @@ public class AnnouncementsAdapter extends RecyclerView.Adapter<AnnouncementsAdap
         holder.contentTextView.setText(currentData.getContent());
 
         String publishedDate = currentData.getPublishedDate();
-        String formatedDate = Utils.formatInputDate(publishedDate, Constants.SERVER_DATE_FORMAT, Constants.MY_DATE_FORMAT);
+        String formatedDate = TimeUtil.formatInputDate(publishedDate, Constants.SERVER_DATE_FORMAT, Constants.MY_DATE_FORMAT);
         holder.dateTextView.setText(formatedDate);
 
         boolean isExpanded = allAnnouncements.get(position).isExpanded();

@@ -219,6 +219,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback
             if (busController != null)
             {
                 busController.setIsBusMarkerClicked(true);
+                busController.setClickedBus((Bus)obj);
             }
 
         } else if (obj instanceof BusStop)

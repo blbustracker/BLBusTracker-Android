@@ -22,7 +22,7 @@ public class ArrivalTimeViewModel extends AndroidViewModel
 {
     public static final String TIMEQUERY = "?id=";
     private static final int N_THREADS = 2;
-    private static final int TIME_REFRESH_PERIOD = 10_000;
+    private static final int TIME_REFRESH_PERIOD = 10_000; // 10s
 
     private MutableLiveData<List<ArrivalTime>> arrivalTimesMLD;
     // for getting content from server

@@ -99,5 +99,6 @@
     <string name="collect_crash_summary_off">Application will not collect data about application crashes</string>
     <string name="report_sent">Crash report sent. Thank you!</string>
     <string name="no_internet_try_again">Current there is no internet connection. Please try again</string>
+    <string name="next_departure_in">next departure in</string>
 
 </resources>
