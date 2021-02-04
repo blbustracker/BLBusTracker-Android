@@ -22,7 +22,6 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 
 import org.unibl.etf.blbustracker.navigationtabs.settings.SettingsFragment;
-import org.unibl.etf.blbustracker.phoneoptions.LocaleManager;
 import org.unibl.etf.blbustracker.uncaughtexceptionhandler.CustomUncaughtExceptionHandler;
 import org.unibl.etf.blbustracker.uncaughtexceptionhandler.ReportCrash;
 import org.unibl.etf.blbustracker.utils.KeyboardUtils;
@@ -107,13 +106,13 @@ public class MapActivity extends LocalizationActivity implements DrawerLayout.Dr
     private String checkForSavedLocale()
     {
         SharedPreferences sharedPreferences = Utils.getSharedPreferences(getBaseContext());
-        String locale = sharedPreferences.getString(LocaleManager.SELECTED_LANGUAGE, "");
+        String locale = sharedPreferences.getString(ChoseLanguageActivity.SELECTED_LANGUAGE, "");
 
         if (!"".equals(locale))
             return locale;
 
         Intent intent = getIntent();
-        locale = intent.getStringExtra(LocaleManager.SELECTED_LANGUAGE);
+        locale = intent.getStringExtra(ChoseLanguageActivity.SELECTED_LANGUAGE);
 
         return locale;
     }
@@ -174,7 +173,6 @@ public class MapActivity extends LocalizationActivity implements DrawerLayout.Dr
                 ProviderInstaller.installIfNeeded(this);
             } catch (Exception e)
             {
-                e.printStackTrace();
             }
         }
     }

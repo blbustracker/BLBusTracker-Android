@@ -44,7 +44,6 @@ public class BusController
     private boolean isActive;
     private Boolean isBusMarkerClicked;
     private Bus clickedBus;
-    public static final Object LOCK = new Object();
 
     private NetworkManager networkManager;
 
@@ -95,16 +94,11 @@ public class BusController
                     {
                         Thread.sleep(Constants.BUS_CLICKED_INTERVAL);
                         isBusMarkerClicked = false;
-                        synchronized (LOCK)
-                        {
-                            clickedBus = null;
-                        }
                     }
 
                     Thread.sleep(Constants.BUS_REFRESH_INTERVAL);
                 } catch (InterruptedException ex)
                 {
-                    ex.printStackTrace();
                 }
             }
         });
@@ -134,27 +128,14 @@ public class BusController
         });
     }
 
-    public synchronized void setClickedBus(Bus clickedBus)
-    {
-        synchronized (LOCK)
-        {
-            this.clickedBus = clickedBus;
-        }
-    }
-
     private void clearBusMarkers()
     {
 
-        for (Marker busMarker : busMarkers)
-        {
-            Bus bus = (Bus) busMarker.getTag();
-            synchronized (LOCK)
+        if (busMarkers != null)
+            for (Marker busMarker : busMarkers)
             {
-                if (clickedBus != null && clickedBus.getLine().equals(bus.getLine()) && clickedBus.getLocation().equals(bus.getLocation()))
-                    continue;
                 busMarker.remove();
             }
-        }
     }
 
     /**
@@ -165,12 +146,6 @@ public class BusController
         if (busList != null)
             for (Bus bus : busList)
             {
-                synchronized (LOCK)
-                {
-                    if (clickedBus != null && clickedBus.getLine().equals(bus.getLine()) && clickedBus.getLocation().equals(bus.getLocation()))
-                        continue;
-                }
-
                 MarkerOptions busMarkerOption = new MarkerOptions()
                         .position(bus.getLocation())
                         .title(bus.getLine())

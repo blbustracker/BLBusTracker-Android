@@ -54,12 +54,10 @@ public class PointFactory
 
                 } catch (JSONException ex)
                 {
-                    ex.printStackTrace();
                 }
             }
         } catch (JSONException e)
         {
-            e.printStackTrace();
         }
     }
 

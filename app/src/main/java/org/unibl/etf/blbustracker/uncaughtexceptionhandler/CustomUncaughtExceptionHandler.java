@@ -22,38 +22,37 @@ public class CustomUncaughtExceptionHandler implements Thread.UncaughtExceptionH
     public void uncaughtException(Thread thread, Throwable ex)
     {
         StackTraceElement[] arr = ex.getStackTrace();
-        String report = ex.toString() + "\n\n";
-        report += "----------- Stack trace -----------\n\n";
+        StringBuilder report = new StringBuilder(ex.toString() + "\n\n");
+        report.append("----------- Stack trace -----------\n\n");
         for (int i = 0; i < arr.length; i++)
         {
-            report += "    " + arr[i].toString().trim() + "\n";
+            report.append("    ").append(arr[i].toString().trim()).append("\n");
         }
-        report += "-----------------------------------\n\n";
+        report.append("-----------------------------------\n\n");
 
         // Returns the cause of this throwable or null if the cause is nonexistent or unknow
         Throwable cause = ex.getCause();
         if (cause != null)
         {
-            report += "----------- Cause -----------\n\n";
-            report += cause.toString() + "\n\n";
+            report.append("----------- Cause -----------\n\n");
+            report.append(cause.toString()).append("\n\n");
             arr = cause.getStackTrace();
             for (int i = 0; i < arr.length; i++)
             {
-                report += "    " + arr[i].toString().trim() + "\n";
+                report.append("    ").append(arr[i].toString().trim()).append("\n");
             }
-            report += "-----------------------------------\n\n";
+            report.append("-----------------------------------\n\n");
         }
 
         //try with resources
         try(FileOutputStream trace = context.openFileOutput(STACK_TRACE_FILE_NAME, Context.MODE_PRIVATE))
         {
-            trace.write(report.getBytes());
+            trace.write(report.toString().getBytes());
 
         }catch (IOException ioe)
         {
             // ...
         }
-
         defaultUEH.uncaughtException(thread, ex);
     }
 }

@@ -215,11 +215,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback
         if (obj instanceof Bus)
         {
             marker.showInfoWindow();
-            //TODO: set which bus is clicked so only this bus marker doesnt move
             if (busController != null)
             {
                 busController.setIsBusMarkerClicked(true);
-                busController.setClickedBus((Bus)obj);
             }
 
         } else if (obj instanceof BusStop)
@@ -246,7 +244,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback
 
         routesFloatingButton.setOnClickListener(v ->
         {
-            routesBottomDialog.show(getActivity().getSupportFragmentManager(), "nepotreban_tag");
+            if(!routesBottomDialog.isAdded())
+            {
+                routesBottomDialog.show(getActivity().getSupportFragmentManager(), "route_bottom_dialog");
+            }
         });
     }
 
@@ -631,6 +632,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback
                 busController.resetBusLocationUrlQuery();
                 busController.setIsBusMarkerClicked(false);
             }
+
+            mapUtils.moveToBounds(routePolylineHash);
         });
     }
 

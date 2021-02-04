@@ -43,7 +43,6 @@ public class AnnouncementJSON extends JSONHandler
                     announcements.add(new Announcement(title, content, published));
                 } catch (JSONException ex)
                 {
-                    ex.printStackTrace();
                 }
             }
         }

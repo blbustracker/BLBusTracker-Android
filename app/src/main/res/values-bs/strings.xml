@@ -41,7 +41,7 @@
     <string name="are_you_sure">Da li ste sigurni?</string>
     <string name="fill_required_fields">Molimo popunite sva polja</string>
     <string name="no_internet">Poruku nije moguće poslati. Molimo provjerite internet konekciju i pokušajte ponovo</string>
-    <string name="report_content">Sadrzaj problema</string>
+    <string name="report_content">Sadržaj problema</string>
     <string name="report_title">Naslov</string>
     <string name="about_paragraph_1" >Aplikacija za korisnike javnog prevoza u urbanoj zoni grada Banja Luka.</string>
     <string name="about_paragraph_2">Razvijena od strane Elektrotehničkog fakulteta, Univerziteta u Banjoj Luci i kompanije Autoprevoz, u sklopu \"Future City Innovation Challenge\" inicijative.</string>
@@ -55,11 +55,17 @@
     <string name="route">Linija</string>
     <string name="minutes">min</string>
     <string name="no_busstop_time">Trenutno nema vremena za ovo stajalište</string>
-    <string name="reports">Izvještaj</string>
+    <string name="reports">Podešavanje izvještaja</string>
     <string name="send_crash_report">Pošalji izvještaj o prestanku rada aplikacije</string>
     <string name="collect_crash_reports">Podaci o prestanku rada aplikacije</string>
     <string name="report_sent">Izvještaj poslan. Hvala!</string>
     <string name="no_internet_try_again">Trenutno nema interneta. Molimo pokušajte ponovo</string>
     <string name="about">O aplikaciji</string>
     <string name="next_departure_in">sljedeći polazak u</string>
+    <string name="map_settings">Podešavanja mape</string>
+    <string name="collect_crash_summary_on">Aplikacija će prikupljati podatke o prestanku rada aplikacije</string>
+    <string name="collect_crash_summary_off">Aplikacija neće prikupljati podatke o prestanku rada aplikacije</string>
+    <string name="wont_ask_to_send_report">Aplikacija neće tražiti potvrdu za slanje podataka o prestanku rada aplikacije</string>
+    <string name="ask_to_send_report">Aplikacija će tražiti potvrdu za slanje podataka o prestanku rada aplikacije</string>
+    <string name="send_report_automatically">Automatsko slanje podataka</string>
 </resources>

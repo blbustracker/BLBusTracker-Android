@@ -58,7 +58,6 @@ public class ReportCrash
 
         } catch (IOException ex)
         {
-            //            ex.printStackTrace();
         }
     }
 

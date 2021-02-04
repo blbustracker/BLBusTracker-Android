@@ -166,7 +166,6 @@ public class MapViewModel extends AndroidViewModel
             busStopList = busStopDAO.getAllBusStops();
         } catch (Exception ex)
         {
-            ex.printStackTrace();
         }
         return busStopList;
     }
@@ -183,7 +182,6 @@ public class MapViewModel extends AndroidViewModel
             routeList = routeDao.getAllRoutes();
         } catch (Exception ex)
         {
-            ex.printStackTrace();
         }
         return routeList;
     }
@@ -290,7 +288,6 @@ public class MapViewModel extends AndroidViewModel
                         lockBusStop.wait();
                 } catch (InterruptedException ex)
                 {
-                    ex.printStackTrace();
                 }
                 mainHandler.post(() -> mutableBusStops.setValue(busStopList));
                 poolExecutorService.execute(() -> updateBusStopDB(busStopList, context));
@@ -317,7 +314,6 @@ public class MapViewModel extends AndroidViewModel
                         lockRoute.wait();
                 } catch (InterruptedException ex)
                 {
-                    ex.printStackTrace();
                 }
                 mainHandler.post(() -> mutableRoutes.setValue(routeList));
                 activatePoolExecutorService();

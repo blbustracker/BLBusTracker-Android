@@ -41,7 +41,6 @@ public class ArrivalTimeJSON
 
             } catch (JSONException ex)
             {
-                ex.printStackTrace();
             }
 
         }

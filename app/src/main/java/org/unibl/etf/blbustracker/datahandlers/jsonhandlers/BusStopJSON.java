@@ -62,7 +62,6 @@ public class BusStopJSON extends JSONHandler
                     busStops.add(new BusStop(busStopID, lat, lng, opis));
                 } catch (JSONException ex)
                 {
-                    ex.printStackTrace();
                 }
             }
         }

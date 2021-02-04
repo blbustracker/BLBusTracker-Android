@@ -9,11 +9,11 @@
     -->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
-<!--            android:roundIcon="@mipmap/marker_bus_stop_foreground"-->
     <application
             android:configChanges="keyboardHidden"
+            android:allowBackup="true"
             android:hardwareAccelerated="true"
-            android:icon="@mipmap/marker_bus_stop_foreground"
+            android:icon="@mipmap/marker_bus_stop"
             android:label="@string/app_name"
             android:supportsRtl="true"
             android:theme="@style/AppTheme">

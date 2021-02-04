@@ -24,7 +24,6 @@ public abstract class ParseScheduleUtil
             } catch (Exception e)
             {
                 isException.set(true);
-                e.printStackTrace();
             }
             return scheduleTime;
         }).collect(Collectors.toList());

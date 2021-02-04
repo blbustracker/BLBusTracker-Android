@@ -20,7 +20,6 @@ class JSONHandler
             return jsonObject.getJSONArray(attribute);
         } catch (JSONException ex)
         {
-            ex.printStackTrace();
         }
         return null;
     }

@@ -11,12 +11,19 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import org.unibl.etf.blbustracker.phoneoptions.LocaleManager;
 import org.unibl.etf.blbustracker.utils.Utils;
 
 //Activity for choosing language on start of the application
 public class ChoseLanguageActivity extends AppCompatActivity implements View.OnClickListener
 {
+    public static final String SELECTED_LANGUAGE = "selected_language";
+    public static final String LANGUAGE_EN = "en";
+    public static final String LANGUAGE_SR = "bs";          //latinica
+    public static final String LANGUAGE_SR_CYRILLIC = "sr"; //cirilica
+    public static final String LANGUAGE_EN_NAME = "English";
+    public static final String LANGUAGE_SR_NAME = "Srpski";
+    public static final String LANGUAGE_SR_CYRILLIC_NAME = "Српски";
+
     private SharedPreferences sharedPreferences;
     private RadioGroup radioGroup;
     private Button submitButton;
@@ -27,7 +34,7 @@ public class ChoseLanguageActivity extends AppCompatActivity implements View.OnC
         super.onCreate(savedInstanceState);
 
         sharedPreferences = Utils.getSharedPreferences(getBaseContext());
-        String savedLocale = sharedPreferences.getString(LocaleManager.SELECTED_LANGUAGE, "");
+        String savedLocale = sharedPreferences.getString(SELECTED_LANGUAGE, "");
         if(!"".equals(savedLocale))
         {
             startActivityWithLocale(savedLocale);
@@ -67,10 +74,10 @@ public class ChoseLanguageActivity extends AppCompatActivity implements View.OnC
         String locale;
         switch (language)
         {
-            case LocaleManager.LANGUAGE_EN_NAME:
+            case LANGUAGE_EN_NAME:
                 locale = "en";
                 break;
-            case LocaleManager.LANGUAGE_SR_NAME:
+            case LANGUAGE_SR_NAME:
                 locale = "bs";
                 break;
             default:
@@ -89,7 +96,7 @@ public class ChoseLanguageActivity extends AppCompatActivity implements View.OnC
     private void startActivityWithLocale(String locale)
     {
         Intent intent = new Intent(getApplicationContext(), MapActivity.class);
-        intent.putExtra(LocaleManager.SELECTED_LANGUAGE, locale);
+        intent.putExtra(SELECTED_LANGUAGE, locale);
         startActivity(intent);
         finish();   //turning off this activity, so you cant get back here
     }
@@ -101,7 +108,7 @@ public class ChoseLanguageActivity extends AppCompatActivity implements View.OnC
     private void saveLocale(String locale)
     {
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString(LocaleManager.SELECTED_LANGUAGE,locale);
+        editor.putString(SELECTED_LANGUAGE,locale);
         editor.commit();
     }
 

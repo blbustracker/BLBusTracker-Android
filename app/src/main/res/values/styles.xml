@@ -42,7 +42,11 @@
     </style>
 
     <!--for resizing Route Dialog Window when keyboard is shown-->
-    <style name="DialogStyle" parent="Theme.Design.Light.BottomSheetDialog"></style>
+    <style name="DialogStyle" parent="Theme.Design.Light.BottomSheetDialog">
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowSoftInputMode">adjustResize</item>
+    </style>
 
 
 <!--    toolbar backbutton color-->

@@ -90,15 +90,17 @@
     <string name="route">Route</string>
     <string name="minutes">min</string>
     <string name="no_busstop_time">Currently there are no times for this bus stop</string>
-    <string name="reports">Report</string>
+    <string name="reports">Report settings</string>
     <string name="send_crash_report">Send crash report</string>
     <string name="collect_crash_reports">Collect crash reports</string>
     <string name="ask_to_send_report">You will be asked to send crash report to the server</string>
-    <string name="wont_ask_to_send_report">You will NOT be asked to send crash report to the server</string>
+    <string name="wont_ask_to_send_report">You will not be asked to send crash report to the server</string>
     <string name="collect_crash_summary_on">Application will collect data about application crashes</string>
     <string name="collect_crash_summary_off">Application will not collect data about application crashes</string>
     <string name="report_sent">Crash report sent. Thank you!</string>
     <string name="no_internet_try_again">Current there is no internet connection. Please try again</string>
     <string name="next_departure_in">next departure in</string>
+    <string name="map_settings">Map settings</string>
+    <string name="send_report_automatically">Send report automatically</string>
 
 </resources>

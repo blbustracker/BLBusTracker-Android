@@ -51,7 +51,6 @@ public class MarkerDialog extends DialogFragment
             busStopName.setText(busStopDesc);
         } catch (Exception ex)
         {
-            ex.printStackTrace();
         }
 
         setStartDestinationBtn = dialogView.findViewById(R.id.set_start_destination_btn);

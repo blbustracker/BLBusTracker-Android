@@ -55,11 +55,17 @@
     <string name="route">Линија</string>
     <string name="minutes">мин</string>
     <string name="no_busstop_time">Тренутно нема времена за ово стајалиште</string>
-    <string name="reports">Извјештај</string>
+    <string name="reports">Подешавање извјештаја</string>
     <string name="send_crash_report">Пошаљи извјештај о престанку рада апликације</string>
     <string name="collect_crash_reports">Подаци о престанку рада апликације</string>
     <string name="report_sent">Извјештај послан. Хвала!</string>
     <string name="no_internet_try_again">Тренутно нема интернета. Молимо покушајте поново</string>
     <string name="about">О апликацији</string>
     <string name="next_departure_in">сљедећи полазак у</string>
+    <string name="map_settings">Подешавања мапе</string>
+    <string name="collect_crash_summary_on">Апликација ће прикупљати податке о престанку рада апликације</string>
+    <string name="collect_crash_summary_off">Апликација неће прикупљати податке о престанку рада апликације</string>
+    <string name="wont_ask_to_send_report">Апликација неће тражити потврду за слање података о престанку рада апликације</string>
+    <string name="ask_to_send_report">Апликација ће тражити потврду за слање података о престанку рада апликације</string>
+    <string name="send_report_automatically">Аутоматско слање података</string>
 </resources>

@@ -13,7 +13,6 @@ public abstract class KeyboardUtils
 {
 
     //get users keyboard input locale
-    @SuppressWarnings( "deprecation" )
     public static String getKeyboardLocale(Context context)
     {
         InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);

@@ -16,8 +16,8 @@ import androidx.preference.PreferenceManager;
 
 import com.akexorcist.localizationactivity.core.LocalizationActivityDelegate;
 
+import org.unibl.etf.blbustracker.ChoseLanguageActivity;
 import org.unibl.etf.blbustracker.R;
-import org.unibl.etf.blbustracker.phoneoptions.LocaleManager;
 
 /**
  * layout is located in /res/xml/fragment_settings
@@ -75,9 +75,9 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
 
         switch (key)
         {
-            case LocaleManager.SELECTED_LANGUAGE: // change language
-                String selectedLocale = sharedPreferences.getString(LocaleManager.SELECTED_LANGUAGE, "");
-                editor.putString(LocaleManager.SELECTED_LANGUAGE, selectedLocale);
+            case ChoseLanguageActivity.SELECTED_LANGUAGE: // change language
+                String selectedLocale = sharedPreferences.getString(ChoseLanguageActivity.SELECTED_LANGUAGE, "");
+                editor.putString(ChoseLanguageActivity.SELECTED_LANGUAGE, selectedLocale);
                 localizationDelegate.setLanguage(activity, selectedLocale);
                 activity.recreate();
                 break;

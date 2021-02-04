@@ -10,14 +10,14 @@ import android.widget.Toast;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.maps.model.LatLng;
-
 import org.unibl.etf.blbustracker.R;
-import org.unibl.etf.blbustracker.phoneoptions.PermissionCode;
 
 import java.util.List;
 
 public abstract class Utils
 {
+    public static final int ERROR_DIALOG_REQUEST = 9003;
+
     /**
      * SharedPreferences is used for storing/reading preferences
      *
@@ -95,7 +95,7 @@ public abstract class Utils
         } else if (GoogleApiAvailability.getInstance().isUserResolvableError(available))
         {
             //an error occured but we can resolve it
-            Dialog dialog = GoogleApiAvailability.getInstance().getErrorDialog(activity, available, PermissionCode.ERROR_DIALOG_REQUEST);
+            Dialog dialog = GoogleApiAvailability.getInstance().getErrorDialog(activity, available, ERROR_DIALOG_REQUEST);
             dialog.show();
         } else
         {

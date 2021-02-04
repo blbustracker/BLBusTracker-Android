@@ -42,7 +42,6 @@ public class BusJSON
 
             } catch (JSONException ex)
             {
-                ex.printStackTrace();
             }
         }
         return busList;

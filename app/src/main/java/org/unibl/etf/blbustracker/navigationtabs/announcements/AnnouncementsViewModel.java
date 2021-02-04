@@ -101,7 +101,6 @@ public class AnnouncementsViewModel extends AndroidViewModel
 
             } catch (Exception ex)
             {
-                ex.printStackTrace();
             }
             if (announcementList != null && !announcementList.isEmpty())
             {
@@ -175,7 +174,6 @@ public class AnnouncementsViewModel extends AndroidViewModel
                         locker.wait();
                 } catch (Exception ex)
                 {
-                    ex.printStackTrace();
                 }
 
                 try
@@ -189,7 +187,6 @@ public class AnnouncementsViewModel extends AndroidViewModel
                     poolExecutorService.execute(() -> updateAnnouncementsDB(announcementsList, context));
                 } catch (Exception ex)
                 {
-                    ex.printStackTrace();
                 }
             }
         });

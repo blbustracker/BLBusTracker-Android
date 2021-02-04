@@ -18,6 +18,7 @@ import org.unibl.etf.blbustracker.navigationtabs.routeschedule.ParseScheduleUtil
 import org.unibl.etf.blbustracker.utils.TableRowUtil;
 
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -59,10 +60,10 @@ public class ArrivalTimeModel
 
             //routes containing this station
             List<Route> routeList = joinRouteBusStopDAO.getRoutesByBusStopId(busStop.getBusStopId());
-
             if (routeList == null)
                 return;
 
+            List<TableRow> tableRows = new ArrayList<>();
             TableLayout.LayoutParams layout = new TableLayout.LayoutParams(TableLayout.LayoutParams.WRAP_CONTENT, TableLayout.LayoutParams.WRAP_CONTENT);
             for (Route route : routeList)
             {
@@ -90,7 +91,6 @@ public class ArrivalTimeModel
 
                         } catch (Exception ex)
                         {
-                            ex.printStackTrace();
                         }
                     } else  // route has time on server
                     {
@@ -98,14 +98,17 @@ public class ArrivalTimeModel
                         tableRow = TableRowUtil.createRow(context, arrivalTime);
                     }
                 }
-
-                TableRow finalTableRow = tableRow;
-                if (finalTableRow != null)
-                    mainHandler.post(() ->
-                    {
-                        tableLayout.addView(finalTableRow, layout); // place text with UI thread
-                    });
+                tableRows.add(tableRow);
             }
+            mainHandler.post(() ->
+            {
+                if (tableRows != null && tableRows.size() > 0)
+                {
+                    tableLayout.removeAllViews();
+                    for (TableRow tableRow : tableRows)
+                        tableLayout.addView(tableRow, layout); // place text with UI thread
+                }
+            });
         });
     }
 
@@ -127,7 +130,6 @@ public class ArrivalTimeModel
             }
         } catch (Exception ex)
         {
-            ex.printStackTrace();
         }
 
         return lastBusStopId;
@@ -152,7 +154,7 @@ public class ArrivalTimeModel
     private String depaturePrintFormat(Route route, List<LocalTime> depatureTimes)
     {
         StringBuilder stringBuilder = new StringBuilder();
-        String text = context.getString(R.string.route) + route.getLabel() + ": " + context.getString(R.string.next_departure_in);
+        String text = context.getString(R.string.route) + " " + route.getLabel() + ": " + context.getString(R.string.next_departure_in);
         stringBuilder.append(text);
 
         for (int i = 0; i < depatureTimes.size() && i < N_DEPARTURE_TIMES; i++)

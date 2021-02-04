@@ -66,7 +66,6 @@ public class ArrivalTimeViewModel extends AndroidViewModel
 
                 }catch (InterruptedException ex)
                 {
-                    ex.printStackTrace();
                 }
             }
         });

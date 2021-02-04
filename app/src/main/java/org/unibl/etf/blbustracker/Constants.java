@@ -5,12 +5,10 @@ public abstract class Constants
     public static final double STARTING_LAT = 44.7691468567798;  // Banja Luka center lat
     public static final double STARTING_LNG = 17.18835644423962; // Banja Luka center lng
 
-    public static final float POLYLINE_WIDTH = 10.0f + 2.0f;         //googles default is 10.0f
-    public static final float POLYLINE_WIDTH_24 = 8.5f;
+    public static final float POLYLINE_WIDTH = 12.0f;         //googles default is 10.0f
+    public static final int POLYLINE_ALPHA_COLOR = 240;         // route transparency. must be between 0 and 255. (255 for solid color)
 
     public static final int CAMERA_PADDING = 20;
-
-    public static final int POLYLINE_ALPHA_COLOR = 220;         // route transparency. must be between 0 and 255. (255 for solid color)
 
     public static final float DEFAULT_ZOOM = 16.0f;             // default zoom value
 

@@ -60,9 +60,7 @@ public class ArrivalTimeFragment extends BottomSheetDialogFragment
         arrivalTimeViewModel.startListening(busStop, getContext());
         arrivalTimeViewModel.getArrivalTimesMLD().observe(getViewLifecycleOwner(), arrivalTimes ->
         {
-            tableLayout.removeAllViews();
             arrivalTimeModel.fillTableLayoutWithTimes(arrivalTimes, tableLayout);
-
         });
     }
 

@@ -25,13 +25,14 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+
 import org.unibl.etf.blbustracker.Constants;
 import org.unibl.etf.blbustracker.R;
 import org.unibl.etf.blbustracker.datahandlers.database.DBFactory;
 import org.unibl.etf.blbustracker.datahandlers.database.RouteBusStopConnection;
+import org.unibl.etf.blbustracker.datahandlers.database.busstop.BusStop;
 import org.unibl.etf.blbustracker.datahandlers.database.joinroutebusstop.JoinRouteBusStopDAO;
 import org.unibl.etf.blbustracker.datahandlers.database.route.Route;
-import org.unibl.etf.blbustracker.datahandlers.database.busstop.BusStop;
 import org.unibl.etf.blbustracker.datahandlers.jsonhandlers.pointfactory.PointFactory;
 
 import java.util.HashMap;
@@ -44,7 +45,7 @@ import java.util.stream.Collectors;
 // Map and it's objects interactions
 public class MapUtils
 {
-    private final int N_THREADS = 5;
+    private final int N_THREADS = 6;
 
     //for startig google navigation
     private final String GOOGLEMAP_PACKAGE = "com.google.android.apps.maps";
@@ -233,12 +234,12 @@ public class MapUtils
     /**
      * Apply all map settings, style, type,...
      */
-    void setAllMapArguments(int mapType, String mapStyle,Context context)
+    void setAllMapArguments(int mapType, String mapStyle, Context context)
     {
         // so that google default navigation icon do NOT show when marker is clicked
         map.getUiSettings().setMapToolbarEnabled(false);
 
-        setMapStyle(mapStyle,context);
+        setMapStyle(mapStyle, context);
         map.setMapType(mapType); // 1 - NORMAL , 2 - SATELLITE, 3 - TERRAIN, 4 - HYBRID
         map.setIndoorEnabled(false);
         //map.setTrafficEnabled(true); // map with traffic density information superimposed on top of it
@@ -250,7 +251,7 @@ public class MapUtils
     private final String RETRO_MAP_STYLE = "mapstyle_retro";
     private final String AUBERGINE_MAP_STYLE = "mapstyle_aubergine";
 
-    void setMapStyle(String mapStyle,Context context)
+    void setMapStyle(String mapStyle, Context context)
     {
         switch (mapStyle)
         {
@@ -281,6 +282,31 @@ public class MapUtils
         }
         LatLngBounds bounds = builder.build();
         return CameraUpdateFactory.newLatLngBounds(bounds, Constants.CAMERA_PADDING);
+    }
+
+    public void moveToBounds(Map<Integer, Polyline> routePolylineHash)
+    {
+        List<List<LatLng>> listOfLists = routePolylineHash.values()
+                .stream()
+                .map(Polyline::getPoints)
+                .collect(Collectors.toList());
+
+        poolExecutorService.execute(()->
+                {
+                    LatLngBounds.Builder builder = new LatLngBounds.Builder();
+                    for (List<LatLng> polylineList : listOfLists)
+                    {
+                        for(LatLng latLng : polylineList)
+                        {
+                            builder.include(latLng);
+                        }
+                    }
+                    LatLngBounds bounds = builder.build();
+                    int padding = Constants.CAMERA_PADDING; // offset from edges of the map in pixels
+
+                    CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, padding);
+                    mainHandler.post(() -> map.animateCamera(cu));
+                });
     }
 
     /**
@@ -404,7 +430,7 @@ public class MapUtils
      * only show bus stops on routes that contain destinationBusStop,
      * all routes that contain destinationBusStop should've been visable with onBusStopClicked method
      */
-    public void onSetAsDestinationClicked(BusStop destinationBusStop,Context context)
+    public void onSetAsDestinationClicked(BusStop destinationBusStop, Context context)
     {
         poolExecutorService.execute(() ->
         {
@@ -417,7 +443,7 @@ public class MapUtils
                 for (Route route : routesWithDestinationBusStop)
                 {
                     List<Integer> busStopIds = getBusStopIdsOnRoute(route); // get all busStopIds on this route
-                    mainHandler.post(()-> setBusStopIdsVisability(busStopIds,true));
+                    mainHandler.post(() -> setBusStopIdsVisability(busStopIds, true));
                 }
             }
         });
@@ -450,13 +476,13 @@ public class MapUtils
             List<LatLng> wayPoints = pointFactory.getPoints();
             CameraUpdate cu = setCameraBounds(wayPoints);
 
-            mainHandler.post(()->
+            mainHandler.post(() ->
             {
                 setAllBusStopMarkersVisibility(false);
                 setAllRouterPolylinesVisibility(false);
 
-                setRouteVisibility(route,true);
-                setBusStopIdsVisability(pointFactory.getBusStopIds(),true);
+                setRouteVisibility(route, true);
+                setBusStopIdsVisability(pointFactory.getBusStopIds(), true);
                 map.animateCamera(cu);
             });
         });
@@ -465,8 +491,8 @@ public class MapUtils
     //when user inputs bus stop in search box
     public void onDestinationTextInput(BusStop busStop, Context context)
     {
-        onBusStopClicked(busStop,context);
-        onSetAsDestinationClicked(busStop,context);
+        onBusStopClicked(busStop, context);
+        onSetAsDestinationClicked(busStop, context);
     }
 
     /**

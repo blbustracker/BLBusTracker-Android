@@ -79,7 +79,6 @@ public class RouteJSON extends JSONHandler
 
                 } catch (JSONException ex)
                 {
-                    ex.printStackTrace();
                 }
             }
         }

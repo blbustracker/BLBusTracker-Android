@@ -55,7 +55,6 @@ public class ReportProblemModel
             message = object.getString(RESPONSE_MESSAGE);
         } catch (JSONException ex)
         {
-            ex.printStackTrace();
         }
         if (RESPONSE_MESSAGE.equals(message))
             message = context.getString(R.string.problem_reported);
@@ -92,7 +91,6 @@ public class ReportProblemModel
             jsonObject.put(REPORT_CONTENT, message);
         } catch (JSONException ex)
         {
-            ex.printStackTrace();
         }
         return jsonObject;
     }

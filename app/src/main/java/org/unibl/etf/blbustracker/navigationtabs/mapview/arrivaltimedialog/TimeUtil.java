@@ -47,8 +47,10 @@ public class TimeUtil
         {
             case Calendar.SUNDAY:
                 schedule = route.getSundaySchedule();
+                break;
             case Calendar.SATURDAY:
                 schedule = route.getSaturdaySchedule();
+                break;
             default:
                 schedule = route.getWorkdaySchedule();
         }
@@ -87,7 +89,6 @@ public class TimeUtil
 
         } catch (Exception ex)
         {
-            ex.printStackTrace();
         }
 
         return inputDate;

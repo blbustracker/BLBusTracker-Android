@@ -15,7 +15,7 @@
 
     </PreferenceCategory>
 
-    <PreferenceCategory app:title="Map settings">
+    <PreferenceCategory app:title="@string/map_settings">
 
         <ListPreference
                 app:defaultValue="1"
@@ -54,7 +54,7 @@
                 android:defaultValue="true"
                 app:singleLineTitle="false"
 
-                android:title="Send report automatically"
+                android:title="@string/send_report_automatically"
                 android:summaryOn="@string/wont_ask_to_send_report"
                 android:summaryOff="@string/ask_to_send_report"
                 />
