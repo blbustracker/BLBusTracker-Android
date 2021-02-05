@@ -98,7 +98,8 @@ public class ArrivalTimeModel
                         tableRow = TableRowUtil.createRow(context, arrivalTime);
                     }
                 }
-                tableRows.add(tableRow);
+                if (tableRow != null)
+                    tableRows.add(tableRow);
             }
             mainHandler.post(() ->
             {
