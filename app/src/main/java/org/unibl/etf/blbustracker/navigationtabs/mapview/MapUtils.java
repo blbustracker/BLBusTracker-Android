@@ -1,13 +1,11 @@
 package org.unibl.etf.blbustracker.navigationtabs.mapview;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
-import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -51,14 +49,11 @@ public class MapUtils
     private final String GOOGLEMAP_PACKAGE = "com.google.android.apps.maps";
     private final String MODE_WALK = "&mode=w";
 
-    private View homeView;
-    private Activity activity; //used for popUp window marker
-
     private final Object lock = new Object();
     private Handler mainHandler;
     private ExecutorService poolExecutorService;
 
-    private BitmapDescriptor busIcon;
+    private BitmapDescriptor defaultBusStopIcon;
     private BitmapDescriptor startDestinationIcon;
     private BitmapDescriptor endDestinationIcon;
 
@@ -84,7 +79,7 @@ public class MapUtils
         this.mainHandler = new Handler(Looper.getMainLooper());
         poolExecutorService = Executors.newFixedThreadPool(N_THREADS);
 
-        busIcon = BitmapDescriptorFactory.fromResource(R.drawable.busstop_blue_32x32);
+        defaultBusStopIcon = BitmapDescriptorFactory.fromResource(R.drawable.busstop_blue_32x32);
 
         startDestinationIcon = BitmapDescriptorFactory.fromResource(R.drawable.busstop_green_40x40);
         endDestinationIcon = BitmapDescriptorFactory.fromResource(R.drawable.busstop_red_40x40);
@@ -137,7 +132,7 @@ public class MapUtils
 
     private Marker placeBusStopMarkerOnMap(BusStop busStop)
     {
-        Marker marker = map.addMarker(new MarkerOptions().position(busStop.getLatLng()).icon(busIcon));
+        Marker marker = map.addMarker(new MarkerOptions().position(busStop.getLatLng()).icon(defaultBusStopIcon));
         marker.setTag(busStop);
         return marker;
     }
@@ -226,9 +221,9 @@ public class MapUtils
         return endDestinationIcon;
     }
 
-    public BitmapDescriptor getBusIcon()
+    public BitmapDescriptor getDefaultBusStopIcon()
     {
-        return busIcon;
+        return defaultBusStopIcon;
     }
 
     /**

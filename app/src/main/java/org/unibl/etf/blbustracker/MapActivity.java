@@ -21,6 +21,7 @@ import com.google.android.gms.security.ProviderInstaller;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 
+import org.unibl.etf.blbustracker.datahandlers.LastUpdated;
 import org.unibl.etf.blbustracker.navigationtabs.settings.SettingsFragment;
 import org.unibl.etf.blbustracker.uncaughtexceptionhandler.CustomUncaughtExceptionHandler;
 import org.unibl.etf.blbustracker.uncaughtexceptionhandler.ReportCrash;
@@ -29,6 +30,7 @@ import org.unibl.etf.blbustracker.utils.Utils;
 
 public class MapActivity extends LocalizationActivity implements DrawerLayout.DrawerListener
 {
+    public static final String VERSION_CODE_KEY = "version_code";
     // used in method onSupportNavigateUp(...)
     private AppBarConfiguration mAppBarConfiguration;
 
@@ -53,6 +55,7 @@ public class MapActivity extends LocalizationActivity implements DrawerLayout.Dr
         super.onCreate(savedInstanceState);
         //        checkProviderInstaller(); // for fixing volley on android <=4.4
         initCrashWatcher();
+        checkAndUpdateVersion();
 
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         setContentView(R.layout.activity_main);
@@ -88,6 +91,26 @@ public class MapActivity extends LocalizationActivity implements DrawerLayout.Dr
         boolean isCollectReportChecked = sharedPreferences.getBoolean(SettingsFragment.COLLECT_REPORT, true);
         if (isCollectReportChecked)
             Thread.setDefaultUncaughtExceptionHandler(new CustomUncaughtExceptionHandler(this));    // start watching for crashes
+    }
+
+    //remove last update fields in shared preferences if there was a new app version
+    private void checkAndUpdateVersion()
+    {
+        SharedPreferences sharedPreferences = Utils.getSharedPreferences(this);
+        int savedVersionCode = sharedPreferences.getInt(VERSION_CODE_KEY, 1);
+        int currentVersionCode = BuildConfig.VERSION_CODE;
+
+        if (currentVersionCode > savedVersionCode)
+        {
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+
+            editor.remove(LastUpdated.BUSSTOP_LAST_UPDATE_KEY);
+            editor.remove(LastUpdated.ROUTES_LAST_UPDATE_KEY);
+            editor.remove(LastUpdated.NEWS_LAST_UPDATE_KEY);
+
+            editor.putInt(VERSION_CODE_KEY, currentVersionCode);
+            editor.commit();    // use commit here insted of apply
+        }
     }
 
     private void initToolbar()

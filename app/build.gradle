@@ -9,8 +9,8 @@ android {
         applicationId "org.unibl.etf.blbustracker"
         minSdkVersion 23
         targetSdkVersion 30
-        versionCode 1
-        versionName "1.0" // change and database version
+        versionCode 2
+        versionName "1.1" // change and database version
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
@@ -70,7 +70,7 @@ dependencies {
     annotationProcessor "androidx.room:room-compiler:$room_version"
 
     // for custom Marker (ClusterItem) - BusTracking
-    implementation 'com.google.maps.android:android-maps-utils:2.0.1'
+    implementation 'com.google.maps.android:android-maps-utils:2.2.0'
 
     //for language changing, Apache Licence
     implementation('com.akexorcist:localization:1.2.4') {

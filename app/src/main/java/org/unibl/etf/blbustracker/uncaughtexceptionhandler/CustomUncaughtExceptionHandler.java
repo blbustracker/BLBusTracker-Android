@@ -2,6 +2,8 @@ package org.unibl.etf.blbustracker.uncaughtexceptionhandler;
 
 import android.content.Context;
 
+import org.unibl.etf.blbustracker.BuildConfig;
+
 import java.io.FileOutputStream;
 import java.io.IOException;
 
@@ -21,8 +23,12 @@ public class CustomUncaughtExceptionHandler implements Thread.UncaughtExceptionH
     @Override
     public void uncaughtException(Thread thread, Throwable ex)
     {
+        int versionCode = BuildConfig.VERSION_CODE;
+        String versionName = BuildConfig.VERSION_NAME;
         StackTraceElement[] arr = ex.getStackTrace();
-        StringBuilder report = new StringBuilder(ex.toString() + "\n\n");
+        StringBuilder report = new StringBuilder(ex.toString() + "\n");
+        report.append("versionCode: ").append(versionCode)
+                .append(" versionName: ").append(versionName).append("\n\n");
         report.append("----------- Stack trace -----------\n\n");
         for (int i = 0; i < arr.length; i++)
         {

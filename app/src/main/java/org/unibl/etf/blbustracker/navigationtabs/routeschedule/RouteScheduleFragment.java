@@ -1,8 +1,6 @@
 package org.unibl.etf.blbustracker.navigationtabs.routeschedule;
 
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -23,9 +21,7 @@ import java.util.List;
 
 public class RouteScheduleFragment extends Fragment implements AdapterView.OnItemClickListener, View.OnClickListener, TextWatcher
 {
-    public static final int DELAY_MILLIS = 100;
     private MapViewModel viewModel;
-    private Handler mainHnadler;
 
     private AutoCompleteTextView routeScheduleInput;
     private TableLayout scheduleTableLayout;
@@ -36,7 +32,6 @@ public class RouteScheduleFragment extends Fragment implements AdapterView.OnIte
     {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_route_schedule, container, false);
-        mainHnadler = new Handler(Looper.getMainLooper());
 
         populateAutoCompleteInput(view);
         scheduleTableLayout = view.findViewById(R.id.tablelayout);
@@ -57,7 +52,8 @@ public class RouteScheduleFragment extends Fragment implements AdapterView.OnIte
         RouteScheduleAdapter routeScheduleAdapter = new RouteScheduleAdapter(view.getContext(), routes);
         routeScheduleInput = view.findViewById(R.id.route_schedule_input);
         routeScheduleInput.setAdapter(routeScheduleAdapter);
-        routeScheduleInput.showDropDown();
+
+        showAllSuggestions();
 
         routeScheduleInput.setOnClickListener(this);
         routeScheduleInput.setOnItemClickListener(this);
@@ -70,7 +66,7 @@ public class RouteScheduleFragment extends Fragment implements AdapterView.OnIte
         Object obj = parent.getItemAtPosition(position);
         if (obj instanceof Route)
         {
-            Route route = (Route)obj;
+            Route route = (Route) obj;
             RouteScheduleModel routeScheduleModel = new RouteScheduleModel(route);
 
             scheduleTableLayout.removeAllViews();
@@ -80,10 +76,10 @@ public class RouteScheduleFragment extends Fragment implements AdapterView.OnIte
                 scheduleTableLayout.addView(routeScheduleModel.getSaturdaySchedule(getContext()));
                 scheduleTableLayout.addView(routeScheduleModel.getSundaySchedule(getContext()));
 
-            }catch(Exception ex)
+            } catch (Exception ex)
             {
-               scheduleTableLayout.removeAllViews();
-               scheduleTableLayout.addView(routeScheduleModel.getAllSchedules(getContext()));
+                scheduleTableLayout.removeAllViews();
+                scheduleTableLayout.addView(routeScheduleModel.getAllSchedules(getContext()));
             }
         }
     }
@@ -101,7 +97,11 @@ public class RouteScheduleFragment extends Fragment implements AdapterView.OnIte
 
     private void showAllSuggestions()
     {
-        mainHnadler.postDelayed(() -> routeScheduleInput.showDropDown(), DELAY_MILLIS);   //there must be some delay
+        if (routeScheduleInput != null && getActivity() != null && !getActivity().isFinishing() && !isRemoving())
+        {
+            routeScheduleInput.post(routeScheduleInput::showDropDown);
+            //        mainHnadler.postDelayed(() -> routeScheduleInput.showDropDown(), DELAY_MILLIS);   //there must be some delay
+        }
     }
 
     @Override
@@ -129,8 +129,8 @@ public class RouteScheduleFragment extends Fragment implements AdapterView.OnIte
         super.onResume();
         if (viewModel != null)
             viewModel.activatePoolExecutorService();
-        if(routeScheduleInput!=null)
-            showAllSuggestions();
+
+        showAllSuggestions();
     }
 
 
@@ -140,7 +140,7 @@ public class RouteScheduleFragment extends Fragment implements AdapterView.OnIte
         if (viewModel != null)
             viewModel.shutdownPoolExecutorService();
 
-        if(routeScheduleInput!=null)
+        if (routeScheduleInput != null)
             routeScheduleInput.dismissDropDown();
 
         super.onDestroy();

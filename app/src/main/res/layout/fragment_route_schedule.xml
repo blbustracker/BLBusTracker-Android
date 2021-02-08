@@ -38,6 +38,7 @@
                 app:autoSizeMinTextSize="16sp"
                 app:autoSizeStepGranularity="2sp"
                 app:autoSizeTextType="uniform" />
+
     </LinearLayout>
 
     <ScrollView

@@ -91,7 +91,7 @@
     <string name="minutes">min</string>
     <string name="no_busstop_time">Currently there are no times for this bus stop</string>
     <string name="reports">Report settings</string>
-    <string name="send_crash_report">Send crash report</string>
+    <string name="send_crash_report">Send application crash report</string>
     <string name="collect_crash_reports">Collect crash reports</string>
     <string name="ask_to_send_report">You will be asked to send crash report to the server</string>
     <string name="wont_ask_to_send_report">You will not be asked to send crash report to the server</string>

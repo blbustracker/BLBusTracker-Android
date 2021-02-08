@@ -66,7 +66,7 @@ public class SearchBusStopAdapter extends ArrayAdapter<BusStop>
     }
 
     //For Filtering search, need at least 2 chars to show view
-    private Filter filter = new Filter()
+    private final Filter filter = new Filter()
     {
         @Override
         protected FilterResults performFiltering(CharSequence inputSequence)

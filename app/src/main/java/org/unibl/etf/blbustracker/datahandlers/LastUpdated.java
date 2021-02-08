@@ -15,8 +15,6 @@ public class LastUpdated
 {
     private SharedPreferences sharedPreferences;
 
-    private static final String LAST_UPDATE_JSONString = "lastUpdate";
-
     //used as arguemnts for checkIfContentUpdated(...)
     public static final String BUSSTOP_LAST_UPDATE_KEY = "busstop_last_update";
     public static final String ROUTES_LAST_UPDATE_KEY = "routes_last_update";

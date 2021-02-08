@@ -18,6 +18,7 @@ import com.akexorcist.localizationactivity.core.LocalizationActivityDelegate;
 
 import org.unibl.etf.blbustracker.ChoseLanguageActivity;
 import org.unibl.etf.blbustracker.R;
+import org.unibl.etf.blbustracker.uncaughtexceptionhandler.CustomUncaughtExceptionHandler;
 
 /**
  * layout is located in /res/xml/fragment_settings
@@ -95,6 +96,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
             case COLLECT_REPORT:
 
                 boolean isCollectReportChecked = setAutoReportVisibility();
+                initReportWatcher(isCollectReportChecked);
                 editor.putBoolean(COLLECT_REPORT, isCollectReportChecked);
                 break;
 
@@ -105,6 +107,14 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
                 break;
         }
         editor.apply();
+    }
+
+    private void initReportWatcher(boolean isCollectReportChecked)
+    {
+        if(isCollectReportChecked)
+            Thread.setDefaultUncaughtExceptionHandler(new CustomUncaughtExceptionHandler(getContext()));
+        else
+            Thread.setDefaultUncaughtExceptionHandler(null);
     }
 
     private String setMapStyleVisibility()

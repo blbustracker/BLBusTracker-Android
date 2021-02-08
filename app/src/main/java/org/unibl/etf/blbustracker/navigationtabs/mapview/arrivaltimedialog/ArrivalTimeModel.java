@@ -101,14 +101,20 @@ public class ArrivalTimeModel
                 if (tableRow != null)
                     tableRows.add(tableRow);
             }
+
             mainHandler.post(() ->
             {
-                if (tableRows != null && tableRows.size() > 0)
+                tableLayout.removeAllViews();
+
+                if (!tableRows.isEmpty())
                 {
-                    tableLayout.removeAllViews();
                     for (TableRow tableRow : tableRows)
                         tableLayout.addView(tableRow, layout); // place text with UI thread
+                } else
+                {
+                    tableLayout.addView(TableRowUtil.createRow(context, context.getString(R.string.no_busstop_time)));
                 }
+
             });
         });
     }

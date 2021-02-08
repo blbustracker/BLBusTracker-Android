@@ -3,7 +3,6 @@ package org.unibl.etf.blbustracker.navigationtabs.mapview;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -111,8 +110,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback
     //for getting and drawing buses on map
     private BusController busController;
 
-    Handler handler;
-    private static final int SHORT_DELAY = 100;
     private boolean isMarkerClicked = false;
 
     @Override
@@ -129,8 +126,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback
 
         context = mapFragmentView.getContext();
         collapsableSearchLayout = mapFragmentView.findViewById(R.id.search_linearLayout);
-
-        handler = new Handler();
 
         checkFragmentArguemnts();
         initializeRoutesButton();
@@ -226,7 +221,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback
             marker.hideInfoWindow();
             BusStop busStop = (BusStop) obj;
             timeFragment = new ArrivalTimeFragment(busStop, this);
-            timeFragment.show(getActivity().getSupportFragmentManager(), "timeFragment");
+            if (!isRemoving())
+            {
+                timeFragment.show(getActivity().getSupportFragmentManager(), "timeFragment");
+            }
             return true;
         }
 
@@ -244,7 +242,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback
 
         routesFloatingButton.setOnClickListener(v ->
         {
-            if(!routesBottomDialog.isAdded())
+            if (!routesBottomDialog.isAdded())
             {
                 routesBottomDialog.show(getActivity().getSupportFragmentManager(), "route_bottom_dialog");
             }
@@ -290,14 +288,13 @@ public class MapFragment extends Fragment implements OnMapReadyCallback
     private Marker setAsDestinationMarker(int busStopId, AutoCompleteTextView editText, Marker destinationMarker, BitmapDescriptor icon)
     {
         if (destinationMarker != null)
-            destinationMarker.setIcon(mapUtils.getBusIcon());
+            resetBusStopMarker(destinationMarker);
 
         Marker marker = busStopMarkersHash.get(busStopId);
         BusStop busStop = (BusStop) marker.getTag();
         String busStopName = busStop.getDesc();
         editText.setText(busStopName);
         marker.setIcon(icon);
-        editText.requestFocus();
         editText.clearFocus();
         return marker;
     }
@@ -399,6 +396,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback
     {
         destinationEditText.setOnEditorActionListener(this);
         destinationEditText.setOnFocusChangeListener(this);
+        destinationEditText.setOnClickListener(l->showDropDown(destinationEditText,true));
 
         destinationEditText.setOnItemClickListener((parent, view, position, id)
                 -> onBusStopItemClick(parent, view, position, destinationEditText.getId()));
@@ -459,12 +457,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback
         if (busStop == null)
         {
             if (oldDestinationMarker != null)
-                oldDestinationMarker.setIcon(mapUtils.getBusIcon());
+                resetBusStopMarker(oldDestinationMarker);
             return null;
         }
 
         if (oldDestinationMarker != null)
-            oldDestinationMarker.setIcon(mapUtils.getBusIcon()); // reset marker icon
+            resetBusStopMarker(oldDestinationMarker);// reset marker icon
 
         destinationEditText.setText(busStop.getDesc());
 
@@ -473,7 +471,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback
 
         return newDestinationMarker;
     }
-
 
     /**
      * @param destinationTextView startDestinationEditText or endDestinationEditText
@@ -585,11 +582,13 @@ public class MapFragment extends Fragment implements OnMapReadyCallback
 
     private void showDropDown(AutoCompleteTextView destinationEditText, boolean isFocused)
     {
-        if (isFocused)
+        if (isFocused && !destinationEditText.isPopupShowing())
         {
-            handler.postDelayed(destinationEditText::showDropDown, SHORT_DELAY);
+            destinationEditText.post(destinationEditText::showDropDown);
         } else
-            destinationEditText.dismissDropDown();
+        {
+            destinationEditText.post(destinationEditText::dismissDropDown);
+        }
     }
 
     //__________________________________________________________________________________________________________________________________________
@@ -622,10 +621,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback
         }
         showAllButton.setOnClickListener(v ->
         {
-            resetStartEndDestinationMarkers();
-
             mapUtils.setAllRouterPolylinesVisibility(true);
             mapUtils.setAllBusStopMarkersVisibility(true);
+
+            resetStartEndDestinationMarkers();
 
             if (busController != null)
             {
@@ -652,20 +651,34 @@ public class MapFragment extends Fragment implements OnMapReadyCallback
     private void resetStartEndDestinationMarkers()
     {
         if (startDestinationMarker != null)
-        {
-            startDestinationMarker.setIcon(mapUtils.getBusIcon());
-            startDestinationEditText.getText().clear();
-            startDestinationEditText.clearFocus();
-        }
+            resetMarkerAndText(startDestinationMarker, startDestinationEditText);
         startDestinationMarker = null;
 
         if (endDestinationMarker != null)
-        {
-            endDestinationMarker.setIcon(mapUtils.getBusIcon());
-            endDestinationEditText.getText().clear();
-            endDestinationEditText.clearFocus();
-        }
+            resetMarkerAndText(endDestinationMarker, endDestinationEditText);
         endDestinationMarker = null;
+    }
+
+    private void resetMarkerAndText(Marker destinationMarker, AutoCompleteTextView destinationEditText)
+    {
+        resetBusStopMarker(destinationMarker);
+
+        destinationEditText.getText().clear();
+        destinationEditText.clearFocus();
+    }
+
+    private void resetBusStopMarker(Marker destinationMarker)
+    {
+        boolean wasVisable = true;
+        if (!destinationMarker.isVisible())
+        {
+            wasVisable = false;
+            destinationMarker.setVisible(true);
+        }
+        destinationMarker.setIcon(mapUtils.getDefaultBusStopIcon());
+
+        if (!wasVisable)
+            destinationMarker.setVisible(false);
     }
 
     @Override
@@ -709,6 +722,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback
 
         mapViewModel = new ViewModelProvider(this).get(MapViewModel.class);
         mapViewModel.getFromDBandServer(getContext());
+        resetStartEndDestinationMarkers();
         initShowHideConnectionButton();
         mapLayout.onResume();
 

@@ -43,7 +43,6 @@ public class BusController
 
     private boolean isActive;
     private Boolean isBusMarkerClicked;
-    private Bus clickedBus;
 
     private NetworkManager networkManager;
 
@@ -58,6 +57,7 @@ public class BusController
     private List<Marker> busMarkers;
 
     private String busLocationUrlQuery;
+
     private static final String LINEQUERY = "?line=";
 
     public BusController(GoogleMap map, Context context)
@@ -225,6 +225,7 @@ public class BusController
         if (twoThreads == null || twoThreads.isShutdown())
             twoThreads = Executors.newFixedThreadPool(N_THREADS);
     }
+
 
     public void setBusLocationUrlQuery(String busLineName)
     {
