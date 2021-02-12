@@ -40,6 +40,7 @@ import java.util.concurrent.Executors;
 public class MapViewModel extends AndroidViewModel
 {
     private final int N_THREADS = 10;
+    private static final int WAIT_THRESHOOLD = 3000;
     private boolean isFragmentAlive = true;
 
     ConnectivityManager.NetworkCallback networkCallback;
@@ -224,6 +225,13 @@ public class MapViewModel extends AndroidViewModel
                 super.onLost(network);
                 mainHandler.post(() -> isInternetAvailable.setValue(false));
             }
+
+            @Override
+            public void onUnavailable()
+            {
+                super.onUnavailable();
+                mainHandler.post(() -> isInternetAvailable.setValue(false));
+            }
         };
     }
 
@@ -285,9 +293,10 @@ public class MapViewModel extends AndroidViewModel
                 {
                     // making sure that bus stop db finishes first
                     while (!isBusStopDBdone)
-                        lockBusStop.wait();
+                        lockBusStop.wait(WAIT_THRESHOOLD);
                 } catch (InterruptedException ex)
                 {
+                    ex.printStackTrace();
                 }
                 mainHandler.post(() -> mutableBusStops.setValue(busStopList));
                 poolExecutorService.execute(() -> updateBusStopDB(busStopList, context));
@@ -311,9 +320,10 @@ public class MapViewModel extends AndroidViewModel
                 try
                 {   // making sure that route db finishes first
                     while (!isRouteDBdone)
-                        lockRoute.wait();
+                        lockRoute.wait(WAIT_THRESHOOLD);
                 } catch (InterruptedException ex)
                 {
+                    ex.printStackTrace();
                 }
                 mainHandler.post(() -> mutableRoutes.setValue(routeList));
                 activatePoolExecutorService();

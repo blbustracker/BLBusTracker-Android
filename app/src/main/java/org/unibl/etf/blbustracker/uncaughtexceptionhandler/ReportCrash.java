@@ -41,7 +41,7 @@ public class ReportCrash
             String crashContent = getStackTraceFile(context); // get file content if exists
 
             SharedPreferences sharedPreferences = Utils.getSharedPreferences(context);
-            boolean isAutoSendChecked = sharedPreferences.getBoolean(SettingsFragment.AUTO_SEND_REPORT, true);
+            boolean isAutoSendChecked = sharedPreferences.getBoolean(SettingsFragment.AUTO_SEND_REPORT, false);
             boolean isCollectReportChecked = sharedPreferences.getBoolean(SettingsFragment.COLLECT_REPORT, true);
 
             if (isCollectReportChecked)

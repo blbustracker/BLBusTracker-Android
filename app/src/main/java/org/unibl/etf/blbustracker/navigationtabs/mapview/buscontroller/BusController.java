@@ -37,7 +37,7 @@ public class BusController
 {
 
     public static final int N_THREADS = 2;
-    public static final float busZIndex = 1.1f; // default zIndex is 1.0, to bring busMarker to front
+    public static final float busZIndex = 1.1f;// -1.0f; for busses under the bus stop (default zIndex is 1.0)
 
     private final GoogleMap map;
 
@@ -58,7 +58,9 @@ public class BusController
 
     private String busLocationUrlQuery;
 
-    private static final String LINEQUERY = "?line=";
+    private static final String LINE = "line=";
+    private static final String STARTLINEQUERY = "?" + LINE;
+    private static final String ANDLINEQUERY = "&" + LINE;
 
     public BusController(GoogleMap map, Context context)
     {
@@ -124,6 +126,9 @@ public class BusController
             {
                 clearBusMarkers();
                 setMarkers(busList, context);
+
+                if(!isActive)
+                    clearBusMarkers();
             });
         });
     }
@@ -131,7 +136,7 @@ public class BusController
     private void clearBusMarkers()
     {
 
-        if (busMarkers != null)
+        if (busMarkers != null && map != null)
             for (Marker busMarker : busMarkers)
             {
                 busMarker.remove();
@@ -199,6 +204,56 @@ public class BusController
         return BitmapDescriptorFactory.fromBitmap(bitmap);
     }
 
+    //Note: do NOT add "/location" or "&" in arguemnt
+    private String urlEncoder(String url) throws Exception
+    {
+        String lineURL = URLEncoder.encode(url, "UTF-8");  // Note: encode replaces ' '(space) with '+'
+        lineURL = lineURL.replace("+", "%20"); // replace '+' with '%20'
+        return lineURL;
+    }
+
+    // if routes==null show all busses
+    // else show busses on given routes
+    public void setListBusLocationUrlQuery(List<Route> routes)
+    {
+        if (routes == null || routes.isEmpty())
+        {
+            resetBusLocationUrlQuery();
+            return;
+        }
+
+        StringBuilder urlAttributes = new StringBuilder();
+        urlAttributes.append(STARTLINEQUERY); // starting "?line="
+        try
+        {
+            for (Route route : routes)
+            {
+                urlAttributes.append(urlEncoder(route.getName()));
+                urlAttributes.append(ANDLINEQUERY);
+            }
+            urlAttributes.setLength(urlAttributes.length() - ANDLINEQUERY.length()); // trim end ANDLINEQUERY
+            String lineURL = Constants.BUS_LOCATIONS_PATH + urlAttributes.toString();   // /location + ?line=....
+            this.busLocationUrlQuery = lineURL;
+
+        } catch (Exception ex)
+        {
+            this.resetBusLocationUrlQuery();
+        }
+    }
+
+    public void setBusLocationUrlQuery(String busLineName)
+    {
+        String lineQuery = Constants.BUS_LOCATIONS_PATH + STARTLINEQUERY;
+        try
+        {
+            lineQuery += urlEncoder(busLineName);
+            this.busLocationUrlQuery = lineQuery;
+        } catch (Exception ex)
+        {
+            this.resetBusLocationUrlQuery();
+        }
+    }
+
     public void setActive(boolean active)
     {
         isActive = active;
@@ -224,22 +279,6 @@ public class BusController
     {
         if (twoThreads == null || twoThreads.isShutdown())
             twoThreads = Executors.newFixedThreadPool(N_THREADS);
-    }
-
-
-    public void setBusLocationUrlQuery(String busLineName)
-    {
-        String lineURL;
-        this.resetBusLocationUrlQuery();
-        try
-        {
-            lineURL = URLEncoder.encode(busLineName, "UTF-8");  // Note: encode replaces ' '(space) with '+'
-        } catch (Exception ex)
-        {
-            return;
-        }
-        this.busLocationUrlQuery += (LINEQUERY + lineURL).replace("+", "%20"); // replace '+' with '%20'
-
     }
 
     public void resetBusLocationUrlQuery()

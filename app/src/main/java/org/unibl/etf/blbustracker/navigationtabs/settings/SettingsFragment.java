@@ -11,6 +11,8 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.navigation.Navigation;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceManager;
 
@@ -102,7 +104,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
 
             case AUTO_SEND_REPORT:
 
-                boolean isAutoSendChecked = sharedPreferences.getBoolean(AUTO_SEND_REPORT, true);
+                boolean isAutoSendChecked = sharedPreferences.getBoolean(AUTO_SEND_REPORT, false);
                 editor.putBoolean(AUTO_SEND_REPORT, isAutoSendChecked);
                 break;
         }
@@ -111,7 +113,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
 
     private void initReportWatcher(boolean isCollectReportChecked)
     {
-        if(isCollectReportChecked)
+        if (isCollectReportChecked)
             Thread.setDefaultUncaughtExceptionHandler(new CustomUncaughtExceptionHandler(getContext()));
         else
             Thread.setDefaultUncaughtExceptionHandler(null);
@@ -143,7 +145,11 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
     public void onResume()
     {
         super.onResume();
-        getActivity().findViewById(R.id.toolbar).setVisibility(View.VISIBLE);
+        Toolbar toolbar = getActivity().findViewById(R.id.toolbar);
+        toolbar.setVisibility(View.VISIBLE);
+        toolbar.setNavigationOnClickListener(v -> {
+            Navigation.findNavController(getActivity(), R.id.nav_host_fragment).navigate(R.id.nav_map_view);
+        });
     }
 
     @Override

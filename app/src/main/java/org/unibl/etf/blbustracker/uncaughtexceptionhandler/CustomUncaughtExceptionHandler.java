@@ -25,14 +25,14 @@ public class CustomUncaughtExceptionHandler implements Thread.UncaughtExceptionH
     {
         int versionCode = BuildConfig.VERSION_CODE;
         String versionName = BuildConfig.VERSION_NAME;
-        StackTraceElement[] arr = ex.getStackTrace();
+        StackTraceElement[] stackTraceElements = ex.getStackTrace();
         StringBuilder report = new StringBuilder(ex.toString() + "\n");
         report.append("versionCode: ").append(versionCode)
                 .append(" versionName: ").append(versionName).append("\n\n");
         report.append("----------- Stack trace -----------\n\n");
-        for (int i = 0; i < arr.length; i++)
+        for (StackTraceElement stackTraceElement : stackTraceElements)
         {
-            report.append("    ").append(arr[i].toString().trim()).append("\n");
+            report.append("    ").append(stackTraceElement.toString().trim()).append("\n");
         }
         report.append("-----------------------------------\n\n");
 
@@ -42,10 +42,10 @@ public class CustomUncaughtExceptionHandler implements Thread.UncaughtExceptionH
         {
             report.append("----------- Cause -----------\n\n");
             report.append(cause.toString()).append("\n\n");
-            arr = cause.getStackTrace();
-            for (int i = 0; i < arr.length; i++)
+            stackTraceElements = cause.getStackTrace();
+            for (StackTraceElement stackTraceElement : stackTraceElements)
             {
-                report.append("    ").append(arr[i].toString().trim()).append("\n");
+                report.append("    ").append(stackTraceElement.toString().trim()).append("\n");
             }
             report.append("-----------------------------------\n\n");
         }

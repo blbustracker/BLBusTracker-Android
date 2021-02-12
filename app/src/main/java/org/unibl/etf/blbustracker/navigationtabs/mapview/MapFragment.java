@@ -50,6 +50,7 @@ import org.unibl.etf.blbustracker.utils.KeyboardUtils;
 import org.unibl.etf.blbustracker.utils.Utils;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -160,6 +161,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap)
     {
         this.map = googleMap;
+        map.clear();
+
         mapUtils = new MapUtils(mapFragmentView.getContext(), map, busStopMarkersHash, routePolylineHash);
         mapUtils.setAllMapArguments(mapType, mapStyle, getContext());
 
@@ -179,9 +182,16 @@ public class MapFragment extends Fragment implements OnMapReadyCallback
         //observe Route list changes
         mapViewModel.getMutableRoutes().observe(getViewLifecycleOwner(), routeList ->
         {
+            if (!routePolylineHash.isEmpty())
+            {
+                for (Map.Entry<Integer, Polyline> polylineEntry : routePolylineHash.entrySet())
+                {
+                    polylineEntry.getValue().remove();
+                }
+            }
             mapUtils.onRouteChanged(routeList);
-            busController.setRoutes(routeList);
             routesBottomDialog.setAllRoutes(routeList);
+            restartBusController(routeList);
         });
 
         initializeZoomButtons();
@@ -192,6 +202,15 @@ public class MapFragment extends Fragment implements OnMapReadyCallback
         map.setOnPolylineClickListener(this);
 
         mapUtils.setDefaultLocation();  // center map to default location
+    }
+
+    private void restartBusController(List<Route> routeList)
+    {
+        busController.setActive(false);
+        busController = null;
+        busController = new BusController(map, context);
+        busController.setRoutes(routeList);
+        busController.startBusTracking(context);
     }
     //*****************************************************************************************************************
 
@@ -271,6 +290,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback
     {
         startDestinationMarker = setAsDestinationMarker(busStopId, startDestinationEditText, startDestinationMarker,
                 mapUtils.getStartDestinationIcon());
+
         checkMarkersForRoute();
         isMarkerClicked = false;
     }
@@ -281,6 +301,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback
     {
         endDestinationMarker = setAsDestinationMarker(busStopId, endDestinationEditText, endDestinationMarker,
                 mapUtils.getEndDestinationIcon());
+
         checkMarkersForRoute();
         isMarkerClicked = false;
     }
@@ -396,7 +417,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback
     {
         destinationEditText.setOnEditorActionListener(this);
         destinationEditText.setOnFocusChangeListener(this);
-        destinationEditText.setOnClickListener(l->showDropDown(destinationEditText,true));
+        destinationEditText.setOnClickListener(l -> showDropDown(destinationEditText, true));
 
         destinationEditText.setOnItemClickListener((parent, view, position, id)
                 -> onBusStopItemClick(parent, view, position, destinationEditText.getId()));
@@ -434,6 +455,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback
         }
 
         checkMarkersForRoute();
+
         textView.clearFocus();
         return true;
     }
@@ -441,14 +463,18 @@ public class MapFragment extends Fragment implements OnMapReadyCallback
     private void checkMarkersForRoute()
     {
         if (startDestinationMarker != null && endDestinationMarker == null)
-            mapUtils.onDestinationTextInput((BusStop) startDestinationMarker.getTag(), getContext());
-        else if (startDestinationMarker == null && endDestinationMarker != null)
-            mapUtils.onDestinationTextInput((BusStop) endDestinationMarker.getTag(), getContext());
-        else if (startDestinationMarker != null && endDestinationMarker != null)
+        {
+            mapUtils.onDestinationTextInput((BusStop) startDestinationMarker.getTag(), busController, true, getContext());
+
+        } else if (startDestinationMarker == null && endDestinationMarker != null)
+        {
+            mapUtils.onDestinationTextInput((BusStop) endDestinationMarker.getTag(), busController, false, getContext());
+
+        } else if (startDestinationMarker != null && endDestinationMarker != null)
         {
             BusStop busStopA = (BusStop) startDestinationMarker.getTag();
             BusStop busStopB = (BusStop) endDestinationMarker.getTag();
-            mapUtils.drawRoutesThroughBusStops(busStopA, busStopB, getContext());
+            mapUtils.drawRoutesThroughBusStops(busStopA, busStopB, busController, this::onShowAllButtonClicked, getContext());
         }
     }
 
@@ -504,32 +530,32 @@ public class MapFragment extends Fragment implements OnMapReadyCallback
     {
         Object item = parent.getItemAtPosition(position);
         BusStop busStop = (BusStop) item;
-        switch (editTextid)
+
+        if (editTextid == startDestinationEditText.getId())
         {
-            case R.id.start_destination_edittext:
-                startDestinationMarker = setDestinationMarker(busStop,
-                        startDestinationEditText,
-                        startDestinationMarker,
-                        mapUtils.getStartDestinationIcon());
+            startDestinationMarker = setDestinationMarker(busStop,
+                    startDestinationEditText,
+                    startDestinationMarker,
+                    mapUtils.getStartDestinationIcon());
 
-                if (startDestinationMarker != null)
-                    moveCameraToDestination(startDestinationMarker);
+            if (startDestinationMarker != null)
+                moveCameraToDestination(startDestinationMarker);
 
-                startDestinationEditText.clearFocus();
-                break;
+            startDestinationEditText.clearFocus();
 
-            case R.id.end_destination_edittext:
-                endDestinationMarker = setDestinationMarker(busStop,
-                        endDestinationEditText,
-                        endDestinationMarker,
-                        mapUtils.getEndDestinationIcon());
+        } else if (editTextid == endDestinationEditText.getId())
+        {
+            endDestinationMarker = setDestinationMarker(busStop,
+                    endDestinationEditText,
+                    endDestinationMarker,
+                    mapUtils.getEndDestinationIcon());
 
-                if (endDestinationMarker != null)
-                    moveCameraToDestination(endDestinationMarker);
+            if (endDestinationMarker != null)
+                moveCameraToDestination(endDestinationMarker);
 
-                endDestinationEditText.clearFocus();
-                break;
+            endDestinationEditText.clearFocus();
         }
+
         checkMarkersForRoute();
     }
 
@@ -600,6 +626,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback
             mapViewModel.getIsInternetAvailable().observe(getViewLifecycleOwner(), this::setShowNoConnectionButton);
     }
 
+
     private void setShowNoConnectionButton(boolean isNetworkAvailable)
     {
         // if there is internet connection => hide button, else show button
@@ -619,21 +646,23 @@ public class MapFragment extends Fragment implements OnMapReadyCallback
         {
             showAllButton.setTooltipText(getString(R.string.show_all_button));
         }
-        showAllButton.setOnClickListener(v ->
+        showAllButton.setOnClickListener(v -> onShowAllButtonClicked());
+    }
+
+    private void onShowAllButtonClicked()
+    {
+        mapUtils.setAllRouterPolylinesVisibility(true);
+        mapUtils.setAllBusStopMarkersVisibility(true);
+
+        resetStartEndDestinationMarkers();
+
+        if (busController != null)
         {
-            mapUtils.setAllRouterPolylinesVisibility(true);
-            mapUtils.setAllBusStopMarkersVisibility(true);
+            busController.resetBusLocationUrlQuery();
+            busController.setIsBusMarkerClicked(false);
+        }
 
-            resetStartEndDestinationMarkers();
-
-            if (busController != null)
-            {
-                busController.resetBusLocationUrlQuery();
-                busController.setIsBusMarkerClicked(false);
-            }
-
-            mapUtils.moveToBounds(routePolylineHash);
-        });
+        mapUtils.moveToBounds(routePolylineHash);
     }
 
     /**
@@ -709,6 +738,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback
     public void onResume()
     {
         super.onResume();
+        mapLayout.onResume();
+
         if (mapViewModel != null)
             mapViewModel.activatePoolExecutorService();
 
@@ -720,12 +751,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback
         if (mapUtils != null)
             mapUtils.checkPoolState();
 
-        mapViewModel = new ViewModelProvider(this).get(MapViewModel.class);
-        mapViewModel.getFromDBandServer(getContext());
+        if (mapViewModel == null)
+            mapViewModel = new ViewModelProvider(this).get(MapViewModel.class);
+        mapViewModel.getFromDBandServer(context);
+
         resetStartEndDestinationMarkers();
         initShowHideConnectionButton();
-        mapLayout.onResume();
-
     }
 
     @Override
@@ -751,7 +782,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback
         if (mapUtils != null)
             mapUtils.shutdownPoolExecutorService();
         if (mapViewModel != null)
+        {
             mapViewModel.shutdownPoolExecutorService();
+        }
         if (busController != null)
             busController.setActive(false);
 
@@ -781,5 +814,4 @@ public class MapFragment extends Fragment implements OnMapReadyCallback
         if (mapLayout != null)
             mapLayout.onLowMemory();
     }
-
 }

@@ -1,16 +1,5 @@
 <resources>
     <!--
-    TODO: Before you run your application, you need a Google Maps API key.
-
-    To get one, follow this link, follow the directions and press "Create" at the end:
-
-    https://console.developers.google.com/flows/enableapi?apiid=maps_android_backend&keyType=CLIENT_SIDE_ANDROID&r=0B:8E:3F:B6:B5:EF:E4:D0:B2:38:A9:66:DA:54:27:1C:3C:1D:0B:25%3Bcom.passengerapp
-
-    You can also add your credentials to an existing key, using these values:
-
-    Package name:
-    com.passengerapp
-
     SHA-1 certificate fingerprint:
     0B:8E:3F:B6:B5:EF:E4:D0:B2:38:A9:66:DA:54:27:1C:3C:1D:0B:25
 

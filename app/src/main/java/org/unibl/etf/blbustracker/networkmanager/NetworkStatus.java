@@ -104,7 +104,7 @@ public class NetworkStatus
             oldCurrentTime = currentTime;
             if (volleyError instanceof TimeoutError || volleyError instanceof NoConnectionError)
             {
-                message = context.getString(R.string.cannot_connect_to_internet); //
+                message = context.getString(R.string.cannot_connect_to_internet);
             } else if (volleyError instanceof ServerError)
             {
                 message = context.getString(R.string.server_not_found);

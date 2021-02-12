@@ -15,6 +15,8 @@
 src/main/res/values-sr-rRS/
 src/main/java/com/passengerapp/TODO.txt
 src/main/java/com/passengerapp/TestClass.java
+src/main/java/org/unibl/etf/blbustracker/TODO.txt
+src/main/java/com/blbustracker/TestClass.java
 
 libs/
-src/main/res/layout-v21/
+/app/release/

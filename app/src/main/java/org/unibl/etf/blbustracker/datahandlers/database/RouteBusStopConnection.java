@@ -8,6 +8,8 @@ import org.unibl.etf.blbustracker.datahandlers.database.busstop.BusStopDAO;
 import org.unibl.etf.blbustracker.datahandlers.database.route.Route;
 import org.unibl.etf.blbustracker.datahandlers.database.busstop.BusStop;
 import org.unibl.etf.blbustracker.datahandlers.database.joinroutebusstop.JoinRouteBusStopDAO;
+import org.unibl.etf.blbustracker.datahandlers.jsonhandlers.pointfactory.PointFactory;
+import org.unibl.etf.blbustracker.navigationtabs.mapview.RouteWithStopsInterface;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,7 +54,7 @@ public class RouteBusStopConnection
             for (Route routeA : routesWithBusStopA)
             {
                 List<BusStop> busStopsOnRouteA = middleDao.getBusStopByRouteId(routeA.getRouteId());
-                if (busStopsOnRouteA!=null && busStopsOnRouteA.contains(busStopB))
+                if (busStopsOnRouteA != null && busStopsOnRouteA.contains(busStopB))
                 {
                     interceptRoutes.add(routeA);
                 }
@@ -61,30 +63,40 @@ public class RouteBusStopConnection
         return interceptRoutes.isEmpty() ? null : interceptRoutes;
     }
 
-    public List<Route> findDirectRoute(BusStop busStopA, BusStop busStopB)
+    public List<Route> findDirectRoute(BusStop startBusStop, BusStop endBusStop, RouteWithStopsInterface showRoutes)
     {
-        if(busStopA==null || busStopB==null)
+        if (startBusStop == null || endBusStop == null)
             return null;
 
-        List<Route> routesWithBusStopA = middleDao.getRoutesByBusStopId(busStopA.getBusStopId());
-        List<Route> interceptRoutes = null;
+        List<Route> routesWithStartBusStop = middleDao.getRoutesByBusStopId(startBusStop.getBusStopId());
+        List<Route> interceptRoutes = new ArrayList<>();
 
-        if(routesWithBusStopA!=null)
+        if (routesWithStartBusStop != null)
         {
-            interceptRoutes = new ArrayList<>();
+            int startBusStopID = startBusStop.getBusStopId();
+            int endBusStopID = endBusStop.getBusStopId();
 
-            for (Route routeA : routesWithBusStopA)
+            PointFactory pointFactory = new PointFactory();
+
+            for (Route routeStart : routesWithStartBusStop)
             {
-                List<BusStop> busStopsOnRouteA = middleDao.getBusStopByRouteId(routeA.getRouteId());
-                if (busStopsOnRouteA!=null && busStopsOnRouteA.contains(busStopB))
+                List<BusStop> routesWithEndBusStop = middleDao.getBusStopByRouteId(routeStart.getRouteId());
+                if (routesWithEndBusStop != null && routesWithEndBusStop.contains(endBusStop))
                 {
-                    interceptRoutes.add(routeA);
+                    pointFactory.devidePointsAndBusStops(routeStart);
+                    List<Integer> busStopIds = pointFactory.getBusStopIds();
+                    int startBusStopIndex = busStopIds.indexOf(startBusStopID);
+                    int endBusStopIndex = busStopIds.indexOf(endBusStopID);
+
+                    if (endBusStopIndex >= startBusStopIndex)   // if end destination is after start destination on route
+                    {
+                        interceptRoutes.add(routeStart);
+                        showRoutes.showRouteAnStops(routeStart, new ArrayList<>(busStopIds));
+                    }
                 }
             }
-        }else
-            return null;
-
-        return interceptRoutes.isEmpty()? null : interceptRoutes;
+        }
+        return interceptRoutes.isEmpty() ? null : interceptRoutes;
     }
 
     /**

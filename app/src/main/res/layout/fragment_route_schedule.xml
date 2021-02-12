@@ -7,7 +7,7 @@
         android:orientation="vertical"
         tools:context=".navigationtabs.routeschedule.RouteScheduleFragment">
 
-    <LinearLayout
+    <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/google_blue"
@@ -39,7 +39,17 @@
                 app:autoSizeStepGranularity="2sp"
                 app:autoSizeTextType="uniform" />
 
-    </LinearLayout>
+        <Button
+                android:id="@+id/clear_btn"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:visibility="invisible"
+                android:layout_marginEnd="5dp"
+                android:layout_gravity="end|bottom"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/ic_close_white_24"
+                />
+    </FrameLayout>
 
     <ScrollView
             android:layout_width="match_parent"

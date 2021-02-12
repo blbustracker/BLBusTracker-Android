@@ -1,6 +1,8 @@
 package org.unibl.etf.blbustracker.navigationtabs.routeschedule;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -8,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 import android.widget.TableLayout;
 
 import androidx.fragment.app.Fragment;
@@ -21,10 +24,13 @@ import java.util.List;
 
 public class RouteScheduleFragment extends Fragment implements AdapterView.OnItemClickListener, View.OnClickListener, TextWatcher
 {
+    private static final int DELAY_MILLIS = 100;
     private MapViewModel viewModel;
+    private TableLayout scheduleTableLayout;
 
     private AutoCompleteTextView routeScheduleInput;
-    private TableLayout scheduleTableLayout;
+    private Button clearBtn;
+    private Handler mainHnadler;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -33,8 +39,12 @@ public class RouteScheduleFragment extends Fragment implements AdapterView.OnIte
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_route_schedule, container, false);
 
+        mainHnadler = new Handler(Looper.getMainLooper());
+
         populateAutoCompleteInput(view);
         scheduleTableLayout = view.findViewById(R.id.tablelayout);
+        clearBtn = view.findViewById(R.id.clear_btn);
+        clearBtn.setOnClickListener(l-> routeScheduleInput.setText(""));
 
         return view;
     }
@@ -99,8 +109,7 @@ public class RouteScheduleFragment extends Fragment implements AdapterView.OnIte
     {
         if (routeScheduleInput != null && getActivity() != null && !getActivity().isFinishing() && !isRemoving())
         {
-            routeScheduleInput.post(routeScheduleInput::showDropDown);
-            //        mainHnadler.postDelayed(() -> routeScheduleInput.showDropDown(), DELAY_MILLIS);   //there must be some delay
+            mainHnadler.postDelayed(() -> routeScheduleInput.showDropDown(), DELAY_MILLIS);   //there must be some delay
         }
     }
 
@@ -113,14 +122,21 @@ public class RouteScheduleFragment extends Fragment implements AdapterView.OnIte
     @Override
     public void onTextChanged(CharSequence s, int start, int before, int count)
     {
-        //nothing to do here
+        if ("".equals(s.toString()))
+        {
+            clearBtn.setVisibility(View.INVISIBLE);
+            showAllSuggestions();
+        }
+        else
+            clearBtn.setVisibility(View.VISIBLE);
+
     }
 
     @Override
     public void afterTextChanged(Editable s)
     {
-        if (s.toString().trim().length() == 0)
-            showAllSuggestions();
+//        if (s.toString().trim().length() == 0)
+//            showAllSuggestions();
     }
 
     @Override

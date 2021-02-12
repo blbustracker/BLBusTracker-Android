@@ -5,6 +5,7 @@ import com.google.android.gms.maps.model.LatLng;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.unibl.etf.blbustracker.datahandlers.database.route.Route;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +26,11 @@ public class PointFactory
     {
         this.points = new ArrayList<>();
         this.busStopIds = new ArrayList<>();
+    }
+
+    public void devidePointsAndBusStops(Route route)
+    {
+        this.devidePointsAndBusStops(route.getWaypointsJSONArray());
     }
 
     public void devidePointsAndBusStops(String routePoints)
