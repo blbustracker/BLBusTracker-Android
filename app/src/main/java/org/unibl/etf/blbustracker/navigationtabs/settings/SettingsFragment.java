@@ -81,6 +81,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
             case ChoseLanguageActivity.SELECTED_LANGUAGE: // change language
                 String selectedLocale = sharedPreferences.getString(ChoseLanguageActivity.SELECTED_LANGUAGE, "");
                 editor.putString(ChoseLanguageActivity.SELECTED_LANGUAGE, selectedLocale);
+                editor.commit();
                 localizationDelegate.setLanguage(activity, selectedLocale);
                 activity.recreate();
                 break;

@@ -14,4 +14,7 @@
     <dimen name="bus_marker_size">36dp</dimen>
     <dimen name="innerbus_marker_size">32dp</dimen>
 
+<!--    bus stop icon size-->
+    <dimen name="busstop_size">26dp</dimen>
+
 </resources>

@@ -13,6 +13,7 @@ import org.unibl.etf.blbustracker.Constants;
 import org.unibl.etf.blbustracker.R;
 import org.unibl.etf.blbustracker.networkmanager.NetworkManager;
 import org.unibl.etf.blbustracker.networkmanager.NetworkStatus;
+import org.unibl.etf.blbustracker.uncaughtexceptionhandler.ReportCrash;
 
 public class ReportProblemModel
 {
@@ -86,9 +87,11 @@ public class ReportProblemModel
         JSONObject jsonObject = new JSONObject();
         try
         {
+            title = ReportCrash.getReportTitle(title);
             jsonObject.put(CATEGORY,REPORT);
             jsonObject.put(REPORT_TITLE, title);
             jsonObject.put(REPORT_CONTENT, message);
+
         } catch (JSONException ex)
         {
         }

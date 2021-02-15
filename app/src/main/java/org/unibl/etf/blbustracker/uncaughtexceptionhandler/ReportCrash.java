@@ -26,7 +26,7 @@ public class ReportCrash
 {
     public static final String STACK_TRACE_FILE_NAME = "crash.stacktrace";
 
-    public static final String SUBJECT = "Crash Report ";
+    public static final String SUBJECT = "Crash Report";
 
     private static final String CATEGORY = "category";
     private static final String CRASH = "crash";
@@ -101,13 +101,8 @@ public class ReportCrash
         JSONObject jsonObject = new JSONObject();
         try
         {
-            int versionCode = BuildConfig.VERSION_CODE;
-            String versionName = BuildConfig.VERSION_NAME;
             jsonObject.put(CATEGORY, CRASH);
-            String title = SUBJECT + TimeUtil.getCurrentDateAndTime()
-                    + " API: " + Build.VERSION.SDK_INT
-                    + " versionCode: " + versionCode
-                    + " versionName: " + versionName;
+            String title = getReportTitle(SUBJECT);
             jsonObject.put(TITLE, title);
             jsonObject.put(CRASH_CONTENT, crashContent);
 
@@ -116,6 +111,16 @@ public class ReportCrash
             //...
         }
         return jsonObject;
+    }
+
+    public static String getReportTitle(String subject)
+    {
+        int versionCode = BuildConfig.VERSION_CODE;
+        String versionName = BuildConfig.VERSION_NAME;
+        return subject + " \n" + TimeUtil.getCurrentDateAndTime()
+                + " API: " + Build.VERSION.SDK_INT
+                + " versionCode: " + versionCode
+                + " versionName: " + versionName;
     }
 
 }

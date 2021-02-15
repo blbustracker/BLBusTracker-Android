@@ -3,9 +3,10 @@ package org.unibl.etf.blbustracker.navigationtabs.routeschedule;
 import android.content.Context;
 import android.graphics.text.LineBreaker;
 import android.os.Build;
-import android.text.Html;
 import android.text.Spanned;
 import android.widget.TextView;
+
+import androidx.core.text.HtmlCompat;
 
 import org.unibl.etf.blbustracker.R;
 import org.unibl.etf.blbustracker.datahandlers.database.route.Route;
@@ -108,6 +109,6 @@ public class RouteScheduleModel
     public static Spanned oneColor(String inputText, String fontColor)
     {
         String text = "<font color=" + fontColor + ">" + inputText + "</font>";
-        return Html.fromHtml(text);
+        return HtmlCompat.fromHtml(text,HtmlCompat.FROM_HTML_MODE_LEGACY);
     }
 }

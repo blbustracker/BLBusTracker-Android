@@ -22,7 +22,7 @@
             android:id="@+id/radio_group"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"
             android:layout_marginTop="20dp">
 
         <!--        All RadioButtons-->
@@ -31,24 +31,23 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:text="English"
-                android:textSize="20dp" />
+                android:layout_marginBottom="8dp"
+                android:textSize="20sp" />
 
         <RadioButton
                 android:id="@+id/srpski"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:paddingTop="10dp"
+                android:layout_marginBottom="8dp"
                 android:text="Srpski"
-                android:textSize="20dp" />
+                android:textSize="20sp" />
 
         <RadioButton
                 android:id="@+id/srpski_cry"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:paddingTop="10dp"
                 android:text="Српски"
-                android:textSize="20dp" />
-
+                android:textSize="20sp" />
     </RadioGroup>
 
     <Button

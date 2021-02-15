@@ -9,8 +9,8 @@ android {
         applicationId "org.unibl.etf.blbustracker"
         minSdkVersion 23
         targetSdkVersion 30
-        versionCode 2
-        versionName "1.1" // change and database version
+        versionCode 4
+        versionName "1.2.1" // change and database version
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
@@ -31,6 +31,12 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
+    bundle {
+
+        language {
+            enableSplit = false
+        }
+    }
 }
 
 repositories {

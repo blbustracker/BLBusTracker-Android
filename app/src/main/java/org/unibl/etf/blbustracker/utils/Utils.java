@@ -10,6 +10,7 @@ import android.widget.Toast;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.maps.model.LatLng;
+
 import org.unibl.etf.blbustracker.R;
 
 import java.util.List;

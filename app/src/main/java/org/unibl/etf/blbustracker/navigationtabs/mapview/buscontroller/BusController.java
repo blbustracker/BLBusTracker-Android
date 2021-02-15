@@ -103,6 +103,7 @@ public class BusController
                 {
                 }
             }
+            mainHandler.post(this::clearBusMarkers);
         });
     }
 

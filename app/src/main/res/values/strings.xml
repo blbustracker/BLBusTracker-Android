@@ -56,9 +56,9 @@
     <string name="announcement_content">Content:</string>
     <string name="no_busstop_found">No busStop found</string>
     <string name="unknown_busstop">unknown busStop</string>
-    <string name="workday">WORKDAY</string>
-    <string name="saturday">SATURDAY</string>
-    <string name="sunday">SUNDAY/HOLIDAY</string>
+    <string name="workday">Workday</string>
+    <string name="saturday">Saturday</string>
+    <string name="sunday">Sunday/Holiday</string>
     <string name="route_schedule">Route schedule</string>
     <string name="choose_your_route">Choose your route</string>
     <string name="enter_bus_route">Enter bus route</string>

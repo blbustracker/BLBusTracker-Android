@@ -81,6 +81,8 @@ public class MapUtils
         poolExecutorService = Executors.newFixedThreadPool(N_THREADS);
 
         defaultBusStopIcon = BitmapDescriptorFactory.fromResource(R.drawable.busstop_blue_26x26);
+//        int dimension = (int)context.getResources().getDimension(R.dimen.busstop_size);
+//        defaultBusStopIcon = DrawableUtil.resizeDrawable(R.drawable.busstop_blue_256,dimension, context); // TODO: for new version icon resize
 
         startDestinationIcon = BitmapDescriptorFactory.fromResource(R.drawable.busstop_green_36x36);
         endDestinationIcon = BitmapDescriptorFactory.fromResource(R.drawable.busstop_red_36x36);

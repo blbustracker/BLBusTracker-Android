@@ -68,7 +68,7 @@ public class ArrivalTimeFragment extends BottomSheetDialogFragment
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        busStopName.setText(busStop.getDesc() + " "+ busStop.getBusStopId()); // set bus stop name in window
+        busStopName.setText(busStop.getDesc()); // set bus stop name in window
     }
 
     private void initButtons(View dialogView)

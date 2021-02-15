@@ -1,31 +1,13 @@
 package org.unibl.etf.blbustracker.utils;
 
 import android.app.Activity;
-import android.content.Context;
-import android.os.Build;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.view.inputmethod.InputMethodSubtype;
 
 import androidx.annotation.NonNull;
 
 public abstract class KeyboardUtils
 {
-
-    //get users keyboard input locale
-    public static String getKeyboardLocale(Context context)
-    {
-        InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
-        InputMethodSubtype ims = imm.getCurrentInputMethodSubtype();
-
-        String result;
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M)
-            result = ims.getLanguageTag();
-        else
-            result = ims.getLocale();
-
-        return result;
-    }
 
     /**
      * Hide/Close Keyboard
