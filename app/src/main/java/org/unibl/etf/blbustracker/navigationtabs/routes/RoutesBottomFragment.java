@@ -22,6 +22,7 @@ import org.unibl.etf.blbustracker.R;
 import org.unibl.etf.blbustracker.datahandlers.database.route.Route;
 import org.unibl.etf.blbustracker.utils.KeyboardUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -40,6 +41,10 @@ public class RoutesBottomFragment extends BottomSheetDialogFragment
         this.onRouteClickedListener = onRouteClickedListener;
     }
 
+    public RoutesBottomFragment()
+    {
+    }
+
     //call this method in onRouteChange
     public void setAllRoutes(List<Route> allRoutes)
     {
@@ -54,8 +59,6 @@ public class RoutesBottomFragment extends BottomSheetDialogFragment
         super.onCreate(savedInstanceState);
         // better view of a Dialog when keyboard is shown
         setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogStyle);
-
-
     }
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -94,7 +97,8 @@ public class RoutesBottomFragment extends BottomSheetDialogFragment
         recyclerView.setLayoutManager(layoutManager);
 
         // temporary empty array, while waiting for data
-        routeRecyclerAdapter = new RouteRecyclerAdapter(allRoutes, onRouteClickedListener, context);
+        if(allRoutes==null) allRoutes=new ArrayList<>();
+        routeRecyclerAdapter = new RouteRecyclerAdapter(new ArrayList<>(allRoutes), onRouteClickedListener, context);
         recyclerView.setAdapter(routeRecyclerAdapter);
 
     }

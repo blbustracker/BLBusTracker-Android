@@ -78,8 +78,6 @@ public class RouteRecyclerAdapter extends RecyclerView.Adapter<RouteRecyclerAdap
      */
     public RouteRecyclerAdapter(List<Route> myDataset, OnRouteClickedListener routeClickedListener, Context context)
     {
-        if (myDataset == null)
-            myDataset = new ArrayList<>();
         routes = myDataset;
         routesFull = new ArrayList<>(routes); //full copy
         this.context = context;

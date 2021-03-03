@@ -161,6 +161,7 @@ public class AnnouncementsViewModel extends AndroidViewModel
         if (object == null || object.length() == 0)
             return;
 
+        activatePoolExecutors();
         poolExecutorService.execute(() ->
         {
             AnnouncementJSON announcementJSON = new AnnouncementJSON(object);
@@ -184,6 +185,7 @@ public class AnnouncementsViewModel extends AndroidViewModel
                         if (isUpdating != null && isUpdating.getValue())
                             isUpdating.setValue(false);
                     });
+                    activatePoolExecutors();
                     poolExecutorService.execute(() -> updateAnnouncementsDB(announcementsList, context));
                 } catch (Exception ex)
                 {

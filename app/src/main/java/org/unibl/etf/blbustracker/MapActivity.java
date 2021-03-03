@@ -22,6 +22,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 
 import org.unibl.etf.blbustracker.datahandlers.LastUpdated;
+import org.unibl.etf.blbustracker.datahandlers.database.DBFactory;
 import org.unibl.etf.blbustracker.navigationtabs.settings.SettingsFragment;
 import org.unibl.etf.blbustracker.uncaughtexceptionhandler.CustomUncaughtExceptionHandler;
 import org.unibl.etf.blbustracker.uncaughtexceptionhandler.ReportCrash;
@@ -103,13 +104,19 @@ public class MapActivity extends LocalizationActivity implements DrawerLayout.Dr
         if (currentVersionCode > savedVersionCode)
         {
             SharedPreferences.Editor editor = sharedPreferences.edit();
-
             editor.remove(LastUpdated.BUSSTOP_LAST_UPDATE_KEY);
             editor.remove(LastUpdated.ROUTES_LAST_UPDATE_KEY);
             editor.remove(LastUpdated.NEWS_LAST_UPDATE_KEY);
-
             editor.putInt(VERSION_CODE_KEY, currentVersionCode);
             editor.commit();    // use commit here insted of apply
+            try
+            {
+                DBFactory.getInstance(this).deleteRouteBusStopDatabase(this);
+            }catch(Exception ex)
+            {
+               ex.printStackTrace();
+            }
+
         }
     }
 
@@ -221,5 +228,7 @@ public class MapActivity extends LocalizationActivity implements DrawerLayout.Dr
     {
     }
 
-
+    public MapActivity()
+    {
+    }
 }

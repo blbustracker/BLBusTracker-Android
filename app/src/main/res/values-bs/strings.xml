@@ -44,7 +44,7 @@
     <string name="report_content">Sadržaj problema</string>
     <string name="report_title">Naslov</string>
     <string name="about_paragraph_1" >Aplikacija za korisnike javnog prevoza u urbanoj zoni grada Banja Luka.</string>
-    <string name="about_paragraph_2">Razvijena od strane Elektrotehničkog fakulteta, Univerziteta u Banjoj Luci i kompanije Autoprevoz, u sklopu \"Future City Innovation Challenge\" inicijative.</string>
+    <string name="about_paragraph_2">Razvijena od strane Elektrotehničkog fakulteta Univerziteta u Banjoj Luci i kompanije Autoprevoz, u sklopu \"Future City Innovation Challenge\" inicijative, koju su finansijski podržali UNDP, Ministarstvo za naučnotehnološki razvoj, visoko obrazovanje i informaciono društvo Republike Srpske i Grad Banja Luka.</string>
     <string name="version">Verzija</string>
     <string name="arrivals">Dolasci:</string>
     <string name="cannot_connect_to_internet" translatable="false">Server nije pronađen. Molimo pokušajte kasnije</string>
@@ -68,4 +68,9 @@
     <string name="wont_ask_to_send_report">Aplikacija neće tražiti potvrdu za slanje podataka o prestanku rada aplikacije</string>
     <string name="ask_to_send_report">Aplikacija će tražiti potvrdu za slanje podataka o prestanku rada aplikacije</string>
     <string name="send_report_automatically">Automatsko slanje podataka</string>
+    <string name="no_google_maps_api">Nemate instalirane Google mape</string>
+    <string name="yes" translatable="false">Da</string>
+    <string name="no">Ne</string>
+    <string name="provider_settings_yes" translatable="false">Da</string>
+    <string name="provider_settings_no" translatable="false">Ne</string>
 </resources>

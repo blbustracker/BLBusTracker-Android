@@ -118,6 +118,7 @@ public class BusController
             return;
         }
 
+        activatePoolExecutors();
         twoThreads.execute(() ->
         {
             BusJSON busJSON = new BusJSON();

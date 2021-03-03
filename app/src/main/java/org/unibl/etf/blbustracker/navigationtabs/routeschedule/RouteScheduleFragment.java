@@ -94,7 +94,6 @@ public class RouteScheduleFragment extends Fragment implements AdapterView.OnIte
         }
     }
 
-
     @Override
     public void onClick(View v)
     {

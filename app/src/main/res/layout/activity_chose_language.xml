@@ -31,14 +31,14 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:text="English"
-                android:layout_marginBottom="8dp"
+                android:layout_marginBottom="10dp"
                 android:textSize="20sp" />
 
         <RadioButton
                 android:id="@+id/srpski"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
+                android:layout_marginBottom="10dp"
                 android:text="Srpski"
                 android:textSize="20sp" />
 

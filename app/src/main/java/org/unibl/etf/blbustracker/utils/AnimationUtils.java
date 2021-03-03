@@ -84,4 +84,9 @@ public abstract class AnimationUtils
     {
         return isExpanded;
     }
+
+    public static void resetValue()
+    {
+        AnimationUtils.isExpanded = true;
+    }
 }

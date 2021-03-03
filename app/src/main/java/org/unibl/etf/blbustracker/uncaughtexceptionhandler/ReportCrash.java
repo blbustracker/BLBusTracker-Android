@@ -69,10 +69,13 @@ public class ReportCrash
             JSONObject jsonObject = makeCrashJSONBody(crashContent);
             networkManager.POST(Constants.REPORT_PATH,
                     jsonObject,
-                    responseObject -> Toast.makeText(context, context.getString(R.string.report_sent), Toast.LENGTH_LONG).show(),
+                    responseObject ->
+                    {
+                        Toast.makeText(context, context.getString(R.string.report_sent), Toast.LENGTH_LONG).show();
+                        context.deleteFile(STACK_TRACE_FILE_NAME);
+                    },
                     error -> NetworkStatus.errorConnectingToInternet(error, context, false));
 
-            context.deleteFile(STACK_TRACE_FILE_NAME);
         } else
         {
             AlertUtil.showWarningAlert(context, context.getString(R.string.no_internet_try_again));

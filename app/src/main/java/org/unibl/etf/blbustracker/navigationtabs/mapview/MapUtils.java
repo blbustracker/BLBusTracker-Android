@@ -8,7 +8,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.core.graphics.ColorUtils;
 
 import com.google.android.gms.maps.CameraUpdate;
@@ -33,6 +32,7 @@ import org.unibl.etf.blbustracker.datahandlers.database.joinroutebusstop.JoinRou
 import org.unibl.etf.blbustracker.datahandlers.database.route.Route;
 import org.unibl.etf.blbustracker.datahandlers.jsonhandlers.pointfactory.PointFactory;
 import org.unibl.etf.blbustracker.navigationtabs.mapview.buscontroller.BusController;
+import org.unibl.etf.blbustracker.utils.AlertUtil;
 
 import java.util.HashMap;
 import java.util.List;
@@ -65,27 +65,31 @@ public class MapUtils
 
     private RouteBusStopConnection routeBusStopConnection;
 
-    /**
-     * Constructor is called in MapFragment.OnMapReady(Google map)
-     */
-    public MapUtils(Context context, GoogleMap map, Map<Integer, Marker> busStopMarkersHash, Map<Integer, Polyline> routePolylineHash)
+    public MapUtils(Context context)
     {
-        this.map = map;
-
         routeBusStopConnection = new RouteBusStopConnection(context);
-
-        this.busStopMarkersHash = busStopMarkersHash;
-        this.routePolylineHash = routePolylineHash;
 
         this.mainHandler = new Handler(Looper.getMainLooper());
         poolExecutorService = Executors.newFixedThreadPool(N_THREADS);
 
         defaultBusStopIcon = BitmapDescriptorFactory.fromResource(R.drawable.busstop_blue_26x26);
-//        int dimension = (int)context.getResources().getDimension(R.dimen.busstop_size);
-//        defaultBusStopIcon = DrawableUtil.resizeDrawable(R.drawable.busstop_blue_256,dimension, context); // TODO: for new version icon resize
+        //        int dimension = (int)context.getResources().getDimension(R.dimen.busstop_size);
+        //        defaultBusStopIcon = DrawableUtil.resizeDrawable(R.drawable.busstop_blue_256,dimension, context); // TODO: for new version icon resize
 
         startDestinationIcon = BitmapDescriptorFactory.fromResource(R.drawable.busstop_green_36x36);
         endDestinationIcon = BitmapDescriptorFactory.fromResource(R.drawable.busstop_red_36x36);
+    }
+
+    /**
+     * Constructor is called in MapFragment.OnMapReady(Google map)
+     */
+    public MapUtils(Context context, GoogleMap map, Map<Integer, Marker> busStopMarkersHash, Map<Integer, Polyline> routePolylineHash)
+    {
+        this(context);
+        this.map = map;
+
+        this.busStopMarkersHash = busStopMarkersHash;
+        this.routePolylineHash = routePolylineHash;
     }
 
     //default camera position on start
@@ -143,6 +147,7 @@ public class MapUtils
     //draw given route on map
     void drawRoutePolylineOnMap(Route route)
     {
+        activatePoolExecutorService();
         poolExecutorService.execute(() ->
         {
             PointFactory pointFactory = new PointFactory();
@@ -199,7 +204,7 @@ public class MapUtils
 
     //Initialize thread pool if it is null or shutdown
     //for example when phone is turned off and on again
-    public void checkPoolState()
+    public void activatePoolExecutorService()
     {
         if (poolExecutorService == null || poolExecutorService.isShutdown())
             poolExecutorService = Executors.newFixedThreadPool(N_THREADS);
@@ -281,11 +286,15 @@ public class MapUtils
 
     public void moveToBounds(Map<Integer, Polyline> routePolylineHash)
     {
+        if (routePolylineHash == null || routePolylineHash.isEmpty())
+            return;
+
         List<List<LatLng>> listOfLists = routePolylineHash.values()
                 .stream()
                 .map(Polyline::getPoints)
                 .collect(Collectors.toList());
 
+        activatePoolExecutorService();
         poolExecutorService.execute(() ->
         {
             LatLngBounds.Builder builder = new LatLngBounds.Builder();
@@ -316,9 +325,16 @@ public class MapUtils
         //        google.navigation:q=a+street+address
         //        google.navigation:q=latitude,longitude
         Uri gmmIntentUri = Uri.parse("google.navigation:q=" + latLng.latitude + "," + latLng.longitude + MODE_WALK);
-        Intent intent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
-        intent.setPackage(GOOGLEMAP_PACKAGE);
-        context.startActivity(intent);
+        Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+        mapIntent.setPackage(GOOGLEMAP_PACKAGE);
+        if (mapIntent.resolveActivity(context.getPackageManager()) != null)
+        {
+            context.startActivity(mapIntent);
+        } else
+        {
+            AlertUtil.showWarningAlert(context, context.getString(R.string.no_google_maps_api));
+        }
+
     }
 
     /**
@@ -329,34 +345,40 @@ public class MapUtils
      */
     public void setAllBusStopMarkersVisibility(boolean isVisible)
     {
-        for (Map.Entry<Integer, Marker> busStopMarkerEntry : busStopMarkersHash.entrySet())
-        {
-            setMarkerVisibility(busStopMarkerEntry.getValue(), isVisible);
-        }
+        if (busStopMarkersHash != null)
+            for (Map.Entry<Integer, Marker> busStopMarkerEntry : busStopMarkersHash.entrySet())
+            {
+                setMarkerVisibility(busStopMarkerEntry.getValue(), isVisible);
+            }
     }
 
     private void setBusStopVisibility(int busStopId, boolean isVisible)
     {
-        setMarkerVisibility(busStopMarkersHash.get(busStopId), isVisible);
+        Marker busstopMarker = busStopMarkersHash.get(busStopId);
+        if (busstopMarker != null)
+            setMarkerVisibility(busstopMarker, isVisible);
 
     }
 
-    private void setBusStopVisibility(@NonNull BusStop busStop, boolean isVisible)
+    private void setBusStopVisibility(BusStop busStop, boolean isVisible)
     {
         setMarkerVisibility(busStopMarkersHash.get(busStop.getBusStopId()), isVisible);
     }
 
-    private void setMarkerVisibility(@NonNull Marker busStopMarker, boolean isVisible)
+    private void setMarkerVisibility(Marker busStopMarker, boolean isVisible)
     {
+        if (busStopMarker == null)
+            return;
         busStopMarker.setVisible(isVisible);
     }
 
     public void setAllRouterPolylinesVisibility(boolean isVisible)
     {
-        for (Map.Entry<Integer, Polyline> routePolylineEntry : routePolylineHash.entrySet())
-        {
-            setPolylineVisibility(routePolylineEntry.getValue(), isVisible);
-        }
+        if (routePolylineHash != null)
+            for (Map.Entry<Integer, Polyline> routePolylineEntry : routePolylineHash.entrySet())
+            {
+                setPolylineVisibility(routePolylineEntry.getValue(), isVisible);
+            }
     }
 
     /**
@@ -367,8 +389,11 @@ public class MapUtils
      * @param polyline
      * @param isVisible set visible and clickable to this value
      */
-    private void setPolylineVisibility(@NonNull Polyline polyline, boolean isVisible)
+    private void setPolylineVisibility(Polyline polyline, boolean isVisible)
     {
+        if (polyline == null)
+            return;
+
         if (isVisible)
         {
             polyline.setVisible(true);
@@ -389,6 +414,7 @@ public class MapUtils
      */
     public void onBusStopClicked(BusStop clickedBusStop, BusController busController, Context context)
     {
+        activatePoolExecutorService();
         poolExecutorService.execute(() ->
         {
             JoinRouteBusStopDAO joinRouteBusStopDAO = DBFactory.getInstance(context).getJoinRouteBusStopDAO();
@@ -417,6 +443,7 @@ public class MapUtils
      */
     public void onSetAsDestinationClicked(BusStop destinationBusStop, boolean isStartDest, Context context)
     {
+        activatePoolExecutorService();
         poolExecutorService.execute(() ->
         {
             JoinRouteBusStopDAO joinRouteBusStopDAO = DBFactory.getInstance(context).getJoinRouteBusStopDAO();
@@ -454,14 +481,16 @@ public class MapUtils
     //doesn't go through all bus stops just the ones given as input
     private void setBusStopIdsVisability(List<Integer> busStopIds, boolean isVisable)
     {
-        for (Integer busStopId : busStopIds)
-        {
-            setBusStopVisibility(busStopId, isVisable);
-        }
+        if (busStopIds != null)
+            for (Integer busStopId : busStopIds)
+            {
+                setBusStopVisibility(busStopId, isVisable);
+            }
     }
 
     public void onRouteInDialogClicked(Route route)
     {
+        activatePoolExecutorService();
         poolExecutorService.execute(() ->
         {
             PointFactory pointFactory = new PointFactory();
@@ -525,6 +554,7 @@ public class MapUtils
     public void drawRoutesThroughBusStops(BusStop startBusStop, BusStop endBusStop, BusController busController, ResetInterface resetStartEnd, Context context)
     {
         setAllRoutesAndBusStopsVisibilty(false);
+        activatePoolExecutorService();
         poolExecutorService.execute(() ->
         {
             List<Route> routeList = routeBusStopConnection.findDirectRoute(startBusStop, endBusStop, (route, busStopIds) -> mainHandler.post(() ->
@@ -546,6 +576,5 @@ public class MapUtils
         });
 
     }
-
 
 }

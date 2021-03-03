@@ -33,9 +33,10 @@ public class AboutFragment extends Fragment
 
     private void initText(View view)
     {
+        TextView header = (TextView) view.findViewById(R.id.about_header);
+        header.setText(getString(R.string.app_name));
         TextView textView = (TextView) view.findViewById(R.id.about_content);
         String content = "";
-        content += getString(R.string.app_name) + DOUBLE_LINE_BREAK;
         content += getString(R.string.about_paragraph_1) + DOUBLE_LINE_BREAK;
         content += getString(R.string.about_paragraph_2) + DOUBLE_LINE_BREAK;
         content += getString(R.string.version) + " " + BuildConfig.VERSION_NAME + DOUBLE_LINE_BREAK;

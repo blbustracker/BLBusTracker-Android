@@ -299,6 +299,7 @@ public class MapViewModel extends AndroidViewModel
                     ex.printStackTrace();
                 }
                 mainHandler.post(() -> mutableBusStops.setValue(busStopList));
+                activatePoolExecutorService();
                 poolExecutorService.execute(() -> updateBusStopDB(busStopList, context));
             }
         });

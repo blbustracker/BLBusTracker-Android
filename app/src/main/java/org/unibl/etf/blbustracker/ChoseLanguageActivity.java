@@ -35,7 +35,7 @@ public class ChoseLanguageActivity extends AppCompatActivity implements View.OnC
 
         sharedPreferences = Utils.getSharedPreferences(getBaseContext());
         String savedLocale = sharedPreferences.getString(SELECTED_LANGUAGE, "");
-        if(!"".equals(savedLocale))
+        if (!"".equals(savedLocale))
         {
             startActivityWithLocale(savedLocale);
             return;
@@ -49,15 +49,18 @@ public class ChoseLanguageActivity extends AppCompatActivity implements View.OnC
         submitButton.setOnClickListener(this);
 
         TextView selectLangeuge = (TextView) findViewById(R.id.select_language_text);
-        ((RadioButton)findViewById(R.id.english)).setOnClickListener( v -> {
+        ((RadioButton) findViewById(R.id.english)).setOnClickListener(v ->
+        {
             submitButton.setText("submit");
             selectLangeuge.setText("Select language");
         });
-        ((RadioButton)findViewById(R.id.srpski)).setOnClickListener( v -> {
+        ((RadioButton) findViewById(R.id.srpski)).setOnClickListener(v ->
+        {
             submitButton.setText("izaberi");
             selectLangeuge.setText("Izaberite jezik");
         });
-        ((RadioButton)findViewById(R.id.srpski_cry)).setOnClickListener( v -> {
+        ((RadioButton) findViewById(R.id.srpski_cry)).setOnClickListener(v ->
+        {
             submitButton.setText("изабери");
             selectLangeuge.setText("Изаберите језик");
         });
@@ -68,7 +71,7 @@ public class ChoseLanguageActivity extends AppCompatActivity implements View.OnC
     public void onClick(View v)
     {
         int radioButtonId = radioGroup.getCheckedRadioButtonId();
-        RadioButton radioButton=findViewById(radioButtonId);
+        RadioButton radioButton = findViewById(radioButtonId);
         String language = radioButton.getText().toString();
 
         String locale;
@@ -91,6 +94,7 @@ public class ChoseLanguageActivity extends AppCompatActivity implements View.OnC
 
     /**
      * Start MapActivity with the given language
+     *
      * @param locale language for MapActivity
      */
     private void startActivityWithLocale(String locale)
@@ -103,22 +107,27 @@ public class ChoseLanguageActivity extends AppCompatActivity implements View.OnC
 
     /**
      * Save the given language
+     *
      * @param locale
      */
     private void saveLocale(String locale)
     {
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString(SELECTED_LANGUAGE,locale);
+        editor.putString(SELECTED_LANGUAGE, locale);
         editor.commit();
     }
 
     @Override
     protected void onDestroy()
     {
-        submitButton =null;
-        sharedPreferences=null;
-        radioGroup=null;
+        submitButton = null;
+        sharedPreferences = null;
+        radioGroup = null;
+
         super.onDestroy();
     }
 
+    public ChoseLanguageActivity()
+    {
+    }
 }

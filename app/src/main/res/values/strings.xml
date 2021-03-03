@@ -9,12 +9,12 @@
     <string name="storage_permission_message" translatable="false">This application needs storage in order to work correctly</string>
     <string name="enable_gps_title" translatable="false">GPS is not enabled!</string>
     <string name="enable_gps_message" translatable="false">Do you want to turn on GPS?</string>
-    <string name="yes" translatable="false">Yes</string>
-    <string name="no" translatable="false">No</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
 
     <string name="provider_settings_message" translatable="false">Your GPS seems to be disabled, do you want to enable it?</string>
-    <string name="provider_settings_yes" translatable="false">Yes</string>
-    <string name="provider_settings_no" translatable="false">No</string>
+    <string name="provider_settings_yes">Yes</string>
+    <string name="provider_settings_no">No</string>
     <string name="title_activity_maps" translatable="false">Map</string>
     <string name="about" translatable="true">About</string>
     <string name="start_destination_text">Enter Start Destination</string>
@@ -76,7 +76,7 @@
     <string name="fill_required_fields">Please fill all required fields</string>
     <string name="no_internet">Message could not be sent. Please check your network connection and try again</string>
     <string name="about_paragraph_1">The application for the users of public transportation in the urban zone of Banja Luka.</string>
-    <string name="about_paragraph_2" >Developed by the Faculty of Electrical Engineering, University of Banja Luka and Autoprevoz company, under the "Future City Innovation Challenge" initiative.</string>
+    <string name="about_paragraph_2" >Developed by the Faculty of Electrical Engineering University of Banja Luka and Autoprevoz company, under the "Future City Innovation Challenge" initiative, that is financially supported by the UNDP, the Ministry of Scientific and Technological Development, Higher Education and Information Society of the Republic of Srpska and the City of Banja Luka.</string>
     <string name="version">Version</string>
     <string name="undp_header" translatable="false">© 2020 UNDP.</string>
     <string name="playserveces_error" translatable="false">You can\'t make map requests</string>
@@ -102,5 +102,6 @@
     <string name="next_departure_in">next departure in</string>
     <string name="map_settings">Map settings</string>
     <string name="send_report_automatically">Send report automatically</string>
+    <string name="no_google_maps_api">You dont have Google maps installed</string>
 
 </resources>

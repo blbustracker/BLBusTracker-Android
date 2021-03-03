@@ -3,6 +3,8 @@ package org.unibl.etf.blbustracker.navigationtabs.mapview;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -415,6 +417,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback
     //Set all listeners and text watcher to the AutoCompleteTextView
     private void initEditTextListeners(AutoCompleteTextView destinationEditText)
     {
+        destinationEditText.clearFocus();
         destinationEditText.setOnEditorActionListener(this);
         destinationEditText.setOnFocusChangeListener(this);
         destinationEditText.setOnClickListener(l -> showDropDown(destinationEditText, true));
@@ -430,6 +433,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback
     public boolean onEditorAction(TextView textView, int actionId, KeyEvent event)
     {
         BusStop busStop;
+
+        if (mapUtils == null)
+            return true;
 
         if (textView.getId() == startDestinationEditText.getId())
         {
@@ -531,6 +537,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback
         Object item = parent.getItemAtPosition(position);
         BusStop busStop = (BusStop) item;
 
+        if (mapUtils == null)
+            return;
+
         if (editTextid == startDestinationEditText.getId())
         {
             startDestinationMarker = setDestinationMarker(busStop,
@@ -589,12 +598,22 @@ public class MapFragment extends Fragment implements OnMapReadyCallback
 
         if (view.getId() == startDestinationEditText.getId())
         {
+            setDestionationTextHint(startDestinationEditText, hasFocus, getString(R.string.start_destination_text));
             showDropdownOnFocusChange(hasFocus, startDestinationEditText);
 
         } else if (view.getId() == endDestinationEditText.getId())
         {
+            setDestionationTextHint(endDestinationEditText, hasFocus, getString(R.string.end_destination_text));
             showDropdownOnFocusChange(hasFocus, endDestinationEditText);
         }
+    }
+
+    private void setDestionationTextHint(AutoCompleteTextView destinationEditText, boolean hasFocus, String hint)
+    {
+        if (hasFocus)
+            destinationEditText.setHint("");
+        else
+            destinationEditText.setHint(hint);
     }
 
     private void showDropdownOnFocusChange(boolean hasFocus, AutoCompleteTextView startDestinationEditText)
@@ -606,11 +625,15 @@ public class MapFragment extends Fragment implements OnMapReadyCallback
     }
 
 
+    private final Handler mainHandler = new Handler(Looper.getMainLooper());
+    private static final int MINOR_DELAY = 100;
+
     private void showDropDown(AutoCompleteTextView destinationEditText, boolean isFocused)
     {
         if (isFocused && !destinationEditText.isPopupShowing())
         {
-            destinationEditText.post(destinationEditText::showDropDown);
+            //            destinationEditText.post(destinationEditText::showDropDown);
+            mainHandler.postDelayed(destinationEditText::showDropDown, MINOR_DELAY);
         } else
         {
             destinationEditText.post(destinationEditText::dismissDropDown);
@@ -651,18 +674,20 @@ public class MapFragment extends Fragment implements OnMapReadyCallback
 
     private void onShowAllButtonClicked()
     {
-        mapUtils.setAllRouterPolylinesVisibility(true);
-        mapUtils.setAllBusStopMarkersVisibility(true);
-
-        resetStartEndDestinationMarkers();
-
         if (busController != null)
         {
             busController.resetBusLocationUrlQuery();
             busController.setIsBusMarkerClicked(false);
         }
 
-        mapUtils.moveToBounds(routePolylineHash);
+        if (mapUtils != null)
+        {
+            mapUtils.setAllRouterPolylinesVisibility(true);
+            mapUtils.setAllBusStopMarkersVisibility(true);
+            mapUtils.moveToBounds(routePolylineHash);
+        }
+
+        resetStartEndDestinationMarkers();
     }
 
     /**
@@ -749,7 +774,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback
         }
 
         if (mapUtils != null)
-            mapUtils.checkPoolState();
+            mapUtils.activatePoolExecutorService();
 
         if (mapViewModel == null)
             mapViewModel = new ViewModelProvider(this).get(MapViewModel.class);
@@ -767,7 +792,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback
             mapViewModel.activatePoolExecutorService();
 
         if (mapUtils != null)
-            mapUtils.checkPoolState();
+            mapUtils.activatePoolExecutorService();
 
         mapLayout.onStart();
     }
@@ -804,6 +829,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback
         if (mapLayout != null)
             mapLayout.onDestroy();
 
+        AnimationUtils.resetValue();
         super.onDestroy();
     }
 
@@ -813,5 +839,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback
         super.onLowMemory();
         if (mapLayout != null)
             mapLayout.onLowMemory();
+    }
+
+    public MapFragment()
+    {
     }
 }
