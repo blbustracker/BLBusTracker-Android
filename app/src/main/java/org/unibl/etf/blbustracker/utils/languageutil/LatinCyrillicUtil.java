@@ -1,26 +1,46 @@
 package org.unibl.etf.blbustracker.utils.languageutil;
 
-public class LatinCyrillicUtil
+import org.unibl.etf.blbustracker.ChoseLanguageActivity;
+
+public abstract class LatinCyrillicUtil
 {
-    //convert both inputs to latin and try to match them
+    private static final Translator translator = new Translator();
+
+    //convert input to latin and see if serverInput contains userInput
     public static boolean isMatched(String userInput, String serverInput)
     {
-        if (userInput == null || serverInput == null)
-            return false;
-
         userInput = userInput.trim();
         serverInput = serverInput.trim();
 
-        String latinServerInput = LatinUtils.stripAccent(serverInput);
-        String latinUserInput;
+        if (!LatinUtils.isInputLatin(userInput))
+        {
+            userInput = translator.translateInput(userInput, ChoseLanguageActivity.LANGUAGE_SR);
+        }
+        userInput = LatinUtils.stripAccent(userInput);
+        serverInput = LatinUtils.stripAccent(serverInput);
 
-        if (LatinUtils.isInputLatin(userInput))
-            latinUserInput = LatinUtils.stripAccent(userInput);
-        else if (CyrillicUtils.isCyrillic(userInput))
-            latinUserInput = CyrillicUtils.convertCyrToLat(userInput);
-        else
-            latinUserInput = userInput;
-
-        return latinServerInput.contains(latinUserInput);
+        return serverInput.toLowerCase().contains(userInput.toLowerCase());
     }
 }
+
+//        String translateUserInput;
+//        String translateServerInput;
+//        Translator translator = new Translator();
+//        if (LatinUtils.isInputLatin(userInput))
+//        {
+//            translateUserInput = translator.translateInput(userInput, ChoseLanguageActivity.LANGUAGE_SR);
+//            translateServerInput = translator.translateInput(serverInput, ChoseLanguageActivity.LANGUAGE_SR);
+//
+//            translateUserInput = LatinUtils.stripAccent(translateUserInput);
+//            translateServerInput = LatinUtils.stripAccent(translateServerInput);
+//        } else if (CyrillicUtils.isCyrillic(userInput))
+//        {
+//            translateUserInput = translator.translateInput(userInput, ChoseLanguageActivity.LANGUAGE_SR_CYRILLIC);
+//            translateServerInput = translator.translateInput(serverInput, ChoseLanguageActivity.LANGUAGE_SR_CYRILLIC);
+//        } else
+//        {
+//            translateUserInput = userInput;
+//            translateServerInput = serverInput;
+//        }
+//        return translateServerInput.toLowerCase().contains(translateUserInput.toLowerCase());
+

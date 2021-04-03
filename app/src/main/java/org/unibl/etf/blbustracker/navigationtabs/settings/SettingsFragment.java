@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.Keep;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -158,6 +159,12 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
     {
         super.onStop();
         getActivity().findViewById(R.id.toolbar).setVisibility(View.GONE);
+    }
+
+    @Keep
+    public SettingsFragment()
+    {
+
     }
 
 }

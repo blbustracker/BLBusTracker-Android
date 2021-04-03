@@ -9,6 +9,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import androidx.annotation.Keep;
 import androidx.appcompat.app.AppCompatActivity;
 
 import org.unibl.etf.blbustracker.utils.Utils;
@@ -70,6 +71,7 @@ public class ChoseLanguageActivity extends AppCompatActivity implements View.OnC
     @Override
     public void onClick(View v)
     {
+        submitButton.setEnabled(false);
         int radioButtonId = radioGroup.getCheckedRadioButtonId();
         RadioButton radioButton = findViewById(radioButtonId);
         String language = radioButton.getText().toString();
@@ -127,6 +129,7 @@ public class ChoseLanguageActivity extends AppCompatActivity implements View.OnC
         super.onDestroy();
     }
 
+    @Keep
     public ChoseLanguageActivity()
     {
     }

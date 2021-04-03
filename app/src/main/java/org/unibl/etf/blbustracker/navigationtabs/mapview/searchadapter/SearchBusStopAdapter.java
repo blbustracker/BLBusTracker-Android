@@ -15,6 +15,7 @@ import androidx.core.content.ContextCompat;
 import org.unibl.etf.blbustracker.R;
 import org.unibl.etf.blbustracker.datahandlers.database.busstop.BusStop;
 import org.unibl.etf.blbustracker.utils.languageutil.LatinCyrillicUtil;
+import org.unibl.etf.blbustracker.utils.languageutil.Translator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,11 +24,13 @@ import java.util.List;
 public class SearchBusStopAdapter extends ArrayAdapter<BusStop>
 {
     private List<BusStop> busStopListFull;
+    private Translator translator;
 
     public SearchBusStopAdapter(@NonNull Context context, @NonNull List<BusStop> busStopList)
     {
         super(context, 0, busStopList);
         busStopListFull = new ArrayList<>(busStopList); // full copy
+        translator = new Translator(context);
     }
 
     //Need at least 2 chars to show view
@@ -52,7 +55,8 @@ public class SearchBusStopAdapter extends ArrayAdapter<BusStop>
         BusStop busStop = getItem(position);
         if (busStop != null && busStop.getDesc() != null)
         {
-            textBusStop.setText(busStop.getDesc());
+            String translatedName = translator.translateInput(busStop.getDesc());
+            textBusStop.setText(translatedName);
         }
 
         return convertView;

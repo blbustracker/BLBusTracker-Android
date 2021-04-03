@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
+import android.widget.AutoCompleteTextView;
 import android.widget.Toast;
 
 import androidx.core.graphics.ColorUtils;
@@ -32,13 +33,19 @@ import org.unibl.etf.blbustracker.datahandlers.database.joinroutebusstop.JoinRou
 import org.unibl.etf.blbustracker.datahandlers.database.route.Route;
 import org.unibl.etf.blbustracker.datahandlers.jsonhandlers.pointfactory.PointFactory;
 import org.unibl.etf.blbustracker.navigationtabs.mapview.buscontroller.BusController;
+import org.unibl.etf.blbustracker.navigationtabs.mapview.searchadapter.SearchBusStopAdapter;
+import org.unibl.etf.blbustracker.navigationtabs.mapview.searchadapter.UpdateAdapterInterface;
 import org.unibl.etf.blbustracker.utils.AlertUtil;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 // Map and it's objects interactions
@@ -74,7 +81,7 @@ public class MapUtils
 
         defaultBusStopIcon = BitmapDescriptorFactory.fromResource(R.drawable.busstop_blue_26x26);
         //        int dimension = (int)context.getResources().getDimension(R.dimen.busstop_size);
-        //        defaultBusStopIcon = DrawableUtil.resizeDrawable(R.drawable.busstop_blue_256,dimension, context); // TODO: for new version icon resize
+        //        defaultBusStopIcon = DrawableUtil.resizeDrawable(R.drawable.busstop_blue_256,dimension, context); // for new version icon resize
 
         startDestinationIcon = BitmapDescriptorFactory.fromResource(R.drawable.busstop_green_36x36);
         endDestinationIcon = BitmapDescriptorFactory.fromResource(R.drawable.busstop_red_36x36);
@@ -97,24 +104,6 @@ public class MapUtils
     {
         LatLng trgBL = new LatLng(Constants.STARTING_LAT, Constants.STARTING_LNG);
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(trgBL, Constants.DEFAULT_ZOOM));
-    }
-
-    /**
-     * Method that is called when MapViewModel gets and sets routeList
-     *
-     * @param routeList data fetched from Database/Server
-     */
-    synchronized void onRouteChanged(List<Route> routeList)
-    {
-        if (routePolylineHash == null)
-            routePolylineHash = new HashMap<>();
-
-        removeOldRoutePolylines(routePolylineHash);
-
-        for (Route route : routeList)
-        {
-            this.drawRoutePolylineOnMap(route); // drawing all routes
-        }
     }
 
     /**
@@ -142,6 +131,36 @@ public class MapUtils
         Marker marker = map.addMarker(new MarkerOptions().position(busStop.getLatLng()).icon(defaultBusStopIcon));
         marker.setTag(busStop);
         return marker;
+    }
+
+    /**
+     * Method that is called when MapViewModel gets and sets routeList
+     *
+     * @param routeList data fetched from Database/Server
+     */
+    public CountDownLatch latch;
+    synchronized void onRouteChanged(List<Route> routeList)
+    {
+        if (routePolylineHash == null)
+            routePolylineHash = new HashMap<>();
+
+        activatePoolExecutorService();
+        poolExecutorService.execute(() ->
+        {
+            try
+            {
+                if(latch !=null)
+                    latch.await(Constants.WAIT_THRESHOOLD, TimeUnit.MILLISECONDS);
+                latch = new CountDownLatch(routeList.size());
+            }catch (InterruptedException ex)
+            {
+            }
+            mainHandler.post(()->removeOldRoutePolylines(routePolylineHash));
+            for (Route route : routeList)
+            {
+                this.drawRoutePolylineOnMap(route); // drawing on other thread
+            }
+        });
     }
 
     //draw given route on map
@@ -172,6 +191,7 @@ public class MapUtils
                 routePolyline.setTag(route);
                 routePolyline.setClickable(true);
                 routePolylineHash.put(route.getRouteId(), routePolyline);
+                latch.countDown();
             });
         });
     }
@@ -183,10 +203,13 @@ public class MapUtils
     void removeOldRoutePolylines(Map<Integer, Polyline> routePolylinesHash)
     {
         if (routePolylinesHash != null && !routePolylinesHash.isEmpty())
+        {
             for (Map.Entry<Integer, Polyline> polylineEntry : routePolylinesHash.entrySet())
             {
                 polylineEntry.getValue().remove();
             }
+            routePolylinesHash.clear();
+        }
     }
 
     /**
@@ -273,7 +296,7 @@ public class MapUtils
     }
 
     /* used for setting up camera bounds such that all points are in the view */
-    private CameraUpdate setCameraBounds(List<LatLng> points)
+    public CameraUpdate setCameraBounds(List<LatLng> points)
     {
         LatLngBounds.Builder builder = new LatLngBounds.Builder();
         for (LatLng point : points)
@@ -350,6 +373,18 @@ public class MapUtils
             {
                 setMarkerVisibility(busStopMarkerEntry.getValue(), isVisible);
             }
+    }
+
+    public List<BusStop> resetBusStopsVisibility(Map<Integer, Marker> busStopMarkerHash)
+    {
+        List<BusStop> busStops = new ArrayList<>();
+        for (Map.Entry<Integer, Marker> busStopMarkerEntry : busStopMarkerHash.entrySet())
+        {
+            setMarkerVisibility(busStopMarkerEntry.getValue(), true);
+            BusStop busStop = (BusStop) busStopMarkerEntry.getValue().getTag();
+            busStops.add(busStop);
+        }
+        return busStops;
     }
 
     private void setBusStopVisibility(int busStopId, boolean isVisible)
@@ -441,7 +476,7 @@ public class MapUtils
      * only show bus stops on routes that contain destinationBusStop,
      * all routes that contain destinationBusStop should've been visable with onBusStopClicked method
      */
-    public void onSetAsDestinationClicked(BusStop destinationBusStop, boolean isStartDest, Context context)
+    public void onSetAsDestinationClicked(BusStop destinationBusStop, boolean isStartDest, UpdateAdapterInterface updateAdapter, Context context)
     {
         activatePoolExecutorService();
         poolExecutorService.execute(() ->
@@ -450,6 +485,7 @@ public class MapUtils
             List<Route> routesWithDestinationBusStop = joinRouteBusStopDAO.getRoutesByBusStopId(destinationBusStop.getBusStopId());
             if (routesWithDestinationBusStop != null && routesWithDestinationBusStop.size() > 0)
             {
+                List<Integer> allBusStopIds = new ArrayList<>();
                 mainHandler.post(() -> setAllBusStopMarkersVisibility(false)); //hide all bus stops
 
                 for (Route route : routesWithDestinationBusStop)
@@ -464,8 +500,10 @@ public class MapUtils
                         busStopIds = busStopIds.subList(0, destinationIndex + 1);
                     }
                     List<Integer> finalBusStopIds = busStopIds;
+                    allBusStopIds.addAll(finalBusStopIds);
                     mainHandler.post(() -> setBusStopIdsVisability(finalBusStopIds, true));
                 }
+                mainHandler.post(() -> updateAdapter.update(allBusStopIds.stream().distinct().collect(Collectors.toList())));
             }
         });
     }
@@ -488,7 +526,7 @@ public class MapUtils
             }
     }
 
-    public void onRouteInDialogClicked(Route route)
+    public void onRouteInDialogClicked(Route route, AutoCompleteTextView searchTextView, Context context)
     {
         activatePoolExecutorService();
         poolExecutorService.execute(() ->
@@ -505,17 +543,31 @@ public class MapUtils
                 setAllRouterPolylinesVisibility(false);
 
                 setPolylineVisibility(routePolylineHash.get(route.getRouteId()), true);
-                setBusStopIdsVisability(pointFactory.getBusStopIds(), true);
+                List<Integer> busStopIds = pointFactory.getBusStopIds();
+                setBusStopIdsVisability(busStopIds, true);
+                List<BusStop> busStops = getBusStopsFromIds(busStopIds);
+                searchTextView.setAdapter(new SearchBusStopAdapter(context, busStops));
                 map.animateCamera(cu);
             });
         });
     }
 
+    private List<BusStop> getBusStopsFromIds(List<Integer> busStopIds)
+    {
+        if (busStopIds == null)
+            return new ArrayList<>();
+
+        return busStopIds.stream()
+                .map(id -> (BusStop) busStopMarkersHash.get(id).getTag())
+                .collect(Collectors.toList());
+    }
+
     //when user inputs bus stop in search box
-    public void onDestinationTextInput(BusStop busStop, BusController busController, boolean isStartDest, Context context)
+    public void onDestinationTextInput(BusStop busStop, BusController busController
+            , boolean isStartDest, UpdateAdapterInterface updateAdapter, Context context)
     {
         onBusStopClicked(busStop, busController, context);
-        onSetAsDestinationClicked(busStop, isStartDest, context);
+        onSetAsDestinationClicked(busStop, isStartDest, updateAdapter, context);
     }
 
     /**
@@ -551,7 +603,8 @@ public class MapUtils
     }
 
     //used for drawing routes that contains startBusStop and endBusStop
-    public void drawRoutesThroughBusStops(BusStop startBusStop, BusStop endBusStop, BusController busController, ResetInterface resetStartEnd, Context context)
+    public void drawRoutesThroughBusStops(BusStop startBusStop, BusStop endBusStop, BusController busController
+            , ResetInterface resetStartEnd, UpdateAdapterInterface updateAdapter, Context context)
     {
         setAllRoutesAndBusStopsVisibilty(false);
         activatePoolExecutorService();
@@ -572,6 +625,14 @@ public class MapUtils
                     resetStartEnd.resetStartEndDestination();
                     Toast.makeText(context, R.string.no_direct_route_msg, Toast.LENGTH_SHORT).show();
                 });
+            } else
+            {
+                mainHandler.post(() ->
+                {
+                    CameraUpdate cameraUpdate = setCameraBounds(Arrays.asList(startBusStop.getLatLng(), endBusStop.getLatLng()));
+                    map.animateCamera(cameraUpdate);
+                    updateAdapter.update(null);
+                }); // null == show all busstops in search adapter
             }
         });
 

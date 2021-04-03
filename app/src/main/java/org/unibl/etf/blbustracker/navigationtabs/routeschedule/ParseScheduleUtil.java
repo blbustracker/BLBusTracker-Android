@@ -34,7 +34,7 @@ public abstract class ParseScheduleUtil
         return scheduleTimes;
     }
 
-    public static List<LocalTime> getFirstDepatureTimes(String schedule, final int numberOfDepatureTimes, LocalTime timeToCompare) throws Exception
+    public static List<ScheduleTime> getFirstDepatureTimes(String schedule, final int numberOfDepatureTimes, LocalTime timeToCompare) throws Exception
     {
         List<ScheduleTime> scheduleTimes = splitAndMapSchedule(schedule);
 
@@ -42,14 +42,14 @@ public abstract class ParseScheduleUtil
             return null;
 
         int numOftimes = 0;
-        List<LocalTime> departureTimes = new ArrayList<>();
+        List<ScheduleTime> departureTimes = new ArrayList<>();
 
         for (int i = 0; i < scheduleTimes.size() && numOftimes < numberOfDepatureTimes; i++)
         {
             ScheduleTime scheduleTime = scheduleTimes.get(i);
-            if (timeToCompare.isBefore(scheduleTime.getInputTime()))
+            if (timeToCompare.isBefore(scheduleTime.getLocalTime()))
             {
-                departureTimes.add(scheduleTime.getInputTime());
+                departureTimes.add(scheduleTime);
                 numOftimes++;
             }
         }

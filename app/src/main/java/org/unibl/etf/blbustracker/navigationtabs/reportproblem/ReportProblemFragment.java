@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
+import androidx.annotation.Keep;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.material.textfield.TextInputEditText;
@@ -94,5 +95,10 @@ public class ReportProblemFragment extends Fragment
             reportProblemModel.stopListening();
         reportProblemModel = null;
         super.onStop();
+    }
+
+    @Keep
+    public ReportProblemFragment()
+    {
     }
 }

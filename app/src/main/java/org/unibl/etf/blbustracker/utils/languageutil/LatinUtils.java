@@ -30,7 +30,7 @@ public abstract class LatinUtils
     }
 
     // pattern \s matches any white space
-    private static final String LATIN_PATTERN = "([a-zA-Z0-9|ŠšĐđČčĆćŽž]|\\s)+";
+    private static final String LATIN_PATTERN = "([a-zA-Z0-9|ŠšĐđČčĆćŽž)(-.]|\\s)+";
 
     //my custom is input latin word checker
     public static boolean isInputLatin(String input)
@@ -39,7 +39,6 @@ public abstract class LatinUtils
         Matcher matcher = pattern.matcher(input);
         return matcher.matches();
     }
-
 
 
     //converts string with chars "šđčćž" and replaces them with "sdccz" respec

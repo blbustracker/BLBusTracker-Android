@@ -17,6 +17,7 @@ import org.unibl.etf.blbustracker.R;
 import org.unibl.etf.blbustracker.datahandlers.database.route.Route;
 import org.unibl.etf.blbustracker.utils.DrawableUtil;
 import org.unibl.etf.blbustracker.utils.languageutil.LatinCyrillicUtil;
+import org.unibl.etf.blbustracker.utils.languageutil.Translator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,13 +26,13 @@ import java.util.List;
 public class RouteScheduleAdapter extends ArrayAdapter<Route>
 {
     private List<Route> routeListFull;
-
-    private final String TIME_SPLIT_REGEX = "( :|,|\\.)";
+    private Translator translator;
 
     public RouteScheduleAdapter(@NonNull Context context, @NonNull List<Route> routeList)
     {
         super(context, 0, routeList);
         routeListFull = new ArrayList<>(routeList); // deep copy
+        translator = new Translator(context);
     }
 
     //Need at least 2 chars to show view
@@ -58,8 +59,11 @@ public class RouteScheduleAdapter extends ArrayAdapter<Route>
         Route route = getItem(position);
         if (route != null && route.getName() != null && route.getLabel() != null)
         {
-            routeLabel.setText(route.getLabel());
-            routeName.setText(route.getName());
+            String translateLbl = translator.translateInput(route.getLabel());
+            routeLabel.setText(translateLbl);
+
+            String translateName = translator.translateInput(route.getName());
+            routeName.setText(translateName);
             busImage.setImageDrawable(DrawableUtil.getColoredBusDrawable(route,convertView.getContext()));
         }
 
@@ -80,8 +84,8 @@ public class RouteScheduleAdapter extends ArrayAdapter<Route>
             {
                 String filterPatern = inputSequence.toString().toLowerCase().trim();
                 for (Route route : routeListFull)
-                    if (LatinCyrillicUtil.isMatched(filterPatern, route.getName().toLowerCase())
-                            || LatinCyrillicUtil.isMatched(filterPatern, route.getLabel().toLowerCase()))
+                    if (LatinCyrillicUtil.isMatched(filterPatern, route.getName())
+                            || LatinCyrillicUtil.isMatched(filterPatern, route.getLabel()))
                     {
                         suggestions.add(route);
                     }

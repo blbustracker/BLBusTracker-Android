@@ -1,5 +1,8 @@
 package org.unibl.etf.blbustracker.datahandlers.database.busstop;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
@@ -7,17 +10,17 @@ import androidx.room.PrimaryKey;
 import com.google.android.gms.maps.model.LatLng;
 
 @Entity(tableName = "bus_stop_table")
-public class BusStop
+public class BusStop implements Parcelable
 {
     @PrimaryKey
-    @ColumnInfo(name="busStopId")
+    @ColumnInfo(name = "busStopId")
     private int busStopId;
 
-    @ColumnInfo(name="lat")
+    @ColumnInfo(name = "lat")
     private double lat;
-    @ColumnInfo(name="lng")
+    @ColumnInfo(name = "lng")
     private double lng;
-    @ColumnInfo(name="desc")
+    @ColumnInfo(name = "desc")
     private String desc;
 
     public BusStop(int busStopId, double lat, double lng, String desc)
@@ -73,7 +76,7 @@ public class BusStop
 
     public LatLng getLatLng()
     {
-        return new LatLng(lat,lng);
+        return new LatLng(lat, lng);
     }
 
     public double getLat()
@@ -117,4 +120,41 @@ public class BusStop
                 '}';
     }
 
+    protected BusStop(Parcel in)
+    {
+        busStopId = in.readInt();
+        lat = Double.parseDouble(in.readString());
+        lng = Double.parseDouble(in.readString());
+        desc = in.readString();
+    }
+
+    public static final Creator<BusStop> CREATOR = new Creator<BusStop>()
+    {
+        @Override
+        public BusStop createFromParcel(Parcel in)
+        {
+            return new BusStop(in);
+        }
+
+        @Override
+        public BusStop[] newArray(int size)
+        {
+            return new BusStop[size];
+        }
+    };
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags)
+    {
+        dest.writeInt(busStopId);
+        dest.writeString(String.valueOf(lat));  //writeDouble gives exception so avoid it
+        dest.writeString(String.valueOf(lng));
+        dest.writeString(desc);
+    }
+
+    @Override
+    public int describeContents()
+    {
+        return 0;
+    }
 }

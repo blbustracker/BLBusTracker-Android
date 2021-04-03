@@ -17,8 +17,6 @@
     <string name="provider_settings_no">No</string>
     <string name="title_activity_maps" translatable="false">Map</string>
     <string name="about" translatable="true">About</string>
-    <string name="start_destination_text">Enter Start Destination</string>
-    <string name="end_destination_text">Enter End Destination</string>
     <string name="set_as_start_destination">Set As Start Destination</string>
     <string name="set_as_end_destination">Set As End Destination</string>
     <string name="open_google_navigation">Start Google Navigation</string>
@@ -99,9 +97,14 @@
     <string name="collect_crash_summary_off">Application will not collect data about application crashes</string>
     <string name="report_sent">Crash report sent. Thank you!</string>
     <string name="no_internet_try_again">Current there is no internet connection. Please try again</string>
-    <string name="next_departure_in">next departure in</string>
+    <string name="next_departure_in">Departure from starting bus stop in</string>
     <string name="map_settings">Map settings</string>
     <string name="send_report_automatically">Send report automatically</string>
-    <string name="no_google_maps_api">You dont have Google maps installed</string>
+    <string name="no_google_maps_api">You dont have Google maps installed.</string>
+    <string name="search_station">Search bus stop</string>
+    <string name="start_busstop">Starting bus stop</string>
+    <string name="end_busstop">Destination bus stop</string>
+    <string name="arrival_in">in</string>
+    <string name="from_starting">from depature</string>
 
 </resources>

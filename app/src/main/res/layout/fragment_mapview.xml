@@ -18,61 +18,111 @@
             android:orientation="vertical">
 
         <RelativeLayout
-                android:id="@+id/search_linearLayout"
+                android:id="@+id/search_relativelayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/google_blue"
-                android:paddingStart="8dp"
-                android:paddingEnd="8dp"
+                android:paddingStart="6dp"
+                android:paddingEnd="6dp"
                 android:clipChildren="false"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
                 android:orientation="vertical">
 
 
-            <AutoCompleteTextView
-                    android:id="@+id/start_destination_edittext"
+            <FrameLayout
+                    android:id="@+id/search_edit_frame"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/start_destination_text"
-                    android:backgroundTint="@color/white"
-                    android:clipChildren="false"
-                    android:gravity="center_horizontal"
-                    android:imeOptions="actionDone"
-                    android:singleLine="true"
-                    android:textColor="@color/white"
-                    android:textColorHint="@color/white"
-                    android:theme="@style/Autocomplete"
-                    app:autoSizeMaxTextSize="32sp"
-                    app:autoSizeMinTextSize="16sp"
-                    app:autoSizeStepGranularity="2sp"
-                    app:autoSizeTextType="uniform"
-                    />
+                    android:background="@color/google_blue"
+                    android:orientation="vertical"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    >
 
-            <AutoCompleteTextView
-                    android:id="@+id/end_destination_edittext"
+                <AutoCompleteTextView
+                        android:id="@+id/search_busstop_edittext"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@color/white"
+                        android:completionThreshold="1"
+                        android:clipChildren="false"
+                        android:gravity="center"
+                        android:hint="@string/search_station"
+                        android:imeOptions="actionDone"
+                        android:singleLine="true"
+                        android:textColor="@color/white"
+                        android:textColorHint="@color/text_hint"
+                        android:theme="@style/Autocomplete"
+
+                        app:autoSizeMaxTextSize="32sp"
+                        app:autoSizeMinTextSize="16sp"
+                        app:autoSizeStepGranularity="2sp"
+                        app:autoSizeTextType="uniform" />
+
+                <Button
+                        android:id="@+id/search_clear_btn"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:visibility="invisible"
+                        android:layout_marginEnd="5dp"
+                        android:layout_gravity="end|bottom"
+                        android:layout_marginBottom="10dp"
+                        android:background="@drawable/ic_close_white_24"
+                        />
+            </FrameLayout>
+
+            <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/start_destination_edittext"
-                    android:backgroundTint="@color/white"
-                    android:gravity="center_horizontal"
-                    android:hint="@string/end_destination_text"
-                    android:imeOptions="actionDone"
-                    android:singleLine="true"
-                    android:textColor="@color/white"
-                    android:textColorHint="@color/white"
-                    android:theme="@style/Autocomplete"
-                    app:autoSizeMaxTextSize="32sp"
-                    app:autoSizeMinTextSize="16sp"
-                    app:autoSizeStepGranularity="2sp"
-                    app:autoSizeTextType="uniform"
-                    />
+                    android:layout_below="@+id/search_edit_frame"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:paddingBottom="5dp"
+                    >
+
+                <TextView
+                        android:id="@+id/start_busstop_text"
+                        android:layout_height="wrap_content"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:textColor="@color/white"
+                        android:maxLines="2"
+                        android:gravity="center"
+                        android:ellipsize="end"
+                        android:hint="@string/start_busstop"
+                        android:textColorHint="@color/text_hint"
+                        android:text=""
+                        />
+
+                <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_right_arrow_white_24"
+                        android:paddingStart="1dp"
+                        android:paddingEnd="1dp"
+                        />
+
+                <TextView
+                        android:id="@+id/end_busstop_text"
+                        android:layout_height="wrap_content"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:maxLines="2"
+                        android:textColor="@color/white"
+                        android:gravity="center"
+                        android:ellipsize="end"
+                        android:hint="@string/end_busstop"
+                        android:textColorHint="@color/text_hint"
+                        />
+            </LinearLayout>
 
         </RelativeLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:id="@+id/map_container"
-                >
+                android:id="@+id/map_container">
 
             <com.google.android.gms.maps.MapView
                     android:id="@+id/map"
@@ -96,8 +146,7 @@
                     app:layout_constraintTop_toTopOf="parent"
                     app:maxImageSize="30dp"
                     app:srcCompat="@drawable/ic_no_internet_wifi"
-                    android:backgroundTint="@color/gray"
-                    />
+                    android:backgroundTint="@color/gray" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

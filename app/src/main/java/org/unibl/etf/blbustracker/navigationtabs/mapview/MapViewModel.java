@@ -40,7 +40,6 @@ import java.util.concurrent.Executors;
 public class MapViewModel extends AndroidViewModel
 {
     private final int N_THREADS = 10;
-    private static final int WAIT_THRESHOOLD = 3000;
     private boolean isFragmentAlive = true;
 
     ConnectivityManager.NetworkCallback networkCallback;
@@ -293,7 +292,7 @@ public class MapViewModel extends AndroidViewModel
                 {
                     // making sure that bus stop db finishes first
                     while (!isBusStopDBdone)
-                        lockBusStop.wait(WAIT_THRESHOOLD);
+                        lockBusStop.wait(Constants.WAIT_THRESHOOLD);
                 } catch (InterruptedException ex)
                 {
                     ex.printStackTrace();
@@ -321,7 +320,7 @@ public class MapViewModel extends AndroidViewModel
                 try
                 {   // making sure that route db finishes first
                     while (!isRouteDBdone)
-                        lockRoute.wait(WAIT_THRESHOOLD);
+                        lockRoute.wait(Constants.WAIT_THRESHOOLD);
                 } catch (InterruptedException ex)
                 {
                     ex.printStackTrace();
@@ -400,5 +399,4 @@ public class MapViewModel extends AndroidViewModel
     {
         isFragmentAlive = fragmentAlive;
     }
-
 }

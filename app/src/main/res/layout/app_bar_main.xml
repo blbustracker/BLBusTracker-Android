@@ -33,14 +33,34 @@
             android:id="@+id/drawer_fab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            app:fabSize="normal"
             android:layout_gravity="bottom"
             android:layout_marginStart="20dp"
             android:layout_marginBottom="25dp"
+            app:srcCompat="@drawable/ic_menu_drawer"
             app:fabCustomSize="@dimen/fab_size"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:maxImageSize="33dp"
-            app:srcCompat="@drawable/ic_menu_drawer" />
+            tools:ignore="ContentDescription"
+            />
 
+    <ImageView
+            android:id="@+id/new_announcemnt_icon"
+            android:elevation="6dp"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:padding="1dp"
+            android:clickable="false"
+            android:background="@drawable/white_filled_circle_background"
+            android:src="@drawable/ic_baseline_notifications_active_24"
+            app:layout_constraintTop_toTopOf="@id/drawer_fab"
+            app:layout_constraintEnd_toEndOf="@id/drawer_fab"
+
+            android:visibility="invisible"
+            tools:ignore="ContentDescription" />
+<!--            android:layout_margin="32dp"-->
+<!--            app:layout_constraintBottom_toBottomOf="@id/drawer_fab"-->
+<!--            app:layout_constraintStart_toStartOf="@id/drawer_fab"-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>

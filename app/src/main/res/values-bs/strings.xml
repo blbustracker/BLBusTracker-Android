@@ -8,8 +8,6 @@
     <string name="map_view">Pregled mape</string>
     <string name="announcements">Obavještenja</string>
     <string name="bus_routes">Autobuske linije</string>
-    <string name="start_destination_text">Unesite polazište</string>
-    <string name="end_destination_text">Unesite odredište</string>
     <string name="messages_header" translatable="false">Jezik</string>
     <string name="select_map_type">Odaberite izgled mape</string>
     <string name="map_type_satellite">Satelit</string>
@@ -61,16 +59,21 @@
     <string name="report_sent">Izvještaj poslan. Hvala!</string>
     <string name="no_internet_try_again">Trenutno nema interneta. Molimo pokušajte ponovo</string>
     <string name="about">O aplikaciji</string>
-    <string name="next_departure_in">sljedeći polazak u</string>
+    <string name="next_departure_in">Polazak sa polazne stanice u</string>
     <string name="map_settings">Podešavanja mape</string>
     <string name="collect_crash_summary_on">Aplikacija će prikupljati podatke o prestanku rada aplikacije</string>
     <string name="collect_crash_summary_off">Aplikacija neće prikupljati podatke o prestanku rada aplikacije</string>
     <string name="wont_ask_to_send_report">Aplikacija neće tražiti potvrdu za slanje podataka o prestanku rada aplikacije</string>
     <string name="ask_to_send_report">Aplikacija će tražiti potvrdu za slanje podataka o prestanku rada aplikacije</string>
     <string name="send_report_automatically">Automatsko slanje podataka</string>
-    <string name="no_google_maps_api">Nemate instalirane Google mape</string>
+    <string name="no_google_maps_api">Nemate instalirane Google mape.</string>
     <string name="yes" translatable="false">Da</string>
     <string name="no">Ne</string>
     <string name="provider_settings_yes" translatable="false">Da</string>
     <string name="provider_settings_no" translatable="false">Ne</string>
+    <string name="search_station">Pretraga stajališta</string>
+    <string name="start_busstop">Početno stajalište</string>
+    <string name="end_busstop">Odredišno stajalište</string>
+    <string name="arrival_in">u</string>
+    <string name="from_starting">sa polazne</string>
 </resources>

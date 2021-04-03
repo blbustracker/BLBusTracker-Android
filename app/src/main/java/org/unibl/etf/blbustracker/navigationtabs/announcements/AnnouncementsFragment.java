@@ -5,8 +5,10 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 
+import androidx.annotation.Keep;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -27,7 +29,6 @@ import java.util.List;
  */
 public class AnnouncementsFragment extends Fragment
 {
-
     private AnnouncementsViewModel announcementsViewModel;
 
     private RecyclerView recyclerView;
@@ -63,6 +64,13 @@ public class AnnouncementsFragment extends Fragment
             announcementsAdapter.notifyDataSetChanged();
         });
 
+
+        announcementsViewModel.getShouldHideNotificationIcon().observe(getViewLifecycleOwner(), shouldHideNotificationIcon->
+        {
+            ImageView notificationIcon = getActivity().findViewById(R.id.new_announcemnt_icon);
+            if(shouldHideNotificationIcon)
+                notificationIcon.setVisibility(View.INVISIBLE);
+        });
 
         //swipe down to refresh
         swipeRefreshLayout = view.findViewById(R.id.swipeRefresher);
@@ -139,13 +147,17 @@ public class AnnouncementsFragment extends Fragment
     }
 
     @Override
-    public void onStop()
+    public void onDestroyView()
     {
-        super.onStop();
+        super.onDestroyView();
         if (announcementsViewModel != null)
             announcementsViewModel.shutdownPoolExecutorService();
         recyclerView.setAdapter(null);
+    }
 
+    @Keep
+    public AnnouncementsFragment()
+    {
     }
 }
 

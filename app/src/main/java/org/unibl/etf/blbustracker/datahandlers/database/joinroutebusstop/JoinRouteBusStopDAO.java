@@ -36,7 +36,4 @@ public interface JoinRouteBusStopDAO
     @Query("DELETE FROM join_route_busStop_table")
     void deleteJoinTable();
 
-
-
-
 }

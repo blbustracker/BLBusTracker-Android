@@ -13,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
+import org.unibl.etf.blbustracker.Constants;
 import org.unibl.etf.blbustracker.R;
 
 public class MarkerDialog extends DialogFragment
@@ -30,11 +31,6 @@ public class MarkerDialog extends DialogFragment
     //interface that is implemented in MapFragment
     private MarkerDialogListener markerDialogListener;
 
-    public MarkerDialog(MarkerDialogListener markerDialogListener)
-    {
-        this.markerDialogListener = markerDialogListener;
-    }
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
@@ -42,6 +38,8 @@ public class MarkerDialog extends DialogFragment
         View dialogView = inflater.inflate(R.layout.busstop_marker_popup, container, false);
         //getDialog().setCanceledOnTouchOutside(true);
         getDialog().getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+        getAndPlaceArguemnts();
 
         closeBtn = dialogView.findViewById(R.id.x);
         busStopName = dialogView.findViewById(R.id.busstop_name);
@@ -61,6 +59,12 @@ public class MarkerDialog extends DialogFragment
         return dialogView;
     }
 
+    private void getAndPlaceArguemnts()
+    {
+        if (markerDialogListener == null)
+            markerDialogListener = (MarkerDialogListener) getArguments().getParcelable(Constants.MARKERDIALOG_LISTENER_PARCELABLE);
+    }
+
     // setting up buttons click listener
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
@@ -72,6 +76,7 @@ public class MarkerDialog extends DialogFragment
         setStartDestinationBtn.setOnClickListener(v ->
         {
             int busStopId = getArguments().getInt(DIALOG_BUSSTOP_ID);
+            getAndPlaceArguemnts();
             markerDialogListener.setAsStartDestinationBtn(busStopId);
             dismiss();
         });
@@ -79,6 +84,7 @@ public class MarkerDialog extends DialogFragment
         setEndDestinationBtn.setOnClickListener(v ->
         {
             int busStopId = getArguments().getInt(DIALOG_BUSSTOP_ID);
+            getAndPlaceArguemnts();
             markerDialogListener.setAsEndDestinationBtn(busStopId);
             dismiss();
         });
@@ -86,6 +92,7 @@ public class MarkerDialog extends DialogFragment
         startNavigationBtn.setOnClickListener((v) ->
         {
             int busStopId = getArguments().getInt(DIALOG_BUSSTOP_ID);
+            getAndPlaceArguemnts();
             markerDialogListener.startNavigationBtn(busStopId);
             dismiss();
         });

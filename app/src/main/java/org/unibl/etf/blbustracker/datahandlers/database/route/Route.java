@@ -62,6 +62,13 @@ public class Route
         this.label = label;
     }
 
+    public static String getRouteDepatureName(String routeName)
+    {
+        String[] splitDestination = routeName.split("-");
+        String destination = splitDestination[splitDestination.length - 1];
+        return destination.trim();
+    }
+
     public int getRouteId()
     {
         return routeId;

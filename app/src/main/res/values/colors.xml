@@ -3,11 +3,13 @@
     <!--    Floating action bar color-->
     <color name="colorAccent">#66aed8</color>
 
-    <color name="Black">#000000</color>
+    <color name="black">#000000</color>
     <color name="white">#ffffff</color>
     <color name="google_blue">#0098f2</color>
     <color name="google_blue_darker">#3469c2</color>
     <color name="gray">#969696</color>
+    <color name="text_hint">#B2E3FF</color>
+
 
     <color name="busline_lighter_blue">#f1f8ff</color>
     <color name="busline_darker_blue">#dce4ff</color>

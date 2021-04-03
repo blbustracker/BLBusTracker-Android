@@ -7,6 +7,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 
+import androidx.annotation.Keep;
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
@@ -38,7 +39,7 @@ public class MapActivity extends LocalizationActivity implements DrawerLayout.Dr
     //needed for implementing open/close navigation drawer
     private DrawerLayout drawerLayout;
 
-    NavigationView navigationView;
+    private NavigationView navigationView;
 
     //Button for openning/closing navigation drawer
     private FloatingActionButton drawerFloatingButton;
@@ -228,6 +229,7 @@ public class MapActivity extends LocalizationActivity implements DrawerLayout.Dr
     {
     }
 
+    @Keep
     public MapActivity()
     {
     }

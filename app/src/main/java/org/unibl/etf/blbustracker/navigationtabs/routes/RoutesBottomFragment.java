@@ -7,10 +7,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.Keep;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SearchView;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.DialogFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -18,6 +18,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+
+import org.unibl.etf.blbustracker.Constants;
 import org.unibl.etf.blbustracker.R;
 import org.unibl.etf.blbustracker.datahandlers.database.route.Route;
 import org.unibl.etf.blbustracker.utils.KeyboardUtils;
@@ -36,21 +38,16 @@ public class RoutesBottomFragment extends BottomSheetDialogFragment
     private OnRouteClickedListener onRouteClickedListener;
     private List<Route> allRoutes;
 
-    public RoutesBottomFragment(OnRouteClickedListener onRouteClickedListener)
-    {
-        this.onRouteClickedListener = onRouteClickedListener;
-    }
-
-    public RoutesBottomFragment()
-    {
-    }
-
     //call this method in onRouteChange
     public void setAllRoutes(List<Route> allRoutes)
     {
         this.allRoutes = allRoutes;
+        if(routeRecyclerAdapter!=null && recyclerView!=null && allRoutes!=null)
+        {
+            routeRecyclerAdapter.setRoutes(new ArrayList<>(allRoutes));
+            recyclerView.setAdapter(routeRecyclerAdapter);
+        }
     }
-
 
     //executes after calling .showDialog() in MapFragment
     @Override
@@ -66,16 +63,21 @@ public class RoutesBottomFragment extends BottomSheetDialogFragment
         View routeDialogView = inflater.inflate(R.layout.fragment_routes_dialog, container, false);
         recyclerView = (RecyclerView) routeDialogView.findViewById(R.id.street_recycler_view);
 
+        getAndPlaceArgs();
         initRecyclerView(routeDialogView.getContext());
         initSearchView(routeDialogView);
 
         return routeDialogView;
     }
 
+    private void getAndPlaceArgs()
+    {
+        if(onRouteClickedListener==null)
+            onRouteClickedListener = getArguments().getParcelable(Constants.ONROUTECLICK_LISTENER_PARCELABLE);
+    }
+
     /**
      * Makes sure that keyboard is under the BottomSheetDialogFragment
-     * @param savedInstanceState
-     * @return
      */
     @NonNull
     @Override
@@ -97,7 +99,8 @@ public class RoutesBottomFragment extends BottomSheetDialogFragment
         recyclerView.setLayoutManager(layoutManager);
 
         // temporary empty array, while waiting for data
-        if(allRoutes==null) allRoutes=new ArrayList<>();
+        if (allRoutes == null) allRoutes = new ArrayList<>();
+        getAndPlaceArgs();
         routeRecyclerAdapter = new RouteRecyclerAdapter(new ArrayList<>(allRoutes), onRouteClickedListener, context);
         recyclerView.setAdapter(routeRecyclerAdapter);
 
@@ -132,25 +135,8 @@ public class RoutesBottomFragment extends BottomSheetDialogFragment
         return routeRecyclerAdapter.getRoute(position);
     }
 
-
-    public void maximizeBottomSheet()
+    @Keep
+    public RoutesBottomFragment()
     {
-        Dialog dialog = getDialog();
-        if (dialog != null)
-        {
-            View bottomSheet = dialog.findViewById(R.id.design_bottom_sheet);
-            bottomSheet.getLayoutParams().height = ViewGroup.LayoutParams.MATCH_PARENT;
-        }
-        View view = getView();
-        if (view != null)
-            view.post(() ->
-            {
-                View parent = (View) view.getParent();
-                CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) (parent).getLayoutParams();
-                CoordinatorLayout.Behavior behavior = params.getBehavior();
-                BottomSheetBehavior bottomSheetBehavior = (BottomSheetBehavior) behavior;
-                bottomSheetBehavior.setPeekHeight(view.getMeasuredHeight());
-            });
     }
-
 }

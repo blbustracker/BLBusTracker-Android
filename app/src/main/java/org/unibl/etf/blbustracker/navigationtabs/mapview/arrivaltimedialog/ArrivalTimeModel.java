@@ -3,25 +3,26 @@ package org.unibl.etf.blbustracker.navigationtabs.mapview.arrivaltimedialog;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
-import android.widget.TableLayout;
-import android.widget.TableRow;
+
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.unibl.etf.blbustracker.R;
 import org.unibl.etf.blbustracker.datahandlers.database.DBFactory;
 import org.unibl.etf.blbustracker.datahandlers.database.busstop.BusStop;
 import org.unibl.etf.blbustracker.datahandlers.database.joinroutebusstop.JoinRouteBusStopDAO;
 import org.unibl.etf.blbustracker.datahandlers.database.route.Route;
 import org.unibl.etf.blbustracker.datahandlers.jsonhandlers.BusStopJSON;
 import org.unibl.etf.blbustracker.navigationtabs.routeschedule.ParseScheduleUtil;
-import org.unibl.etf.blbustracker.utils.TableRowUtil;
+import org.unibl.etf.blbustracker.navigationtabs.routeschedule.ScheduleTime;
 
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.function.Consumer;
 
 public class ArrivalTimeModel
 {
@@ -50,7 +51,7 @@ public class ArrivalTimeModel
         mainHandler = new Handler(Looper.getMainLooper());
     }
 
-    public void fillTableLayoutWithTimes(List<ArrivalTime> arrivalTimes, TableLayout tableLayout)
+    public void fillTableLayoutWithTimes(List<ArrivalTime> serverArrivalTimes, RecyclerView recyclerView, Consumer<Boolean> isEmptyData)
     {
         activatePoolExecutorService();
         poolExecutorService.execute(() ->
@@ -60,61 +61,57 @@ public class ArrivalTimeModel
 
             //routes containing this station
             List<Route> routeList = joinRouteBusStopDAO.getRoutesByBusStopId(busStop.getBusStopId());
-            if (routeList == null)
-                return;
+            List<ArrivalTime> allArrivalTimes = new ArrayList<>();
 
-            List<TableRow> tableRows = new ArrayList<>();
-            TableLayout.LayoutParams layout = new TableLayout.LayoutParams(TableLayout.LayoutParams.WRAP_CONTENT, TableLayout.LayoutParams.WRAP_CONTENT);
-            for (Route route : routeList)
+            if (routeList != null)
             {
-                TableRow tableRow = null;
-
-                int lastBusStopId = getLastBusStopId(route);
-                int currentBusStopId = busStop.getBusStopId();
-                if (lastBusStopId != currentBusStopId) // only show time if not on last bus stop
+                for (Route route : routeList)
                 {
-                    ArrivalTime tmp = new ArrivalTime(route.getName(), route.getLabel());   // temporary object
-                    int index = (arrivalTimes == null || arrivalTimes.size() <= 0) ? -1 : arrivalTimes.indexOf(tmp);    // check if tmp exist and find index in list
-
-                    if (index < 0)  //route does not have time, find in DB depending on day od the week
+                    int lastBusStopId = getLastBusStopId(route);
+                    int currentBusStopId = busStop.getBusStopId();
+                    if (lastBusStopId != currentBusStopId) // only show time if not on last bus stop
                     {
-                        List<LocalTime> depatureTimes = null;
-                        try
-                        {
-                            depatureTimes = getDepatureTimes(route);
+                        ArrivalTime tmp = new ArrivalTime(route.getName(), route.getLabel());   // temporary object
+                        int index = (serverArrivalTimes == null || serverArrivalTimes.size() <= 0) ? -1 : serverArrivalTimes.indexOf(tmp);    // check if tmp exist and find index in list
 
-                            if (depatureTimes != null && depatureTimes.size() > 0)
+                        if (index < 0)  //route does not have time, find in DB depending on day od the week
+                        {
+                            List<ScheduleTime> depatureTimes = null;
+                            try
                             {
-                                String depatureText = depaturePrintFormat(route, depatureTimes);
-                                tableRow = TableRowUtil.createRow(context, depatureText);
-                            }
+                                depatureTimes = getDepatureTimes(route);
 
-                        } catch (Exception ex)
+                                if (depatureTimes != null && depatureTimes.size() > 0)
+                                {
+                                    String depatureText = depaturePrintFormat(depatureTimes);
+                                    allArrivalTimes.add(new ArrivalTime(route.getName(), route.getLabel(), depatureText));
+                                }
+
+                            } catch (Exception ex)
+                            {
+                            }
+                        } else  // route has time on server
                         {
+                            ArrivalTime arrivalTime = serverArrivalTimes.get(index);
+                            allArrivalTimes.add(arrivalTime);
                         }
-                    } else  // route has time on server
-                    {
-                        ArrivalTime arrivalTime = arrivalTimes.get(index);
-                        tableRow = TableRowUtil.createRow(context, arrivalTime);
                     }
                 }
-                if (tableRow != null)
-                    tableRows.add(tableRow);
             }
 
             mainHandler.post(() ->
             {
-                tableLayout.removeAllViews();
-
-                if (!tableRows.isEmpty())
+                if (routeList !=null && !allArrivalTimes.isEmpty())
                 {
-                    for (TableRow tableRow : tableRows)
-                        tableLayout.addView(tableRow, layout); // place text with UI thread
+                    isEmptyData.accept(false);
+                    ArrivalAdapter arrivalAdapter = new ArrivalAdapter(context, allArrivalTimes);
+                    recyclerView.setAdapter(arrivalAdapter);
+                    arrivalAdapter.notifyDataSetChanged();
+                    recyclerView.setLayoutManager(new LinearLayoutManager(context));
                 } else
                 {
-                    tableLayout.addView(TableRowUtil.createRow(context, context.getString(R.string.no_busstop_time)));
+                    isEmptyData.accept(true);
                 }
-
             });
         });
     }
@@ -142,11 +139,11 @@ public class ArrivalTimeModel
         return lastBusStopId;
     }
 
-    private List<LocalTime> getDepatureTimes(Route route) throws Exception
+    private List<ScheduleTime> getDepatureTimes(Route route) throws Exception
     {
         String todaysSchedule = TimeUtil.getTodaySchedule(route);
 
-        List<LocalTime> depatureTimes = ParseScheduleUtil.getFirstDepatureTimes(todaysSchedule, N_DEPARTURE_TIMES, LocalTime.now()); // todays depature times
+        List<ScheduleTime> depatureTimes = ParseScheduleUtil.getFirstDepatureTimes(todaysSchedule, N_DEPARTURE_TIMES, LocalTime.now()); // todays depature times
 
         if (depatureTimes == null) // last depature has past, try tomorrow
         {
@@ -158,17 +155,16 @@ public class ArrivalTimeModel
         return depatureTimes;
     }
 
-    private String depaturePrintFormat(Route route, List<LocalTime> depatureTimes)
+    private String depaturePrintFormat(List<ScheduleTime> depatureTimes)
     {
         StringBuilder stringBuilder = new StringBuilder();
-        String text = context.getString(R.string.route) + " " + route.getLabel() + ": " + context.getString(R.string.next_departure_in);
-        stringBuilder.append(text);
 
         for (int i = 0; i < depatureTimes.size() && i < N_DEPARTURE_TIMES; i++)
-            stringBuilder.append(" ").append(depatureTimes.get(i));
+            stringBuilder.append(" ").append(depatureTimes.get(i).getLocalTime());
 
         return stringBuilder.toString();
     }
+
 
     public void activatePoolExecutorService()
     {
@@ -181,6 +177,5 @@ public class ArrivalTimeModel
         if (poolExecutorService != null && !poolExecutorService.isShutdown())
             poolExecutorService.shutdown();
     }
-
 
 }

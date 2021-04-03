@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.annotation.Keep;
 import androidx.fragment.app.Fragment;
 
 import org.unibl.etf.blbustracker.BuildConfig;
@@ -43,5 +44,10 @@ public class AboutFragment extends Fragment
         content += getString(R.string.undp_header);
 
         textView.setText(content);
+    }
+
+    @Keep
+    public AboutFragment()
+    {
     }
 }

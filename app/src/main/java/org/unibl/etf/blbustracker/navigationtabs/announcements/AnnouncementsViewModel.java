@@ -45,6 +45,7 @@ public class AnnouncementsViewModel extends AndroidViewModel
     //data to observe on change
     private MutableLiveData<Boolean> isUpdating;    // Loading screen is only shown on first run when there is no internet and no announcments in database. App is to fast :(
     private MutableLiveData<List<Announcement>> announcementsMutable;
+    private MutableLiveData<Boolean> shouldHideNotificationIcon; // observe if there was an server update, new announcements
 
     //used for checking data and saving it if there was an update
     private LastUpdated lastUpdated;
@@ -52,13 +53,20 @@ public class AnnouncementsViewModel extends AndroidViewModel
 
     private ConnectivityManager.NetworkCallback networkCallback;
 
+    private Handler mainHandler;
+
     public AnnouncementsViewModel(@NonNull Application application)
     {
         super(application);
         networkCallback = initNetworkCallback(application);
         announcementsMutable = new MutableLiveData<>();
+        shouldHideNotificationIcon = new MutableLiveData<>(false);
+
         isUpdating = new MutableLiveData<>(true);
+
         poolExecutorService = Executors.newFixedThreadPool(N_THREADS);
+        mainHandler = new Handler(Looper.getMainLooper());
+
         getAnnouncementsFromDB(application);
         startListening(application);
     }
@@ -105,7 +113,7 @@ public class AnnouncementsViewModel extends AndroidViewModel
             if (announcementList != null && !announcementList.isEmpty())
             {
                 List<Announcement> finalAnnouncementList = announcementList;
-                new Handler(Looper.getMainLooper()).post(() ->
+                mainHandler.post(() ->
                 {
                     announcementsMutable.setValue(finalAnnouncementList);
                     isUpdating.setValue(false);
@@ -130,7 +138,7 @@ public class AnnouncementsViewModel extends AndroidViewModel
             if (isFragmentAlive)
             {
                 NetworkManager networkManager = NetworkManager.getInstance(context);
-                networkManager.GETJson(Constants.NEWS_LAST_UPDATE_PATH, null, (dateObject) ->
+                networkManager.GETJson(Constants.ANNOUNCEMENT_LAST_UPDATE_PATH, null, (dateObject) ->
                 {
                     activatePoolExecutors();
                     poolExecutorService.execute(() ->
@@ -140,7 +148,7 @@ public class AnnouncementsViewModel extends AndroidViewModel
                         //There was an update
                         {
                             lastUpdateDateString = dateObject.toString();
-                            networkManager.GETJson(Constants.NEWS_PATH, null, object -> successResponse(object, context) // this is successResponse(...)
+                            networkManager.GETJson(Constants.ANNOUNCEMENT_PATH, null, object -> successResponse(object, context) // this is successResponse(...)
                                     , error -> NetworkStatus.errorConnectingToInternet(error, context, false));
                         }
 
@@ -172,14 +180,14 @@ public class AnnouncementsViewModel extends AndroidViewModel
                 try
                 {
                     while (!isDBDone)
-                        locker.wait();
+                        locker.wait(Constants.WAIT_THRESHOOLD);
                 } catch (Exception ex)
                 {
                 }
 
                 try
                 {
-                    new Handler(Looper.getMainLooper()).post(() ->
+                    mainHandler.post(() ->
                     {
                         announcementsMutable.setValue(announcementsList);
                         if (isUpdating != null && isUpdating.getValue())
@@ -187,6 +195,7 @@ public class AnnouncementsViewModel extends AndroidViewModel
                     });
                     activatePoolExecutors();
                     poolExecutorService.execute(() -> updateAnnouncementsDB(announcementsList, context));
+
                 } catch (Exception ex)
                 {
                 }
@@ -205,6 +214,7 @@ public class AnnouncementsViewModel extends AndroidViewModel
         announcementDao.deleteAllAnnouncements();
         announcementDao.insertAll(announcementList);
         lastUpdated.updateSharedPrefenreces(lastUpdateDateString, LastUpdated.NEWS_LAST_UPDATE_KEY);
+        mainHandler.post(() -> shouldHideNotificationIcon.setValue(true));
     }
 
     /**
@@ -215,6 +225,12 @@ public class AnnouncementsViewModel extends AndroidViewModel
     public LiveData<Boolean> getIsUpdating()
     {
         return isUpdating;
+    }
+
+    //to hide notification icon if the newest notification are shown
+    public LiveData<Boolean> getShouldHideNotificationIcon()
+    {
+        return shouldHideNotificationIcon;
     }
 
     /**

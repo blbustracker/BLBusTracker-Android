@@ -18,6 +18,7 @@ import org.unibl.etf.blbustracker.datahandlers.database.route.Route;
 import org.unibl.etf.blbustracker.utils.DrawableUtil;
 import org.unibl.etf.blbustracker.utils.KeyboardUtils;
 import org.unibl.etf.blbustracker.utils.languageutil.LatinCyrillicUtil;
+import org.unibl.etf.blbustracker.utils.languageutil.Translator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +32,7 @@ public class RouteRecyclerAdapter extends RecyclerView.Adapter<RouteRecyclerAdap
     private List<Route> routesFull;
     private OnRouteClickedListener routeClickedListener;
     private Context context;
+    private Translator translator;
 
     // Provide a reference to the views for each data item
     // you provide access to all the views for a data item in a view holder
@@ -81,6 +83,7 @@ public class RouteRecyclerAdapter extends RecyclerView.Adapter<RouteRecyclerAdap
         routes = myDataset;
         routesFull = new ArrayList<>(routes); //full copy
         this.context = context;
+        translator = new Translator(context);
         this.routeClickedListener = routeClickedListener;
     }
 
@@ -127,9 +130,10 @@ public class RouteRecyclerAdapter extends RecyclerView.Adapter<RouteRecyclerAdap
         Drawable drawable = DrawableUtil.getColoredBusDrawable(currentData, context);
         holder.busImage.setImageDrawable(drawable);
 
-        holder.routeLabel.setText(currentData.getLabel());
-        holder.routeName.setText(currentData.getName());
-
+        String translatedLbl = translator.translateInput(currentData.getLabel()); // can be 13B
+        holder.routeLabel.setText(translatedLbl);
+        String translatedName = translator.translateInput(currentData.getName());
+        holder.routeName.setText(translatedName);
     }
 
     // Return the size of your dataset (invoked by the layout manager)

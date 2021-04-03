@@ -14,8 +14,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import org.unibl.etf.blbustracker.Constants;
 import org.unibl.etf.blbustracker.R;
-import org.unibl.etf.blbustracker.navigationtabs.mapview.arrivaltimedialog.TimeUtil;
 import org.unibl.etf.blbustracker.datahandlers.database.announcement.Announcement;
+import org.unibl.etf.blbustracker.navigationtabs.mapview.arrivaltimedialog.TimeUtil;
+import org.unibl.etf.blbustracker.utils.languageutil.Translator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +24,7 @@ import java.util.List;
 public class AnnouncementsAdapter extends RecyclerView.Adapter<AnnouncementsAdapter.AnnouncementViewHolder>
 {
     private List<Announcement> allAnnouncements;
+    private Translator translator;
     private Context context;
 
     class AnnouncementViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener
@@ -49,10 +51,7 @@ public class AnnouncementsAdapter extends RecyclerView.Adapter<AnnouncementsAdap
             dateTextView = itemView.findViewById(R.id.date_text_view);
             expandButton = itemView.findViewById(R.id.expand_button);
 
-            expandButton.setOnClickListener(v -> titleTextView.callOnClick());  // clicking on Image behaves same as clicking on title
-            dateTextView.setOnClickListener(this);
-            titleTextView.setOnClickListener(this);
-
+            itemView.setOnClickListener(this);
         }
 
         @Override
@@ -70,12 +69,14 @@ public class AnnouncementsAdapter extends RecyclerView.Adapter<AnnouncementsAdap
         if (allAnnouncements == null)
             allAnnouncements = new ArrayList<>();
         this.allAnnouncements = allAnnouncements;
+        translator = new Translator(context);
         this.context = context;
     }
 
     public void setAllAnnouncements(List<Announcement> allAnnouncements)
     {
         this.allAnnouncements = allAnnouncements;
+        notifyDataSetChanged();
     }
 
     @NonNull
@@ -100,8 +101,11 @@ public class AnnouncementsAdapter extends RecyclerView.Adapter<AnnouncementsAdap
         holder.listView.setBackgroundColor(ContextCompat.getColor(context, colorId));
         holder.itemConstraintLayout.setBackgroundColor(ContextCompat.getColor(context, colorId));
 
-        holder.titleTextView.setText(currentData.getTitle());
-        holder.contentTextView.setText(currentData.getContent());
+        String translateTitle = translator.translateInput(currentData.getTitle());
+        holder.titleTextView.setText(translateTitle);
+
+        String translateContent = translator.translateInput(currentData.getContent());
+        holder.contentTextView.setText(translateContent);
 
         String publishedDate = currentData.getPublishedDate();
         String formatedDate = TimeUtil.formatInputDate(publishedDate, Constants.SERVER_DATE_FORMAT, Constants.MY_DATE_FORMAT);

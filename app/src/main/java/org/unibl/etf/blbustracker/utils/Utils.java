@@ -4,16 +4,18 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.location.Location;
+import android.graphics.Rect;
+import android.os.Handler;
+import android.view.View;
+import android.view.Window;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
-import com.google.android.gms.maps.model.LatLng;
 
+import org.unibl.etf.blbustracker.Constants;
 import org.unibl.etf.blbustracker.R;
-
-import java.util.List;
 
 public abstract class Utils
 {
@@ -30,6 +32,20 @@ public abstract class Utils
                 .getDefaultSharedPreferences(context); // default mode is MODE_PRIVATE
     }
 
+    public static void shortButtonDisableOnClick(Activity activity, ImageButton button)
+    {
+        if (activity != null && !activity.isFinishing())
+        {
+            Handler mainHandler = new Handler(activity.getMainLooper());
+            button.setEnabled(false);
+            mainHandler.postDelayed(() ->
+            {
+                if (activity != null && !activity.isFinishing())
+                    button.setEnabled(true);
+            }, Constants.MINOR_BUTTON_DELAY);
+        }
+    }
+
     /**
      * Find value in SharedPreferences by key
      *
@@ -43,39 +59,13 @@ public abstract class Utils
         return sharedPreferences.getString(key, defaultValue);
     }
 
-    /**
-     * Computes the approximate distance in meters between two points
-     *
-     * @return distance in meters
-     */
-    public static double distanceBetweenPoints(LatLng start, LatLng end)
+    //set view size based on size_percentage
+    public static void ajustViewSize(View view, float size_percentage, Activity activity)
     {
-        float[] distance = new float[1];
-        Location.distanceBetween(start.latitude, start.longitude, end.latitude, end.longitude, distance);
-        return (double) distance[0];
-    }
-
-    /**
-     * Computes the approximate distance in meters between multiple points
-     *
-     * @return result in meters
-     */
-    public static double distanceBetweenPoints(List<LatLng> points)
-    {
-        if (points.size() < 2)
-            return 0;
-
-        float[] distance = new float[1];
-        double result = 0;
-        for (int i = 0; i < points.size() - 1; i++)
-        {
-            LatLng start = points.get(i);
-            LatLng end = points.get(i + 1);
-            Location.distanceBetween(start.latitude, start.longitude, end.latitude, end.longitude, distance);
-            result += distance[0];
-        }
-
-        return result;
+        Rect displayRectangle = new Rect();
+        Window window = activity.getWindow();
+        window.getDecorView().getWindowVisibleDisplayFrame(displayRectangle);
+        view.setMinimumHeight((int) (displayRectangle.height() * size_percentage));
     }
 
     /**
@@ -104,6 +94,5 @@ public abstract class Utils
         }
         return false;
     }
-
 
 }

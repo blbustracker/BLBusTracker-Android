@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+<!--    for application icon-->
     <color name="marker_bus_stop_background">#006698</color>
 </resources>

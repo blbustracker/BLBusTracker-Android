@@ -28,7 +28,7 @@
                 android:layout_gravity="center"
                 android:paddingBottom="8dp"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                android:textColor="@color/Black"
+                android:textColor="@color/black"
                 tools:text="ovo test text" />
 
 

@@ -10,7 +10,7 @@ import androidx.core.text.HtmlCompat;
 
 import org.unibl.etf.blbustracker.R;
 import org.unibl.etf.blbustracker.datahandlers.database.route.Route;
-import org.unibl.etf.blbustracker.utils.TableRowUtil;
+import org.unibl.etf.blbustracker.utils.TextViewUtil;
 
 import java.time.LocalTime;
 import java.util.List;
@@ -50,19 +50,19 @@ public class RouteScheduleModel
 
     private TextView splitTextColorByTime(String dayOdWeek, List<ScheduleTime> scheduleTimes, Context context)
     {
-        TextView textView = TableRowUtil.getTextView(context);
+        TextView textView = TextViewUtil.getTextView(context);
 
         dayOdWeek+=":";
         textView.setText(dayOdWeek);
         textView.append(NEWLINE);
         for (ScheduleTime scheduleTime : scheduleTimes)
         {
-            LocalTime inputTime = scheduleTime.getInputTime();
+            LocalTime inputTime = scheduleTime.getLocalTime();
 
             if (currentTime.isAfter(inputTime))
-                textView.append(oneColor(inputTime.toString(), GRAY_COLOR));
+                textView.append(oneColor(scheduleTime.getTimeWithSufix(), GRAY_COLOR));
             else
-                textView.append(oneColor(inputTime.toString(), BLACK_COLOR));
+                textView.append(oneColor(scheduleTime.getTimeWithSufix(), BLACK_COLOR));
 
             textView.append(" ");
         }
@@ -79,7 +79,7 @@ public class RouteScheduleModel
     //get full schedule in TextView
     public TextView getAllSchedules(Context context)
     {
-        TextView textView = TableRowUtil.getTextView(context);
+        TextView textView = TextViewUtil.getTextView(context);
 
         if (route.getRouteSchedule() == null)
         {

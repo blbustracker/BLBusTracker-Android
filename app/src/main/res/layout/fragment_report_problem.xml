@@ -51,8 +51,9 @@
 
         <LinearLayout
                 android:id="@+id/button_container"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 android:orientation="vertical"
                 android:layout_margin="10dp"
                 >
@@ -62,6 +63,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textColor="@color/white"
+                    android:paddingStart="40dp"
+                    android:paddingEnd="40dp"
                     android:background="@drawable/circle_shape_background"
                     android:text="@string/send_report"
                     android:layout_marginBottom="10dp"
@@ -71,6 +74,8 @@
                     android:id="@+id/clear_button"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:paddingStart="40dp"
+                    android:paddingEnd="40dp"
                     android:textColor="@color/white"
                     android:background="@drawable/circle_shape_background"
                     android:text="@string/clear_content"

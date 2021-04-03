@@ -16,7 +16,7 @@ import org.unibl.etf.blbustracker.datahandlers.database.route.Route;
 import org.unibl.etf.blbustracker.datahandlers.database.route.RouteDao;
 
 // Singleton class used for creating DAO instances of BusStopDao, RouteDao, JoinRouteBusStopDAO and AnnouncementDao class
-@Database(entities = {BusStop.class, Route.class, JoinRouteBusStop.class, Announcement.class}, version = 37, exportSchema = false)
+@Database(entities = {BusStop.class, Route.class, JoinRouteBusStop.class, Announcement.class}, version = 38, exportSchema = false)
 public abstract class DBFactory extends RoomDatabase
 {
     public static final String DATABASE_NAME = "station_route_db";

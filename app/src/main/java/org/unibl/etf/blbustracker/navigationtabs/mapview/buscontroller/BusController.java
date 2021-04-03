@@ -22,7 +22,6 @@ import org.unibl.etf.blbustracker.datahandlers.database.Bus;
 import org.unibl.etf.blbustracker.datahandlers.database.route.Route;
 import org.unibl.etf.blbustracker.datahandlers.jsonhandlers.BusJSON;
 import org.unibl.etf.blbustracker.networkmanager.NetworkManager;
-import org.unibl.etf.blbustracker.networkmanager.NetworkStatus;
 import org.unibl.etf.blbustracker.utils.DrawableUtil;
 
 import java.net.URLEncoder;
@@ -91,7 +90,7 @@ public class BusController
                     {
                         networkManager.GETJsonArray(busLocationUrlQuery
                                 , object -> successResponse(object, context)
-                                , error -> NetworkStatus.errorConnectingToInternet(error, context, false));
+                                , null);
                     } else
                     {
                         Thread.sleep(Constants.BUS_CLICKED_INTERVAL);
@@ -129,7 +128,7 @@ public class BusController
                 clearBusMarkers();
                 setMarkers(busList, context);
 
-                if(!isActive)
+                if (!isActive)
                     clearBusMarkers();
             });
         });

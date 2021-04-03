@@ -8,13 +8,23 @@ public class ArrivalTime
 {
     private final String routeName;
     private final String routeLabel;
+    boolean isFromServer = true;
     private List<Integer> arrivaleTimes;
+    private String scheduleTime;
 
     public ArrivalTime(String routeName, String routeLabel)
     {
         this.routeName = routeName;
         this.routeLabel = routeLabel;
         arrivaleTimes = new ArrayList<>();
+    }
+
+    public ArrivalTime(String routeName, String routeLabel, String routeScheduleTime)
+    {
+        this.routeName = routeName;
+        this.routeLabel = routeLabel;
+        isFromServer = false;
+        scheduleTime = routeScheduleTime;
     }
 
     public ArrivalTime(String routeName, String routeLabel, int time)
@@ -36,6 +46,11 @@ public class ArrivalTime
         if (arrivaleTimes == null)
             arrivaleTimes = new ArrayList<>();
         arrivaleTimes.add(time);
+    }
+
+    public String getScheduleTime()
+    {
+        return scheduleTime;
     }
 
     public int numberOfTimes()

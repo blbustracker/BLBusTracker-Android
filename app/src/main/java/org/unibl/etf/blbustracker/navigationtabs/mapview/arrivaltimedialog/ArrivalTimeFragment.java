@@ -7,19 +7,24 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.TableLayout;
 import android.widget.TextView;
 
+import androidx.annotation.Keep;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
+import org.unibl.etf.blbustracker.Constants;
 import org.unibl.etf.blbustracker.R;
 import org.unibl.etf.blbustracker.datahandlers.database.busstop.BusStop;
+import org.unibl.etf.blbustracker.utils.languageutil.Translator;
 
-public class ArrivalTimeFragment extends BottomSheetDialogFragment
+import java.util.function.Consumer;
+
+public class ArrivalTimeFragment extends BottomSheetDialogFragment implements Consumer<Boolean>
 {
     private BusStop busStop;
     private ArrivalTimeViewModel arrivalTimeViewModel;
@@ -28,47 +33,56 @@ public class ArrivalTimeFragment extends BottomSheetDialogFragment
     private TextView busStopName;
     private Button moreOptionsBtn;
     private MoreOptionsInterface moreOptionsInterface;
-    private TableLayout tableLayout;
-
-    public ArrivalTimeFragment(BusStop busStop, MoreOptionsInterface moreOptionsInterface)
-    {
-        this.busStop = busStop;
-        this.moreOptionsInterface = moreOptionsInterface;
-    }
+    private RecyclerView recyclerView;
+    private TextView empty_recycle;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
     {
-        View dialogView = inflater.inflate(R.layout.bus_stop_time_popup, container, false);
-        //getDialog().setCanceledOnTouchOutside(true);
+        View dialogView = inflater.inflate(R.layout.fragment_arrival_time, container, false);
         getDialog().getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
+        moreOptionsInterface = (MoreOptionsInterface) getArguments().getParcelable(Constants.MOREOPTIONS_PARCELABLE);
+        busStop = getArguments().getParcelable(Constants.BUSSTOP_PARCELABLE);
+
         initButtons(dialogView);
+        empty_recycle = dialogView.findViewById(R.id.empty_recyleview_text);
+        recyclerView = dialogView.findViewById(R.id.arrival_recycler_view);
 
+        String translatedName = new Translator(getContext()).translateInput(busStop.getDesc());
         busStopName = dialogView.findViewById(R.id.busstop_name);
-        moreOptionsBtn = dialogView.findViewById(R.id.more_options);
-        tableLayout = dialogView.findViewById(R.id.tablelayout);
-
+        busStopName.setText(translatedName); // set bus stop name in window
         return dialogView;
     }
 
+
     private void initArrivalTimeViewModel()
     {
-        arrivalTimeModel = new ArrivalTimeModel(busStop, getContext());
         arrivalTimeViewModel = new ViewModelProvider(this).get(ArrivalTimeViewModel.class);
         arrivalTimeViewModel.startListening(busStop, getContext());
+
+        arrivalTimeModel = new ArrivalTimeModel(busStop, getContext());
         arrivalTimeViewModel.getArrivalTimesMLD().observe(getViewLifecycleOwner(), arrivalTimes ->
         {
-            arrivalTimeModel.fillTableLayoutWithTimes(arrivalTimes, tableLayout);
+            arrivalTimeModel.fillTableLayoutWithTimes(arrivalTimes, recyclerView, this);   // getting times from server
         });
+    }
+
+    @Override
+    public void accept(Boolean isEmpty)
+    {
+        if (isEmpty)
+            empty_recycle.setVisibility(View.VISIBLE);
+        else
+            empty_recycle.setVisibility(View.GONE);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        busStopName.setText(busStop.getDesc()); // set bus stop name in window
+
     }
 
     private void initButtons(View dialogView)
@@ -92,7 +106,6 @@ public class ArrivalTimeFragment extends BottomSheetDialogFragment
     @Override
     public void onDestroy()
     {
-        busStopName = null;
         moreOptionsInterface = null;
         if (arrivalTimeViewModel != null)
             arrivalTimeViewModel.stopListening();
@@ -100,6 +113,11 @@ public class ArrivalTimeFragment extends BottomSheetDialogFragment
             arrivalTimeModel.shutdownPoolExecutorService();
         arrivalTimeModel = null;
         super.onDestroy();
+    }
+
+    @Keep
+    public ArrivalTimeFragment()
+    {
     }
 
 }

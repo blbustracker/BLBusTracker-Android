@@ -12,8 +12,8 @@ import org.json.JSONArray;
 import org.unibl.etf.blbustracker.Constants;
 import org.unibl.etf.blbustracker.datahandlers.database.busstop.BusStop;
 import org.unibl.etf.blbustracker.networkmanager.NetworkManager;
-import org.unibl.etf.blbustracker.networkmanager.NetworkStatus;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -60,11 +60,11 @@ public class ArrivalTimeViewModel extends AndroidViewModel
                     networkManager = NetworkManager.getInstance(context);
                     String query = Constants.ARRIVAL_TIME + TIMEQUERY + stationId;
                     networkManager.GETJsonArray(query, this::onSuccessfulResponse
-                            , error -> NetworkStatus.errorConnectingToInternet(error, context, false));
+                            , error -> arrivalTimesMLD.setValue(new ArrayList<>()));
 
                     Thread.sleep(TIME_REFRESH_PERIOD);
 
-                }catch (InterruptedException ex)
+                } catch (InterruptedException ex)
                 {
                 }
             }
@@ -73,7 +73,6 @@ public class ArrivalTimeViewModel extends AndroidViewModel
 
     private void onSuccessfulResponse(JSONArray response)
     {
-
         ArrivalTimeJSON arrivalTimeJSON = new ArrivalTimeJSON();
         List<ArrivalTime> arrivalTimes = arrivalTimeJSON.getArrivalTimes(response);
         arrivalTimesMLD.setValue(arrivalTimes);
@@ -81,7 +80,8 @@ public class ArrivalTimeViewModel extends AndroidViewModel
 
     public void stopListening()
     {
-        poolExecutorService.shutdown();
+        if (poolExecutorService != null && !poolExecutorService.isShutdown())
+            poolExecutorService.shutdown();
         isFragmentAlive = false;
     }
 

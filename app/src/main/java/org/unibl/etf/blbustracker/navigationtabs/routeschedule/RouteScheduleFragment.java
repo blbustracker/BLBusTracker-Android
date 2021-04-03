@@ -13,18 +13,23 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.TableLayout;
 
+import androidx.annotation.Keep;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import org.unibl.etf.blbustracker.Constants;
 import org.unibl.etf.blbustracker.R;
 import org.unibl.etf.blbustracker.datahandlers.database.route.Route;
 import org.unibl.etf.blbustracker.navigationtabs.mapview.MapViewModel;
+import org.unibl.etf.blbustracker.utils.KeyboardUtils;
 
 import java.util.List;
 
-public class RouteScheduleFragment extends Fragment implements AdapterView.OnItemClickListener, View.OnClickListener, TextWatcher
+public class RouteScheduleFragment extends Fragment implements
+        AdapterView.OnItemClickListener,
+        View.OnClickListener,
+        TextWatcher
 {
-    private static final int DELAY_MILLIS = 100;
     private MapViewModel viewModel;
     private TableLayout scheduleTableLayout;
 
@@ -44,7 +49,14 @@ public class RouteScheduleFragment extends Fragment implements AdapterView.OnIte
         populateAutoCompleteInput(view);
         scheduleTableLayout = view.findViewById(R.id.tablelayout);
         clearBtn = view.findViewById(R.id.clear_btn);
-        clearBtn.setOnClickListener(l-> routeScheduleInput.setText(""));
+        clearBtn.setOnClickListener(l ->
+        {
+            routeScheduleInput.setText("");
+            if (routeScheduleInput.requestFocus())
+            {
+                KeyboardUtils.showKeyBoard(routeScheduleInput);
+            }
+        });
 
         return view;
     }
@@ -68,11 +80,25 @@ public class RouteScheduleFragment extends Fragment implements AdapterView.OnIte
         routeScheduleInput.setOnClickListener(this);
         routeScheduleInput.setOnItemClickListener(this);
         routeScheduleInput.addTextChangedListener(this);
+        routeScheduleInput.setOnFocusChangeListener((v, hasFocus) ->
+        {
+            if (!hasFocus)
+                routeScheduleInput.setHint(getContext().getString(R.string.choose_your_route));
+            else
+            {
+                routeScheduleInput.setHint("");
+                showAllSuggestions();
+            }
+
+        });
+        routeScheduleInput.clearFocus();
     }
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id)
     {
+        KeyboardUtils.hideKeyboard(getView());
+        routeScheduleInput.clearFocus();
         Object obj = parent.getItemAtPosition(position);
         if (obj instanceof Route)
         {
@@ -106,9 +132,13 @@ public class RouteScheduleFragment extends Fragment implements AdapterView.OnIte
 
     private void showAllSuggestions()
     {
-        if (routeScheduleInput != null && getActivity() != null && !getActivity().isFinishing() && !isRemoving())
+        if (routeScheduleInput != null && !routeScheduleInput.isPopupShowing())
         {
-            mainHnadler.postDelayed(() -> routeScheduleInput.showDropDown(), DELAY_MILLIS);   //there must be some delay
+            mainHnadler.postDelayed(() ->
+            {
+                if (getActivity() != null && !getActivity().isFinishing() && !isRemoving())
+                    routeScheduleInput.showDropDown();
+            }, Constants.MINOR_POPUP_DELAY);   //there must be some delay
         }
     }
 
@@ -125,17 +155,16 @@ public class RouteScheduleFragment extends Fragment implements AdapterView.OnIte
         {
             clearBtn.setVisibility(View.INVISIBLE);
             showAllSuggestions();
-        }
-        else
+        } else
+        {
             clearBtn.setVisibility(View.VISIBLE);
+        }
 
     }
 
     @Override
     public void afterTextChanged(Editable s)
     {
-//        if (s.toString().trim().length() == 0)
-//            showAllSuggestions();
     }
 
     @Override
@@ -161,4 +190,9 @@ public class RouteScheduleFragment extends Fragment implements AdapterView.OnIte
         super.onDestroy();
     }
 
+    @Keep
+    public RouteScheduleFragment()
+    {
+
+    }
 }

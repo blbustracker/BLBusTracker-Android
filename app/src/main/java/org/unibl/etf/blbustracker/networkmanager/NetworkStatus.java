@@ -3,7 +3,6 @@ package org.unibl.etf.blbustracker.networkmanager;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkCapabilities;
-import android.net.NetworkInfo;
 import android.net.NetworkRequest;
 import android.os.Build;
 import android.os.Handler;
@@ -79,16 +78,8 @@ public class NetworkStatus
     public static boolean isNetworkAvailable(Context context) //for android < 6.0, use callback for >= 6.0
     {
         ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) // if we ever make it
-        {
-            NetworkInfo activeNetwork = connectivityManager.getActiveNetworkInfo();
-            return activeNetwork != null && activeNetwork.isConnectedOrConnecting();
-        } else
-        {
-            NetworkCapabilities capabilities = connectivityManager.getNetworkCapabilities(connectivityManager.getActiveNetwork());
-            return capabilities != null && capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED);
-        }
-
+        NetworkCapabilities capabilities = connectivityManager.getNetworkCapabilities(connectivityManager.getActiveNetwork());
+        return capabilities != null && capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED);
     }
 
     private static final long timePeriod = 5 * 1000;
@@ -121,7 +112,7 @@ public class NetworkStatus
             String finalMessage = message;
             new Handler(Looper.getMainLooper()).post(() ->
             {
-                if(showToast)
+                if (showToast)
                     Toast.makeText(context, finalMessage, Toast.LENGTH_SHORT).show();
             });
         }
